@@ -176,6 +176,7 @@ computations:
     - Expenses:VAT Purchases:Sundries
     - Expenses:VAT Purchases:Telecoms
     - Expenses:VAT Purchases:Travel/Accom
+    - Expenses:R&D Enhanced Expenditure
   segments:
     business-type: management-expenses
 
@@ -308,6 +309,19 @@ computations:
   period: in-year
   accounts:
   - Expenses:Depreciation
+- id: rnd-enhanced-expenditure
+  kind: line
+  description: SME R&D enhanced expenditure
+  period: in-year
+  accounts:
+  - Expenses:R&D Enhanced Expenditure
+- id: rnd-enhanced-expenditure-rev
+  kind: line
+  description: SME R&D enhanced expenditure
+  period: in-year
+  reverse-sign: true
+  accounts:
+  - Expenses:R&D Enhanced Expenditure
 - id: total-costs
   description: Total costs
   kind: group
@@ -323,6 +337,7 @@ computations:
   - sundries
   - telecoms
   - travel
+  - rnd-enhanced-expenditure
 - id: profit-before-tax
   kind: group
   description: Profit before tax
@@ -353,13 +368,6 @@ computations:
   - ct-annual-investment-allowance
   - tax-due
 
-- id: rnd-credit
-  kind: line
-  description: SME R&D tax credit claimed
-  period: in-year
-  accounts:
-  - Equity:Corporation Tax:SME R&D Tax Credits
-
 worksheets:
 - id: tax-calculation
   kind: multi-period
@@ -386,7 +394,7 @@ elements:
   - capital-allowances
   - profits
   - tax-chargeable
-  - rnd
+#  - rnd
   - rnd-creative-enhanced-expenditure
   - detailed-profit-and-loss
   - tax-calculation
@@ -639,76 +647,76 @@ elements:
     field: '525'
     period-config: metadata.tax.period
 
-- id: rnd
-  kind: facttable
-  title: SME R&D
-  facts:
-  - id: company-name
-    kind: config
-    description: Company name
-    field: 'L1'
-    context: report-date
-    key: metadata.business.company-name
+# - id: rnd
+#   kind: facttable
+#   title: SME R&D
+#   facts:
+#   - id: company-name
+#     kind: config
+#     description: Company name
+#     field: 'L1'
+#     context: report-date
+#     key: metadata.business.company-name
 
-  - id: tax-reference
-    kind: config
-    context: report-date
-    description: Tax reference
-    field: 'L2'
-    key: metadata.tax.utr
+#   - id: tax-reference
+#     kind: config
+#     context: report-date
+#     description: Tax reference
+#     field: 'L2'
+#     key: metadata.tax.utr
 
-  - context: report-date
-    description: Return period start
-    field: 'L3'
-    id: return-period-start
-    key: metadata.tax.period.start
-    kind: config-date
-  - context: report-date
-    description: Return period end
-    field: 'L4'
-    id: return-period-end
-    key: metadata.tax.period.end
-    kind: config-date
+#   - context: report-date
+#     description: Return period start
+#     field: 'L3'
+#     id: return-period-start
+#     key: metadata.tax.period.start
+#     kind: config-date
+#   - context: report-date
+#     description: Return period end
+#     field: 'L4'
+#     id: return-period-end
+#     key: metadata.tax.period.end
+#     kind: config-date
 
-  - id: rnd-tax-credit-claim
-    kind: computation
-    description: Tax credit claim
-    field: L170
-    context: report-period
-    computation: rnd-credit
-    period-config: metadata.tax.period
+#   - id: rnd-tax-credit-claim
+#     kind: money
+#     description: Payable tax credit claim
+#     field: L170
+#     context: report-period
+#     value: 0
+#     period-config: metadata.tax.period
 
-  - id: rnd-tax-credit-offset
-    kind: money
-    description: Tax credit set-off against other liabilities
-    field: L175
-    value: 0
-    context: report-period
-    period-config: metadata.tax.period
+#   - id: rnd-tax-credit-offset
+#     kind: money
+#     description: Payable tax credit against other liabilities
+#     field: L175
+#     value: 0
+#     context: report-period
+#     period-config: metadata.tax.period
 
-  - id: rnd-tax-credit-payable
-    kind: computation
-    description: Tax credit balance payable
-    field: L180
-    context: report-period
-    computation: rnd-credit
-    period-config: metadata.tax.period
+#   - id: rnd-tax-credit-payable
+#     kind: money
+#     description: Tax credit balance payable
+#     field: L180
+#     context: report-period
+#     value: 0
+#     period-config: metadata.tax.period
 
-  - id: rnd-tax-credit-discharged
-    kind: money
-    description: Tax credit discharging other liabilities
-    field: L205
-    context: report-period
-    value: 0
-    period-config: metadata.tax.period
+#   - id: rnd-tax-credit-discharged
+#     kind: money
+#     description: Credit discharging other liabilities
+#     field: L205
+#     context: report-period
+#     value: 0
+#     period-config: metadata.tax.period
 
-  - id: rnd-tax-credit-offset
-    kind: money
-    description: Total R&D credit set off against liabilities
-    field: L210
-    context: report-period
-    value: 0
-    period-config: metadata.tax.period
+#   - id: rnd-tax-credit-offset
+#     kind: money
+#     description: Total R&D credit set off against liabilities
+#     field: L210
+#     context: report-period
+#     value: 0
+#     period-config: metadata.tax.period
 
 - id: rnd-creative-enhanced-expenditure
   kind: facttable
@@ -734,7 +742,7 @@ elements:
     description: R&D enhanced expenditure
     field: '660'
     context: report-period
-    computation: rnd-credit
+    computation: rnd-enhanced-expenditure-rev
     period-config: metadata.tax.period
 
   - id: creative-enhanced-expenditure
@@ -750,7 +758,7 @@ elements:
     description: R&D / Creative enhanced expenditure
     field: '670'
     context: report-period
-    computation: rnd-credit
+    computation: rnd-enhanced-expenditure-rev
     period-config: metadata.tax.period
 
   - id: rnd-enhanced-expenditure-subcontracted
