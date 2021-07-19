@@ -730,7 +730,7 @@ elements:
     kind: bool
     value: true
 
-  - id: rnd-enhanced-sme
+  - id: rnd-enhanced-large
     description: Large company
     field: '655'
     context: report-period
