@@ -45,7 +45,7 @@ metadata:
       description: Corporate website
       url: https://example.org/corporate
   report:
-    pretty-print: false
+    pretty-print: true
     accounting-standards: micro-entities
     accounts-status: audit-exempt-no-accountants-report
     accounts-type: abridged-accounts
@@ -189,24 +189,6 @@ computations:
   - gross-profit
   - ct-annual-investment-allowance
 
-- id: ct-trading-losses-brought-forward
-  kind: sum
-  description: Trading losses brought forward
-  period: in-year
-  segments:
-    business-type: company
-  inputs: []
-
-- id: ct-net-trading-profits
-  kind: group
-  description: Net trading profits
-  period: in-year
-  segments:
-    business-type: company
-  inputs:
-  - ct-trading-profits
-  - ct-trading-losses-brought-forward
-
 - id: ct-net-chargeable-gains
   kind: sum
   description: Net chargeable gains
@@ -215,35 +197,24 @@ computations:
   segments:
     business-type: company
 
-- id: ct-profits-before-deductions-and-reliefs
-  kind: group
-  description: Profits before deductions and reliefs
-  period: in-year
-  segments:
-    business-type: company
-  inputs:
-  - ct-net-trading-profits
-  - ct-net-chargeable-gains
-
-- id: ct-profits-before-donations-and-group-relief
-  kind: group
-  description: Profits before donations and group relief
-  period: in-year
-  segments:
-    business-type: company
-  inputs:
-  - ct-profits-before-deductions-and-reliefs
-  - ct-management-expenses
-
-# profits before donations???
-- id: ct-profits-chargeable-to-corporation-tax
+- id: ct-profits
   kind: group
   description: Profits chargeable to corporation tax
   period: in-year
   segments:
     business-type: company
   inputs:
-   - ct-profits-before-donations-and-group-relief
+  - ct-trading-profits
+  - ct-management-expenses
+
+- id: ct-profits-total-by-fy
+  kind: group
+  description: Profits, breakdown by FY
+  period: in-year
+  segments:
+    business-type: company
+  inputs:
+   - ct-profits
 
 - id: ct-profit-before-tax-fy1
   kind: round
@@ -253,7 +224,7 @@ computations:
     kind: apportion
     description: FY1
     period: in-year
-    input: ct-profits-chargeable-to-corporation-tax
+    input: ct-profits
     whole-period: metadata.report.periods.0
     proportion-period: metadata.report.fy1
   segments:
@@ -267,14 +238,14 @@ computations:
     kind: apportion
     description: FY2
     period: in-year
-    input: ct-profits-chargeable-to-corporation-tax
+    input: ct-profits
     whole-period: metadata.report.periods.0
     proportion-period: metadata.report.fy2
   segments:
     business-type: company
 
 - id: ct-profit-before-tax-total
-  description: Profits chargeable to corporation tax
+  description: Profits, by financial year
   kind: group
   period: in-year
   inputs:
@@ -344,7 +315,6 @@ computations:
   inputs:
   - salaries
   - pensions
-  - depreciation
   - accountancy
   - bank-charges
   - office
@@ -354,11 +324,12 @@ computations:
   - telecoms
   - travel
 - id: profit-before-tax
-  kind: sum
+  kind: group
   description: Profit before tax
   inputs:
   - gross-profit
   - total-costs
+  - ct-annual-investment-allowance
   period: in-year
 - id: corporation-tax
   kind: line
@@ -367,8 +338,8 @@ computations:
   accounts:
   - Equity:Corporation Tax
 - id: tax-due
-  description: Tax Due
-  kind: group
+  description: Corporation tax
+  kind: sum
   period: in-year
   inputs:
   - corporation-tax
@@ -379,16 +350,23 @@ computations:
   inputs:
   - gross-profit
   - total-costs
+  - ct-annual-investment-allowance
   - tax-due
+
+- id: rnd-credit
+  kind: line
+  description: SME R&D tax credit claimed
+  period: in-year
+  accounts:
+  - Equity:Corporation Tax:SME R&D Tax Credits
+
 worksheets:
 - id: tax-calculation
   kind: multi-period
   description: Tax Calculation
   computations:
   - ct-trading-profits
-  - ct-net-trading-profits
-  - ct-profits-before-deductions-and-reliefs
-  - ct-profits-before-donations-and-group-relief
+  - ct-profits
   - ct-profit-before-tax-total
   - ct-tax-total
 - id: detailed-profit-and-loss
@@ -401,14 +379,17 @@ worksheets:
   - profit-before-tax
   - tax-due
   - profit
+
 elements:
 - elements:
   - about
   - capital-allowances
   - profits
   - tax-chargeable
-  - tax-calculation
+  - rnd
+  - rnd-creative-enhanced-expenditure
   - detailed-profit-and-loss
+  - tax-calculation
   id: report
   kind: composite
 - id: about
@@ -456,7 +437,7 @@ elements:
     field: '-'
     id: partner-in-a-firm
     kind: bool
-    value: 'false'
+    value: false
 - id: capital-allowances
   kind: facttable
   title: Capital allowances and balancing charges
@@ -487,7 +468,7 @@ elements:
     kind: money
     value: 0
   - id: net-trading-profits
-    computation: ct-net-trading-profits
+    computation: ct-trading-profits
     context: report-period
     description: Net trading profits
     field: '165'
@@ -501,7 +482,7 @@ elements:
     computation: ct-net-chargeable-gains
     period-config: metadata.tax.period
   - id: profits-before-other-deductions-and-reliefs
-    computation: ct-profits-before-deductions-and-reliefs
+    computation: ct-trading-profits
     context: report-period
     description: Profits before other deductions and reliefs
     field: '235'
@@ -523,7 +504,7 @@ elements:
     period-config: metadata.tax.period
   - id: profits-before-charges-and-group-relief
     kind: computation
-    computation: ct-profits-before-donations-and-group-relief
+    computation: ct-profits
     context: report-period
     description: Profits before donations and group relief
     field: '300'
@@ -546,7 +527,7 @@ elements:
     id: group-relief-claimed-for-carried-forward-losses
     kind: money
     value: 0
-  - computation: ct-profits-chargeable-to-corporation-tax
+  - computation: ct-profits
     context: report-period
     description: Profits chargeable to Corporation Tax
     field: '315'
@@ -657,10 +638,134 @@ elements:
     description: Tax payable
     field: '525'
     period-config: metadata.tax.period
+
+- id: rnd
+  kind: facttable
+  title: SME R&D
+  facts:
+  - id: company-name
+    kind: config
+    description: Company name
+    field: 'L1'
+    context: report-date
+    key: metadata.business.company-name
+
+  - id: tax-reference
+    kind: config
+    context: report-date
+    description: Tax reference
+    field: 'L2'
+    key: metadata.tax.utr
+
+  - context: report-date
+    description: Return period start
+    field: 'L3'
+    id: return-period-start
+    key: metadata.tax.period.start
+    kind: config-date
+  - context: report-date
+    description: Return period end
+    field: 'L4'
+    id: return-period-end
+    key: metadata.tax.period.end
+    kind: config-date
+
+  - id: rnd-tax-credit-claim
+    kind: computation
+    description: Tax credit claim
+    field: L170
+    context: report-period
+    computation: rnd-credit
+    period-config: metadata.tax.period
+
+  - id: rnd-tax-credit-offset
+    kind: money
+    description: Tax credit set-off against other liabilities
+    field: L175
+    value: 0
+    context: report-period
+    period-config: metadata.tax.period
+
+  - id: rnd-tax-credit-payable
+    kind: computation
+    description: Tax credit balance payable
+    field: L180
+    context: report-period
+    computation: rnd-credit
+    period-config: metadata.tax.period
+
+  - id: rnd-tax-credit-discharged
+    kind: money
+    description: Tax credit discharging other liabilities
+    field: L205
+    context: report-period
+    value: 0
+    period-config: metadata.tax.period
+
+  - id: rnd-tax-credit-offset
+    kind: money
+    description: Total R&D credit set off against liabilities
+    field: L210
+    context: report-period
+    value: 0
+    period-config: metadata.tax.period
+
+- id: rnd-creative-enhanced-expenditure
+  kind: facttable
+  title: R&D / Creative enhanced expenditure
+  facts:
+
+  - id: rnd-enhanced-sme
+    description: Small or medium-sized enterprise
+    field: '650'
+    context: report-period
+    kind: bool
+    value: true
+
+  - id: rnd-enhanced-sme
+    description: Large company
+    field: '655'
+    context: report-period
+    kind: bool
+    value: false
+
+  - id: rnd-enhanced-expenditure
+    kind: computation
+    description: R&D enhanced expenditure
+    field: '660'
+    context: report-period
+    computation: rnd-credit
+    period-config: metadata.tax.period
+
+  - id: creative-enhanced-expenditure
+    kind: money
+    description: Creative enhanced expenditure
+    field: '665'
+    context: report-period
+    value: 0
+    period-config: metadata.tax.period
+
+  - id: rnd-creative-enhanced-expenditure
+    kind: computation
+    description: R&D / Creative enhanced expenditure
+    field: '670'
+    context: report-period
+    computation: rnd-credit
+    period-config: metadata.tax.period
+
+  - id: rnd-enhanced-expenditure-subcontracted
+    kind: money
+    description: R&D subcontracted by a large company
+    field: '675'
+    context: report-period
+    value: 0
+    period-config: metadata.tax.period
+
 - id: tax-calculation
   kind: worksheet
   title: Tax calculation
   worksheet: tax-calculation
+
 - id: detailed-profit-and-loss
   kind: worksheet
   title: Detailed Profit-and-Loss

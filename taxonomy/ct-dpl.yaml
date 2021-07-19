@@ -105,6 +105,7 @@ taxonomy:
       travel: dpl:TravelSubsistenceCosts
       tax-due: uk-core:IncomeTaxExpenseCredit
       profit: uk-core:ProfitLoss
+      rnd-tax-credit-payable: ct-comp:ResearchDevelopmentTaxCreditPayable
 
 
       ct-profit-before-tax-fy1: ct-comp:FY1AmountOfProfitChargeableAtFirstRate
