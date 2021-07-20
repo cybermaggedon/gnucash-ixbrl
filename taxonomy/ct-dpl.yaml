@@ -87,6 +87,12 @@ taxonomy:
       total-costs: true
       tax-due: true
       telecoms: true
+      rnd-enhanced-staffing: true
+      rnd-enhanced-software: true
+      rnd-enhanced-external: true
+      rnd-enhanced-expenditure: true
+      creative-enhanced-expenditure: true
+      rnd-creative-enhanced-expenditure: true
     tags:
       subscriptions-costs: dpl:SubscriptionsCosts
       turnover: uk-core:TurnoverRevenue

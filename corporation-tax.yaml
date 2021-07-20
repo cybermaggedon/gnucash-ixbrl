@@ -309,19 +309,40 @@ computations:
   period: in-year
   accounts:
   - Expenses:Depreciation
+- id: rnd-enhanced-staffing
+  description: Staffing
+  kind: line
+  period: in-year
+  segments:
+    business-type: company
+  accounts:
+  - Expenses:R&D Enhanced Expenditure:Staffing Costs
+- id: rnd-enhanced-external
+  description: External workers
+  kind: line
+  period: in-year
+  segments:
+    business-type: company
+  accounts:
+  - Expenses:R&D Enhanced Expenditure:External Workers
+- id: rnd-enhanced-software
+  description: Software/Consumable
+  kind: line
+  period: in-year
+  segments:
+    business-type: company
+  accounts:
+  - Expenses:R&D Enhanced Expenditure:Software/Consumables
 - id: rnd-enhanced-expenditure
-  kind: line
+  kind: group
   description: SME R&D enhanced expenditure
   period: in-year
-  accounts:
-  - Expenses:R&D Enhanced Expenditure
-- id: rnd-enhanced-expenditure-rev
-  kind: line
-  description: SME R&D enhanced expenditure
-  period: in-year
-  reverse-sign: true
-  accounts:
-  - Expenses:R&D Enhanced Expenditure
+  segments:
+    business-type: company
+  inputs:
+  - rnd-enhanced-staffing
+  - rnd-enhanced-software
+  - rnd-enhanced-external
 - id: total-costs
   description: Total costs
   kind: group
@@ -369,6 +390,11 @@ computations:
   - tax-due
 
 worksheets:
+- id: rnd
+  kind: multi-period
+  description: SME R&D
+  computations:
+  - rnd-enhanced-expenditure
 - id: tax-calculation
   kind: multi-period
   description: Tax Calculation
@@ -394,8 +420,8 @@ elements:
   - capital-allowances
   - profits
   - tax-chargeable
-#  - rnd
   - rnd-creative-enhanced-expenditure
+  - rnd
   - detailed-profit-and-loss
   - tax-calculation
   id: report
@@ -742,7 +768,7 @@ elements:
     description: R&D enhanced expenditure
     field: '660'
     context: report-period
-    computation: rnd-enhanced-expenditure-rev
+    computation: rnd-enhanced-expenditure
     period-config: metadata.tax.period
 
   - id: creative-enhanced-expenditure
@@ -758,7 +784,7 @@ elements:
     description: R&D / Creative enhanced expenditure
     field: '670'
     context: report-period
-    computation: rnd-enhanced-expenditure-rev
+    computation: rnd-enhanced-expenditure
     period-config: metadata.tax.period
 
   - id: rnd-enhanced-expenditure-subcontracted
@@ -768,6 +794,11 @@ elements:
     context: report-period
     value: 0
     period-config: metadata.tax.period
+
+- id: rnd
+  kind: worksheet
+  title: SME R&D
+  worksheet: rnd
 
 - id: tax-calculation
   kind: worksheet
