@@ -309,40 +309,74 @@ computations:
   period: in-year
   accounts:
   - Expenses:Depreciation
-- id: rnd-enhanced-staffing
-  description: Staffing
+
+# R&D
+- id: rnd-proj1-enhanced-staffing
+  description: Staffing (@ 130%)
   kind: line
   period: in-year
   segments:
-    business-type: company
+    business-name: Cyberapocalypse Limited
+    business-type: trade
+    detailed-analysis: item1
+    loss-reform: post-loss-reform
+    territory: uk
   accounts:
-  - Expenses:R&D Enhanced Expenditure:Staffing Costs
-- id: rnd-enhanced-external
-  description: External workers
+  - Expenses:R&D Enhanced Expenditure:Project Iguana:Staffing Costs
+
+- id: rnd-proj1-enhanced-external
+  description: External workers (@ 130%)
   kind: line
   period: in-year
   segments:
-    business-type: company
+    business-name: Cyberapocalypse Limited
+    business-type: trade
+    detailed-analysis: item1
+    loss-reform: post-loss-reform
+    territory: uk
   accounts:
-  - Expenses:R&D Enhanced Expenditure:External Workers
-- id: rnd-enhanced-software
-  description: Software/Consumable
+  - Expenses:R&D Enhanced Expenditure:Project Iguana:External Workers
+
+- id: rnd-proj1-enhanced-software
+  description: Software/Consumables (@ 130%)
   kind: line
   period: in-year
   segments:
-    business-type: company
+    business-name: Cyberapocalypse Limited
+    business-type: trade
+    detailed-analysis: item1
+    loss-reform: post-loss-reform
+    territory: uk
   accounts:
-  - Expenses:R&D Enhanced Expenditure:Software/Consumables
+  - Expenses:R&D Enhanced Expenditure:Project Iguana:Software/Consumables
+
+- id: rnd-proj1-enhanced-expenditure
+  kind: group
+  description: Project Iguana
+  period: in-year
+  segments:
+    business-name: Cyberapocalypse Limited
+    business-type: trade
+    detailed-analysis: item1
+    loss-reform: post-loss-reform
+    territory: uk
+  inputs:
+  - rnd-proj1-enhanced-staffing
+  - rnd-proj1-enhanced-software
+  - rnd-proj1-enhanced-external
+
 - id: rnd-enhanced-expenditure
   kind: group
-  description: SME R&D enhanced expenditure
+  description: Enhanced R&D
   period: in-year
   segments:
-    business-type: company
+    business-name: Cyberapocalypse Limited
+    business-type: trade
+    loss-reform: post-loss-reform
+    territory: uk
   inputs:
-  - rnd-enhanced-staffing
-  - rnd-enhanced-software
-  - rnd-enhanced-external
+  - rnd-proj1-enhanced-expenditure
+
 - id: total-costs
   description: Total costs
   kind: group
@@ -359,6 +393,7 @@ computations:
   - telecoms
   - travel
   - rnd-enhanced-expenditure
+
 - id: profit-before-tax
   kind: group
   description: Profit before tax
@@ -394,6 +429,7 @@ worksheets:
   kind: multi-period
   description: SME R&D
   computations:
+  - rnd-proj1-enhanced-expenditure
   - rnd-enhanced-expenditure
 - id: tax-calculation
   kind: multi-period
@@ -673,77 +709,6 @@ elements:
     field: '525'
     period-config: metadata.tax.period
 
-# - id: rnd
-#   kind: facttable
-#   title: SME R&D
-#   facts:
-#   - id: company-name
-#     kind: config
-#     description: Company name
-#     field: 'L1'
-#     context: report-date
-#     key: metadata.business.company-name
-
-#   - id: tax-reference
-#     kind: config
-#     context: report-date
-#     description: Tax reference
-#     field: 'L2'
-#     key: metadata.tax.utr
-
-#   - context: report-date
-#     description: Return period start
-#     field: 'L3'
-#     id: return-period-start
-#     key: metadata.tax.period.start
-#     kind: config-date
-#   - context: report-date
-#     description: Return period end
-#     field: 'L4'
-#     id: return-period-end
-#     key: metadata.tax.period.end
-#     kind: config-date
-
-#   - id: rnd-tax-credit-claim
-#     kind: money
-#     description: Payable tax credit claim
-#     field: L170
-#     context: report-period
-#     value: 0
-#     period-config: metadata.tax.period
-
-#   - id: rnd-tax-credit-offset
-#     kind: money
-#     description: Payable tax credit against other liabilities
-#     field: L175
-#     value: 0
-#     context: report-period
-#     period-config: metadata.tax.period
-
-#   - id: rnd-tax-credit-payable
-#     kind: money
-#     description: Tax credit balance payable
-#     field: L180
-#     context: report-period
-#     value: 0
-#     period-config: metadata.tax.period
-
-#   - id: rnd-tax-credit-discharged
-#     kind: money
-#     description: Credit discharging other liabilities
-#     field: L205
-#     context: report-period
-#     value: 0
-#     period-config: metadata.tax.period
-
-#   - id: rnd-tax-credit-offset
-#     kind: money
-#     description: Total R&D credit set off against liabilities
-#     field: L210
-#     context: report-period
-#     value: 0
-#     period-config: metadata.tax.period
-
 - id: rnd-creative-enhanced-expenditure
   kind: facttable
   title: R&D / Creative enhanced expenditure
@@ -763,21 +728,21 @@ elements:
     kind: bool
     value: false
 
-  - id: rnd-enhanced-expenditure
-    kind: computation
-    description: R&D enhanced expenditure
-    field: '660'
-    context: report-period
-    computation: rnd-enhanced-expenditure
-    period-config: metadata.tax.period
+  # - id: rnd-enhanced-expenditure
+  #   kind: computation
+  #   description: R&D enhanced expenditure
+  #   field: '660'
+  #   context: report-period
+  #   computation: rnd-enhanced-expenditure
+  #   period-config: metadata.tax.period
 
-  - id: creative-enhanced-expenditure
-    kind: money
-    description: Creative enhanced expenditure
-    field: '665'
-    context: report-period
-    value: 0
-    period-config: metadata.tax.period
+  # - id: creative-enhanced-expenditure
+  #   kind: money
+  #   description: Creative enhanced expenditure
+  #   field: '665'
+  #   context: report-period
+  #   value: 0
+  #   period-config: metadata.tax.period
 
   - id: rnd-creative-enhanced-expenditure
     kind: computation
