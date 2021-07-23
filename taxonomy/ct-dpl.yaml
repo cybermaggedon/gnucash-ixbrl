@@ -112,6 +112,7 @@ taxonomy:
       rnd-proj1-enhanced-external: true
       rnd-proj1-enhanced-expenditure: true
       rnd-enhanced-expenditure: true
+      rnd-proj1-enhanced-expenditure: true
       creative-enhanced-expenditure: true
       rnd-creative-enhanced-expenditure: true
     tags:
@@ -132,7 +133,11 @@ taxonomy:
       travel: dpl:TravelSubsistenceCosts
       tax-due: uk-core:IncomeTaxExpenseCredit
       profit: uk-core:ProfitLoss
-      rnd-enhanced-expenditure: uk-core:ResearchDevelopmentExpenseRecognisedInProfitOrLoss
+      rnd-proj1-enhanced-staffing: ct-comp:SubsidisedQualifyingExpenditureOnIn-HouseDirectRDIncurredOnStaffingCosts
+      rnd-proj1-enhanced-software: ct-comp:SubsidisedQualifyingExpenditureOnIn-HouseDirectRDIncurredOnSoftwareOrConsumableItems
+      rnd-proj1-enhanced-external: ct-comp:SubsidisedQualifyingExpenditureOnIn-HouseDirectRDExpenditureOfExternallyProvidedWorkers
+      rnd-enhanced-expenditure: ct-comp:AdjustmentsAdditionalDeductionForQualifyingRDExpenditureSME
+      rnd-proj1-enhanced-expenditure: ct-comp:AdjustmentsAdditionalDeductionForQualifyingRDExpenditureSME
       creative-enhanced-expenditure: ct-comp:AdjustmentsCreativeProductionCompanyAdjustment
 
       ct-profit-before-tax-fy1: ct-comp:FY1AmountOfProfitChargeableAtFirstRate
