@@ -132,11 +132,7 @@ taxonomy:
       travel: dpl:TravelSubsistenceCosts
       tax-due: uk-core:IncomeTaxExpenseCredit
       profit: uk-core:ProfitLoss
-      rnd-proj1-enhanced-staffing: ct-comp:QualifyingExpenditureOnSub-ContractedRDIn-HouseIncurredOnStaffingCosts
-      rnd-proj1-enhanced-software: ct-comp:QualifyingExpenditureOnSub-ContractedRDIn-HouseIncurredOnSoftwareOrConsumableItems
-      rnd-proj1-enhanced-external: ct-comp:QualifyingExpenditureOnSub-ContractedRDIn-HouseExpenditureOfExternallyProvidedWorkers
-      rnd-proj1-enhanced-expenditure: ct-comp:AdjustmentsAdditionalDeductionForQualifyingRDExpenditureSME
-      rnd-enhanced-expenditure: ct-comp:AdjustmentsAdditionalDeductionForQualifyingRDExpenditureSME
+      rnd-enhanced-expenditure: uk-core:ResearchDevelopmentExpenseRecognisedInProfitOrLoss
       creative-enhanced-expenditure: ct-comp:AdjustmentsCreativeProductionCompanyAdjustment
 
       ct-profit-before-tax-fy1: ct-comp:FY1AmountOfProfitChargeableAtFirstRate

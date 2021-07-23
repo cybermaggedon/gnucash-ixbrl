@@ -1,22 +1,62 @@
+
+#############################################################################
+### GnuCash accounts source #################################################
+#############################################################################
 accounts:
+  # Filename of GnuCash accounts
   file: example.gnucash
+
+#############################################################################
+### Taxonomy configuration ##################################################
+#############################################################################
+# This sets up the iXBRL taxonomy.  There should be a filename and a
+# taxonomy ID.
 taxonomy:
   file: taxonomy/ct-dpl.yaml
   id: corptax
+
+#############################################################################
+### Report metadata #########################################################
+#############################################################################
+# Metadata used in reports.  Note that some of the metadata here is only
+# referenced from the taxonomy files, so different taxonomies will demand
+# different metadata.
 metadata:
+
+  # Metadata about the business
   business:
+
+    # Summary of business activities
     activities: Computer security consultancy and development services
+
+    # Average number of employees over the previous 2 accounting periods
     average-employees:
     - 2
     - 1
+
+    # Business name
+    company-name: Example Biz Ltd.
+
+    # Registered company number
+    company-number: '12345678'
+
+    # VAT registration number
+    vat-registration: GB012345678
+
+    # iXBRL entity scheme, Companies House
+    entity-scheme: http://www.companieshouse.gov.uk/
+
+    # Legal entity formation information
     company-formation:
       country: england-and-wales
       date: '2019-03-01'
       form: private-limited-company
-    company-name: Example Biz Ltd.
-    company-number: '12345678'
-    entity-scheme: http://www.companieshouse.gov.uk/
+
+    # Company contact details
     contact:
+
+      # Contact name, address, county, location (city), country, email
+      name: Corporate Enquiries
       address:
       - 123 Leadbarton Street
       - Dumpston Trading Estate
@@ -24,35 +64,71 @@ metadata:
       county: Minchingshire
       email: corporate@example.org
       location: Threapminchington
-      name: Corporate Enquiries
+
+      # Phone number
       phone:
         area: '7900'
         country: '+44'
         number: '0123456'
         type: landline
       postcode: QQ99 9ZZ
+
+    # Directors of the business
     directors:
     - A Bloggs
     - B Smith
     - C Jones
+
+    # Industry sector.  Search for uk-bus:MainIndustrySectorDimension in the
+    # taxonomy file.
     industry-sector: m
+
+    # Is the company dormant?
     is-dormant: false
+
+    # SIC codes registered with Companies House.
     sic-codes:
     - '62020'
     - '62021'
-    vat-registration: GB012345678
+
+    # Contact website description and URL
     website:
       description: Corporate website
       url: https://example.org/corporate
+
+  # Report metadata
   report:
+
     pretty-print: true
+
+    # The accounting-standards applied.  One of:
+    #   frs101, frs102, frsse, full-irs, micro-entities, other-standards,
+    #   small-entities-regime.
     accounting-standards: micro-entities
+
+    # Accounts status, one of:
+    #   audit-exempt-no-accountants-report,
+    #   audit-exempt-with-accountants-report, audited,
+    #   independent-examination, other-reporting-regime
     accounts-status: audit-exempt-no-accountants-report
+
+    # Accounts type, one of:
+    #   abbreviated-accounts, abridged-accounts, full-accounts
     accounts-type: abridged-accounts
+
+    # Date report was authorised for issue
     authorised-date: '2021-01-01'
+
+    # Date of the balance sheet data pull
     balance-sheet-date: '2020-12-31'
+
+    # Accounts currency
     currency: GBP
+
+    # Report issue date
     date: '2021-01-01'
+
+    # Periods over which the account was issued.  Current period goes first.
     fy1:
       name: FY1
       start: '2020-01-01'
@@ -65,15 +141,32 @@ metadata:
     - name: '2020'
       start: '2020-01-01'
       end: '2020-12-31'
+
+    # Name of director who signed the reports
     signed-by: B Smith
+
+    # Context segment of the director who signed the report.  director2
+    # means the second director in the list metadata.business.directors.
     signing-officer: director2
-    title: Unaudited Micro-Entity Accounts
+
+    # Report title
+    title: Corporation tax filing
+
+  # Tax details, used by the Corporation tax profile
   tax:
+
+    # Unique Taxpayer Reference (HMRC issued)
     utr: '8596148860'
+
+    # Tax period
     period:
       name: '2020'
       start: '2020-01-01'
       end: '2020-12-31'
+
+#############################################################################
+### Report computations #####################################################
+#############################################################################
 computations:
 
 - description: Turnover / revenue
@@ -105,6 +198,68 @@ computations:
       business-type: management-expenses
     accounts:
     - Assets:Capital Equipment:Computer Equipment
+
+# R&D
+- id: rnd-proj1-enhanced-staffing
+  description: Staffing (@ 130%)
+  kind: line
+  period: in-year
+  segments:
+    business-name: Cyberapocalypse Limited
+    business-type: trade
+    detailed-analysis: item1
+    loss-reform: post-loss-reform
+    territory: uk
+  accounts:
+  - Expenses:R&D Enhanced Expenditure:Project Iguana:Staffing Costs
+
+- id: rnd-proj1-enhanced-external
+  description: External workers (@ 130%)
+  kind: line
+  period: in-year
+  segments:
+    business-name: Cyberapocalypse Limited
+    business-type: trade
+    detailed-analysis: item1
+    loss-reform: post-loss-reform
+    territory: uk
+  accounts:
+  - Expenses:R&D Enhanced Expenditure:Project Iguana:External Workers
+
+- id: rnd-proj1-enhanced-software
+  description: Software/Consumables (@ 130%)
+  kind: line
+  period: in-year
+  segments:
+    business-name: Cyberapocalypse Limited
+    business-type: trade
+    detailed-analysis: item1
+    loss-reform: post-loss-reform
+    territory: uk
+  accounts:
+  - Expenses:R&D Enhanced Expenditure:Project Iguana:Software/Consumables
+
+- id: rnd-proj1-enhanced-expenditure
+  kind: group
+  description: Project Iguana
+  period: in-year
+  segments:
+    business-name: Cyberapocalypse Limited
+    business-type: trade
+    detailed-analysis: item1
+    loss-reform: post-loss-reform
+    territory: uk
+  inputs:
+  - rnd-proj1-enhanced-staffing
+  - rnd-proj1-enhanced-software
+  - rnd-proj1-enhanced-external
+
+- id: rnd-enhanced-expenditure
+  kind: group
+  description: SME R&D tax relief (130%)
+  period: in-year
+  inputs:
+  - rnd-proj1-enhanced-expenditure
 
 - id: gross-profit
   kind: round
@@ -158,6 +313,7 @@ computations:
   id: travel
   kind: line
   period: in-year
+
 - id: ct-management-expenses
   kind: round
   description: Management Expenses
@@ -180,14 +336,31 @@ computations:
   segments:
     business-type: management-expenses
 
+- id: depreciation
+  kind: line
+  description: Depreciation
+  period: in-year
+  accounts:
+  - Expenses:Depreciation
+
+- id: reversed-depreciation
+  kind: line
+  description: Depreciation cost added back
+  period: in-year
+  reverse-sign: true
+  accounts:
+  - Expenses:Depreciation
+
 - id: ct-trading-profits
   kind: group
-  description: Trading profits
+  description: Taxable profits
   period: in-year
   segments:
     business-type: company
   inputs:
   - gross-profit
+  - rnd-enhanced-expenditure
+  - reversed-depreciation
   - ct-annual-investment-allowance
 
 - id: ct-net-chargeable-gains
@@ -303,79 +476,6 @@ computations:
   period: in-year
   accounts:
   - Expenses:VAT Purchases:Telecoms
-- id: depreciation
-  kind: line
-  description: Depreciation
-  period: in-year
-  accounts:
-  - Expenses:Depreciation
-
-# R&D
-- id: rnd-proj1-enhanced-staffing
-  description: Staffing (@ 130%)
-  kind: line
-  period: in-year
-  segments:
-    business-name: Cyberapocalypse Limited
-    business-type: trade
-    detailed-analysis: item1
-    loss-reform: post-loss-reform
-    territory: uk
-  accounts:
-  - Expenses:R&D Enhanced Expenditure:Project Iguana:Staffing Costs
-
-- id: rnd-proj1-enhanced-external
-  description: External workers (@ 130%)
-  kind: line
-  period: in-year
-  segments:
-    business-name: Cyberapocalypse Limited
-    business-type: trade
-    detailed-analysis: item1
-    loss-reform: post-loss-reform
-    territory: uk
-  accounts:
-  - Expenses:R&D Enhanced Expenditure:Project Iguana:External Workers
-
-- id: rnd-proj1-enhanced-software
-  description: Software/Consumables (@ 130%)
-  kind: line
-  period: in-year
-  segments:
-    business-name: Cyberapocalypse Limited
-    business-type: trade
-    detailed-analysis: item1
-    loss-reform: post-loss-reform
-    territory: uk
-  accounts:
-  - Expenses:R&D Enhanced Expenditure:Project Iguana:Software/Consumables
-
-- id: rnd-proj1-enhanced-expenditure
-  kind: group
-  description: Project Iguana
-  period: in-year
-  segments:
-    business-name: Cyberapocalypse Limited
-    business-type: trade
-    detailed-analysis: item1
-    loss-reform: post-loss-reform
-    territory: uk
-  inputs:
-  - rnd-proj1-enhanced-staffing
-  - rnd-proj1-enhanced-software
-  - rnd-proj1-enhanced-external
-
-- id: rnd-enhanced-expenditure
-  kind: group
-  description: Enhanced R&D
-  period: in-year
-  segments:
-    business-name: Cyberapocalypse Limited
-    business-type: trade
-    loss-reform: post-loss-reform
-    territory: uk
-  inputs:
-  - rnd-proj1-enhanced-expenditure
 
 - id: total-costs
   description: Total costs
@@ -387,20 +487,19 @@ computations:
   - accountancy
   - bank-charges
   - office
+  - depreciation
   - software-expenses
   - subscriptions-costs
   - sundries
   - telecoms
   - travel
-  - rnd-enhanced-expenditure
 
 - id: profit-before-tax
   kind: group
-  description: Profit before tax
+  description: Net profit before tax
   inputs:
   - gross-profit
   - total-costs
-  - ct-annual-investment-allowance
   period: in-year
 - id: corporation-tax
   kind: line
