@@ -14,37 +14,45 @@ class IxbrlReporter:
 
         return self.create_report(worksheet)
 
-    def add_header(self, grid, periods):
+    def add_header(self, table, periods):
 
-        line = self.par.xhtml_maker.div({"class": "row"})
-        grid.append(line)
+        row = self.par.xhtml_maker.div({"class": "row"})
+        table.append(row)
 
         # Blank header cell
         blank = self.par.xhtml_maker.div("\u00a0")
-        blank.set("class", "label")
-        line.append(blank)
+        blank.set("class", "label cell")
+        row.append(blank)
 
         # Header cells for period names
         for period in periods:
 
             elt = self.par.xhtml_maker.div(period.name)
-            line.append(elt)
-            elt.set("class", "period periodname")
+            row.append(elt)
+            elt.set("class", "period periodname cell")
 
-        line = self.par.xhtml_maker.div({"class": "row"})
-        grid.append(line)
+        row = self.par.xhtml_maker.div({"class": "row"})
+        table.append(row)
 
         # Blank header cell
         blank = self.par.xhtml_maker.div("\u00a0")
-        blank.set("class", "label")
-        line.append(blank)
+        blank.set("class", "label cell")
+        row.append(blank)
 
         # Header cells for currencies
         for period in periods:
 
             elt = self.par.xhtml_maker.div("£")
-            line.append(elt)
-            elt.set("class", "period currency")
+            row.append(elt)
+            elt.set("class", "period currency cell")
+
+        # Empty row
+        row = self.par.xhtml_maker.div({"class": "row"})
+        table.append(row)
+
+        blank = self.par.xhtml_maker.div("\u00a0")
+        blank.set("class", "label cell")
+        row.append(blank)
 
     def maybe_tag(self, datum, section, pid):
 
@@ -112,13 +120,13 @@ class IxbrlReporter:
 
         return self.par.xhtml_maker.span("{0:,.2f}".format(val))
 
-    def add_nil_section(self, grid, section, periods):
+    def add_nil_section(self, table, section, periods):
 
-        line = self.par.xhtml_maker.div({"class": "row"})
-        grid.append(line)
+        row = self.par.xhtml_maker.div({"class": "row"})
+        table.append(row)
 
         div = self.par.xhtml_maker.div()
-        div.set("class", "label header")
+        div.set("class", "label header cell")
 
         if len(section.total.values) > 0 and section.total.values[0].id:
             desc = self.taxonomy.create_description_fact(
@@ -128,25 +136,33 @@ class IxbrlReporter:
         else:
             div.append(self.par.xhtml_maker.span(section.header))
 
-        line.append(div)
+        row.append(div)
 
         for i in range(0, len(periods)):
             div = self.par.xhtml_maker.div()
             div.set(
                 "class",
-                "period total value nil rank%d" % section.total.rank
+                "period total value nil rank%d cell" % section.total.rank
             )
-            line.append(div)
+            row.append(div)
             content = self.maybe_tag(0, section, i)
             div.append(content)
 
-    def add_total_section(self, grid, section, periods):
+        # Empty row
+        row = self.par.xhtml_maker.div({"class": "row"})
+        table.append(row)
 
-        line = self.par.xhtml_maker.div({"class": "row"})
-        grid.append(line)
+        blank = self.par.xhtml_maker.div("\u00a0")
+        blank.set("class", "label cell")
+        row.append(blank)
+
+    def add_total_section(self, table, section, periods):
+
+        row = self.par.xhtml_maker.div({"class": "row"})
+        table.append(row)
 
         div = self.par.xhtml_maker.div()
-        div.set("class", "label header total")
+        div.set("class", "label header total cell")
 
         if len(section.total.values) > 0 and section.total.values[0].id:
             desc = self.taxonomy.create_description_fact(
@@ -156,37 +172,45 @@ class IxbrlReporter:
         else:
             div.append(self.par.xhtml_maker.span(section.header))
 
-        line.append(div)
+        row.append(div)
 
         for i in range(0, len(periods)):
             div = self.par.xhtml_maker.div()
-            line.append(div)
+            row.append(div)
             value = section.total.values[i]
             if abs(value.value) < 0.001:
                 div.set(
                     "class",
-                    "period total value nil rank%d" % section.total.rank
+                    "period total value nil rank%d cell" % section.total.rank
                 )
             elif value.value < 0:
                 div.set(
                     "class",
-                    "period total value negative rank%d" % section.total.rank
+                    "period total value negative rank%d cell" % section.total.rank
                 )
             else:
                 div.set(
                     "class",
-                    "period total value rank%d" % section.total.rank
+                    "period total value rank%d cell" % section.total.rank
                 )
             content = self.maybe_tag(value, section, i)
             div.append(content)
 
-    def add_breakdown_section(self, grid, section, periods):
+        # Empty row
+        row = self.par.xhtml_maker.div({"class": "row"})
+        table.append(row)
 
-        line = self.par.xhtml_maker.div({"class": "row"})
-        grid.append(line)
+        blank = self.par.xhtml_maker.div("\u00a0")
+        blank.set("class", "label cell")
+        row.append(blank)
+
+    def add_breakdown_section(self, table, section, periods):
+
+        row = self.par.xhtml_maker.div({"class": "row"})
+        table.append(row)
 
         div = self.par.xhtml_maker.div()
-        div.set("class", "label breakdown header")
+        div.set("class", "label breakdown header cell")
 
         if len(section.total.values) > 0 and section.total.values[0].id:
             desc = self.taxonomy.create_description_fact(
@@ -195,15 +219,15 @@ class IxbrlReporter:
             div.append(desc.to_elt(self.par))
         else:
             div.append(self.par.xhtml_maker.span(section.header))
-        line.append(div)
+        row.append(div)
 
         for item in section.items:
 
-            line = self.par.xhtml_maker.div({"class": "row"})
-            grid.append(line)
+            row = self.par.xhtml_maker.div({"class": "row"})
+            table.append(row)
 
             div = self.par.xhtml_maker.div()
-            div.set("class", "label breakdown item")
+            div.set("class", "label breakdown item cell")
 
             if len(item.values) > 0 and item.values[0].id:
                 desc = self.taxonomy.create_description_fact(
@@ -213,7 +237,7 @@ class IxbrlReporter:
             else:
                 div.append(self.par.xhtml_maker.span(item.description))
 
-            line.append(div)
+            row.append(div)
 
             for i in range(0, len(periods)):
 
@@ -222,46 +246,55 @@ class IxbrlReporter:
                 div = self.par.xhtml_maker.div()
                 if abs(value.value) < 0.001:
                     div.set("class",
-                                     "period value nil rank%d" % item.rank )
+                            "period value nil rank%d cell" % item.rank )
                 elif value.value < 0:
                     div.set("class",
-                                     "period value negative rank%d" % item.rank)
+                            "period value negative rank%d cell" % item.rank)
                 else:
                     div.set("class",
-                                     "period value rank%d" % item.rank)
+                            "period value rank%d cell" % item.rank)
 
                 content = self.maybe_tag(value, item, i)
 
                 div.append(content)
-                line.append(div)
+                row.append(div)
 
-        line = self.par.xhtml_maker.div({"class": "row"})
-        grid.append(line)
+        row = self.par.xhtml_maker.div({"class": "row"})
+        table.append(row)
 
         div = self.par.xhtml_maker.div()
-        div.set("class", "label breakdown total")
-        line.append(div)
+        div.set("class", "label breakdown total cell")
+        row.append(div)
         div.append(self.par.xhtml_maker.span("Total"))
 
         for i in range(0, len(periods)):
 
             div = self.par.xhtml_maker.div()
 
-            line.append(div)
+            row.append(div)
 
             value = section.total.values[i]
 
             if abs(value.value) < 0.001:
                 div.set("class",
-                                 "period value nil breakdown total rank%d" % section.total.rank)
+                        "period value nil breakdown total rank%d cell" % section.total.rank)
             elif value.value < 0:
                 div.set("class",
-                                 "period value negative breakdown total rank%d" % section.total.rank)
+                        "period value negative breakdown total rank%d cell" % section.total.rank)
             else:
-                div.set("class", "period value breakdown total rank%d" % section.total.rank)
+                div.set("class",
+                        "period value breakdown total rank%d cell" % section.total.rank)
 
             content = self.maybe_tag(value, section, i)
             div.append(content)
+
+        # Empty row
+        row = self.par.xhtml_maker.div({"class": "row"})
+        table.append(row)
+
+        blank = self.par.xhtml_maker.div("\u00a0")
+        blank.set("class", "label cell")
+        row.append(blank)
 
     def add_section(self, grid, section, periods):
 
@@ -284,7 +317,7 @@ class IxbrlReporter:
         sections = ds.sections
 
         grid = self.par.xhtml_maker.div()
-        grid.set("class", "sheet")
+        grid.set("class", "sheet table")
 
         self.add_header(grid, periods)
 

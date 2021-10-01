@@ -103,8 +103,14 @@ h2 {
 }
 
 .sheet {
-  display: table;
   padding: 1rem;
+}
+
+.table {
+  display: table;
+  padding-top: 1rem;
+  border-spacing: 0.3rem 0.1rem;
+  border-collapse: separate;
 }
 
 .row {
@@ -116,10 +122,12 @@ h2 {
   margin-top: 1rem;
 }
 
-.label {
+.cell {
   display: table-cell;
-//  clear: left;
-//  float: left;
+}
+
+.label {
+//  border: 1px solid black;
   width: 20rem;
 }
 
@@ -128,7 +136,7 @@ h2 {
 }
 
 .value {
-  display: table-cell;
+//  border: 1px solid black;
   font-family: Source Code Pro, monospace;
   font-size: 10pt;
 //  float: left;
@@ -173,7 +181,7 @@ h2 {
 }
 
 .periodname {
-  display: table-cell;
+//  border: 1px solid black;
   padding: 0.5em 1em 0.5em 1em;
   border-bottom: 0.2em solid black;
   font-weight: bold;
@@ -184,7 +192,7 @@ h2 {
 }
 
 .currency {
-  display: table-cell;
+//  border: 1px solid black;
   text-align: right;
   padding-left: 1em;
   padding-right: 1em;
