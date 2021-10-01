@@ -16,28 +16,34 @@ class IxbrlReporter:
 
     def add_header(self, grid, periods):
 
+        line = self.par.xhtml_maker.div({"class": "row"})
+        grid.append(line)
+
         # Blank header cell
         blank = self.par.xhtml_maker.div("\u00a0")
         blank.set("class", "label")
-        grid.append(blank)
+        line.append(blank)
 
         # Header cells for period names
         for period in periods:
 
             elt = self.par.xhtml_maker.div(period.name)
-            grid.append(elt)
+            line.append(elt)
             elt.set("class", "period periodname")
+
+        line = self.par.xhtml_maker.div({"class": "row"})
+        grid.append(line)
 
         # Blank header cell
         blank = self.par.xhtml_maker.div("\u00a0")
         blank.set("class", "label")
-        grid.append(blank)
+        line.append(blank)
 
-        # Header cells for period names
+        # Header cells for currencies
         for period in periods:
 
             elt = self.par.xhtml_maker.div("£")
-            grid.append(elt)
+            line.append(elt)
             elt.set("class", "period currency")
 
     def maybe_tag(self, datum, section, pid):
@@ -108,6 +114,9 @@ class IxbrlReporter:
 
     def add_nil_section(self, grid, section, periods):
 
+        line = self.par.xhtml_maker.div({"class": "row"})
+        grid.append(line)
+
         div = self.par.xhtml_maker.div()
         div.set("class", "label header")
 
@@ -119,7 +128,7 @@ class IxbrlReporter:
         else:
             div.append(self.par.xhtml_maker.span(section.header))
 
-        grid.append(div)
+        line.append(div)
 
         for i in range(0, len(periods)):
             div = self.par.xhtml_maker.div()
@@ -127,11 +136,14 @@ class IxbrlReporter:
                 "class",
                 "period total value nil rank%d" % section.total.rank
             )
-            grid.append(div)
+            line.append(div)
             content = self.maybe_tag(0, section, i)
             div.append(content)
 
     def add_total_section(self, grid, section, periods):
+
+        line = self.par.xhtml_maker.div({"class": "row"})
+        grid.append(line)
 
         div = self.par.xhtml_maker.div()
         div.set("class", "label header total")
@@ -144,11 +156,11 @@ class IxbrlReporter:
         else:
             div.append(self.par.xhtml_maker.span(section.header))
 
-        grid.append(div)
+        line.append(div)
 
         for i in range(0, len(periods)):
             div = self.par.xhtml_maker.div()
-            grid.append(div)
+            line.append(div)
             value = section.total.values[i]
             if abs(value.value) < 0.001:
                 div.set(
@@ -170,6 +182,9 @@ class IxbrlReporter:
 
     def add_breakdown_section(self, grid, section, periods):
 
+        line = self.par.xhtml_maker.div({"class": "row"})
+        grid.append(line)
+
         div = self.par.xhtml_maker.div()
         div.set("class", "label breakdown header")
 
@@ -180,9 +195,12 @@ class IxbrlReporter:
             div.append(desc.to_elt(self.par))
         else:
             div.append(self.par.xhtml_maker.span(section.header))
-        grid.append(div)
+        line.append(div)
 
         for item in section.items:
+
+            line = self.par.xhtml_maker.div({"class": "row"})
+            grid.append(line)
 
             div = self.par.xhtml_maker.div()
             div.set("class", "label breakdown item")
@@ -195,7 +213,7 @@ class IxbrlReporter:
             else:
                 div.append(self.par.xhtml_maker.span(item.description))
 
-            grid.append(div)
+            line.append(div)
 
             for i in range(0, len(periods)):
 
@@ -215,18 +233,21 @@ class IxbrlReporter:
                 content = self.maybe_tag(value, item, i)
 
                 div.append(content)
-                grid.append(div)
+                line.append(div)
+
+        line = self.par.xhtml_maker.div({"class": "row"})
+        grid.append(line)
 
         div = self.par.xhtml_maker.div()
         div.set("class", "label breakdown total")
-        grid.append(div)
+        line.append(div)
         div.append(self.par.xhtml_maker.span("Total"))
 
         for i in range(0, len(periods)):
 
             div = self.par.xhtml_maker.div()
 
-            grid.append(div)
+            line.append(div)
 
             value = section.total.values[i]
 

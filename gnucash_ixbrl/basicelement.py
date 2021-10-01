@@ -103,7 +103,12 @@ h2 {
 }
 
 .sheet {
+  display: table;
   padding: 1rem;
+}
+
+.row {
+  display: table-row;
 }
 
 .header {
@@ -112,8 +117,9 @@ h2 {
 }
 
 .label {
-  clear: left;
-  float: left;
+  display: table-cell;
+//  clear: left;
+//  float: left;
   width: 20rem;
 }
 
@@ -122,9 +128,10 @@ h2 {
 }
 
 .value {
+  display: table-cell;
   font-family: Source Code Pro, monospace;
   font-size: 10pt;
-  float: left;
+//  float: left;
   width: 10rem;
   padding-left: 1rem;
   padding-right: 1rem;
@@ -166,20 +173,22 @@ h2 {
 }
 
 .periodname {
+  display: table-cell;
   padding: 0.5em 1em 0.5em 1em;
   border-bottom: 0.2em solid black;
   font-weight: bold;
   text-align: center;
-  float: left;
+//  float: left;
   width: 10rem;
   margin-right: 1rem;
 }
 
 .currency {
+  display: table-cell;
   text-align: right;
   padding-left: 1em;
   padding-right: 1em;
-  float: left;
+//  float: left;
   width: 10rem;
   margin-right: 1rem;
   margin-top: 0.25em;
