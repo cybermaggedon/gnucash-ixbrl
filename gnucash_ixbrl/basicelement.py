@@ -108,9 +108,10 @@ h2 {
 
 .table {
   display: table;
-  padding-top: 1rem;
+  table-layout: fixed;  
   border-spacing: 0.3rem 0.1rem;
   border-collapse: separate;
+  width: 100%;
 }
 
 .row {
