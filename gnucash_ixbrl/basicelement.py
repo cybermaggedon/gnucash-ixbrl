@@ -128,7 +128,6 @@ h2 {
 }
 
 .label {
-//  border: 1px solid black;
   width: 20rem;
 }
 
@@ -137,10 +136,8 @@ h2 {
 }
 
 .value {
-//  border: 1px solid black;
   font-family: Source Code Pro, monospace;
   font-size: 10pt;
-//  float: left;
   width: 10rem;
   padding-left: 1rem;
   padding-right: 1rem;
@@ -182,22 +179,18 @@ h2 {
 }
 
 .periodname {
-//  border: 1px solid black;
   padding: 0.5em 1em 0.5em 1em;
   border-bottom: 0.2em solid black;
   font-weight: bold;
   text-align: center;
-//  float: left;
   width: 10rem;
   margin-right: 1rem;
 }
 
 .currency {
-//  border: 1px solid black;
   text-align: right;
   padding-left: 1em;
   padding-right: 1em;
-//  float: left;
   width: 10rem;
   margin-right: 1rem;
   margin-top: 0.25em;
@@ -210,8 +203,6 @@ h2 {
 .period.value.negative {
   padding-left: 2rem;
   padding-right: 0rem;
-//  position: relative;
-//  left: 1rem;
   color: #400000;
 }
 
