@@ -7,13 +7,25 @@ from lxml import objectify
 
 class IxbrlReporter:
 
+    def add_empty_row(self, table):
+
+        row = self.par.xhtml_maker.tr({"class": "row"})
+        table.append(row)
+
+        blank = self.create_cell("\u00a0")
+        blank.set("class", "label cell")
+        row.append(blank)
+
     def create_table(self):
         grid = self.par.xhtml_maker.table()
         grid.set("class", "sheet table")
         return grid
 
-    def create_row(self):
-        return self.par.xhtml_maker.tr({"class": "row"})
+    def add_row(self, table, elts):
+        row = self.par.xhtml_maker.tr({"class": "row"})
+        for elt in elts:
+            row.append(elt)
+        table.append(row)
 
     def create_cell(self, text=None):
         if text == None:
@@ -30,8 +42,7 @@ class IxbrlReporter:
 
     def add_header(self, table, periods):
 
-        row = self.create_row()
-        table.append(row)
+        row = []
 
         # Blank header cell
         blank = self.create_cell("\u00a0")
@@ -45,8 +56,9 @@ class IxbrlReporter:
             row.append(elt)
             elt.set("class", "period periodname cell")
 
-        row = self.create_row()
-        table.append(row)
+        self.add_row(table, row)
+
+        row = []
 
         # Blank header cell
         blank = self.create_cell("\u00a0")
@@ -60,13 +72,10 @@ class IxbrlReporter:
             row.append(elt)
             elt.set("class", "period currency cell")
 
-        # Empty row
-        row = self.create_row()
-        table.append(row)
+        self.add_row(table, row)
 
-        blank = self.create_cell("\u00a0")
-        blank.set("class", "label cell")
-        row.append(blank)
+        # Empty row
+        self.add_empty_row(table)
 
     def maybe_tag(self, datum, section, pid):
 
@@ -136,8 +145,7 @@ class IxbrlReporter:
 
     def add_nil_section(self, table, section, periods):
 
-        row = self.create_row()
-        table.append(row)
+        row = []
 
         div = self.create_cell()
         div.set("class", "label header cell")
@@ -162,18 +170,14 @@ class IxbrlReporter:
             content = self.maybe_tag(0, section, i)
             div.append(content)
 
-        # Empty row
-        row = self.create_row()
-        table.append(row)
+        self.add_row(table, row)
 
-        blank = self.create_cell("\u00a0")
-        blank.set("class", "label cell")
-        row.append(blank)
+        # Empty row
+        self.add_empty_row(table)
 
     def add_total_section(self, table, section, periods):
 
-        row = self.create_row()
-        table.append(row)
+        row = []
 
         div = self.create_cell()
         div.set("class", "label header total cell")
@@ -210,18 +214,14 @@ class IxbrlReporter:
             content = self.maybe_tag(value, section, i)
             div.append(content)
 
-        # Empty row
-        row = self.create_row()
-        table.append(row)
+        self.add_row(table, row)
 
-        blank = self.create_cell("\u00a0")
-        blank.set("class", "label cell")
-        row.append(blank)
+        # Empty row
+        self.add_empty_row(table)
 
     def add_breakdown_section(self, table, section, periods):
 
-        row = self.create_row()
-        table.append(row)
+        row = []
 
         div = self.create_cell()
         div.set("class", "label breakdown header cell")
@@ -235,10 +235,11 @@ class IxbrlReporter:
             div.append(self.par.xhtml_maker.span(section.header))
         row.append(div)
 
+        self.add_row(table, row)
+
         for item in section.items:
 
-            row = self.create_row()
-            table.append(row)
+            row = []
 
             div = self.create_cell()
             div.set("class", "label breakdown item cell")
@@ -273,8 +274,9 @@ class IxbrlReporter:
                 div.append(content)
                 row.append(div)
 
-        row = self.create_row()
-        table.append(row)
+            self.add_row(table, row)
+
+        row = []
 
         div = self.create_cell()
         div.set("class", "label breakdown total cell")
@@ -302,13 +304,10 @@ class IxbrlReporter:
             content = self.maybe_tag(value, section, i)
             div.append(content)
 
-        # Empty row
-        row = self.create_row()
-        table.append(row)
+        self.add_row(table, row)
 
-        blank = self.create_cell("\u00a0")
-        blank.set("class", "label cell")
-        row.append(blank)
+        # Empty row
+        self.add_empty_row(table)
 
     def add_section(self, grid, section, periods):
 
