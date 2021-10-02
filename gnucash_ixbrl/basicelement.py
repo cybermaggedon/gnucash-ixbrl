@@ -109,7 +109,7 @@ h2 {
 .table {
   display: table;
   table-layout: fixed;  
-  border-spacing: 0.3rem 0.1rem;
+  border-spacing: 0.3rem 0rem;
   border-collapse: separate;
   width: 100%;
 }
@@ -151,7 +151,7 @@ h2 {
     width: 18%;
   }
   * {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
   .label {
     width: 40%; 
