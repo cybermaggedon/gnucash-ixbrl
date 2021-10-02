@@ -7,6 +7,20 @@ from lxml import objectify
 
 class IxbrlReporter:
 
+    def create_table(self):
+        grid = self.par.xhtml_maker.table()
+        grid.set("class", "sheet table")
+        return grid
+
+    def create_row(self):
+        return self.par.xhtml_maker.tr({"class": "row"})
+
+    def create_cell(self, text=None):
+        if text == None:
+            return self.par.xhtml_maker.td()
+        else:
+            return self.par.xhtml_maker.td(text)
+
     def get_elt(self, worksheet, par, taxonomy):
 
         self.par = par
@@ -16,41 +30,41 @@ class IxbrlReporter:
 
     def add_header(self, table, periods):
 
-        row = self.par.xhtml_maker.tr({"class": "row"})
+        row = self.create_row()
         table.append(row)
 
         # Blank header cell
-        blank = self.par.xhtml_maker.td("\u00a0")
+        blank = self.create_cell("\u00a0")
         blank.set("class", "label cell")
         row.append(blank)
 
         # Header cells for period names
         for period in periods:
 
-            elt = self.par.xhtml_maker.td(period.name)
+            elt = self.create_cell(period.name)
             row.append(elt)
             elt.set("class", "period periodname cell")
 
-        row = self.par.xhtml_maker.tr({"class": "row"})
+        row = self.create_row()
         table.append(row)
 
         # Blank header cell
-        blank = self.par.xhtml_maker.td("\u00a0")
+        blank = self.create_cell("\u00a0")
         blank.set("class", "label cell")
         row.append(blank)
 
         # Header cells for currencies
         for period in periods:
 
-            elt = self.par.xhtml_maker.td("£")
+            elt = self.create_cell("£")
             row.append(elt)
             elt.set("class", "period currency cell")
 
         # Empty row
-        row = self.par.xhtml_maker.tr({"class": "row"})
+        row = self.create_row()
         table.append(row)
 
-        blank = self.par.xhtml_maker.td("\u00a0")
+        blank = self.create_cell("\u00a0")
         blank.set("class", "label cell")
         row.append(blank)
 
@@ -122,10 +136,10 @@ class IxbrlReporter:
 
     def add_nil_section(self, table, section, periods):
 
-        row = self.par.xhtml_maker.tr({"class": "row"})
+        row = self.create_row()
         table.append(row)
 
-        div = self.par.xhtml_maker.td()
+        div = self.create_cell()
         div.set("class", "label header cell")
 
         if len(section.total.values) > 0 and section.total.values[0].id:
@@ -139,7 +153,7 @@ class IxbrlReporter:
         row.append(div)
 
         for i in range(0, len(periods)):
-            div = self.par.xhtml_maker.td()
+            div = self.create_cell()
             div.set(
                 "class",
                 "period total value nil rank%d cell" % section.total.rank
@@ -149,19 +163,19 @@ class IxbrlReporter:
             div.append(content)
 
         # Empty row
-        row = self.par.xhtml_maker.tr({"class": "row"})
+        row = self.create_row()
         table.append(row)
 
-        blank = self.par.xhtml_maker.td("\u00a0")
+        blank = self.create_cell("\u00a0")
         blank.set("class", "label cell")
         row.append(blank)
 
     def add_total_section(self, table, section, periods):
 
-        row = self.par.xhtml_maker.tr({"class": "row"})
+        row = self.create_row()
         table.append(row)
 
-        div = self.par.xhtml_maker.td()
+        div = self.create_cell()
         div.set("class", "label header total cell")
 
         if len(section.total.values) > 0 and section.total.values[0].id:
@@ -175,7 +189,7 @@ class IxbrlReporter:
         row.append(div)
 
         for i in range(0, len(periods)):
-            div = self.par.xhtml_maker.td()
+            div = self.create_cell()
             row.append(div)
             value = section.total.values[i]
             if abs(value.value) < 0.001:
@@ -197,19 +211,19 @@ class IxbrlReporter:
             div.append(content)
 
         # Empty row
-        row = self.par.xhtml_maker.tr({"class": "row"})
+        row = self.create_row()
         table.append(row)
 
-        blank = self.par.xhtml_maker.td("\u00a0")
+        blank = self.create_cell("\u00a0")
         blank.set("class", "label cell")
         row.append(blank)
 
     def add_breakdown_section(self, table, section, periods):
 
-        row = self.par.xhtml_maker.tr({"class": "row"})
+        row = self.create_row()
         table.append(row)
 
-        div = self.par.xhtml_maker.td()
+        div = self.create_cell()
         div.set("class", "label breakdown header cell")
 
         if len(section.total.values) > 0 and section.total.values[0].id:
@@ -223,10 +237,10 @@ class IxbrlReporter:
 
         for item in section.items:
 
-            row = self.par.xhtml_maker.tr({"class": "row"})
+            row = self.create_row()
             table.append(row)
 
-            div = self.par.xhtml_maker.td()
+            div = self.create_cell()
             div.set("class", "label breakdown item cell")
 
             if len(item.values) > 0 and item.values[0].id:
@@ -243,7 +257,7 @@ class IxbrlReporter:
 
                 value = item.values[i]
 
-                div = self.par.xhtml_maker.td()
+                div = self.create_cell()
                 if abs(value.value) < 0.001:
                     div.set("class",
                             "period value nil rank%d cell" % item.rank )
@@ -259,17 +273,17 @@ class IxbrlReporter:
                 div.append(content)
                 row.append(div)
 
-        row = self.par.xhtml_maker.tr({"class": "row"})
+        row = self.create_row()
         table.append(row)
 
-        div = self.par.xhtml_maker.td()
+        div = self.create_cell()
         div.set("class", "label breakdown total cell")
         row.append(div)
         div.append(self.par.xhtml_maker.span("Total"))
 
         for i in range(0, len(periods)):
 
-            div = self.par.xhtml_maker.td()
+            div = self.create_cell()
 
             row.append(div)
 
@@ -289,10 +303,10 @@ class IxbrlReporter:
             div.append(content)
 
         # Empty row
-        row = self.par.xhtml_maker.tr({"class": "row"})
+        row = self.create_row()
         table.append(row)
 
-        blank = self.par.xhtml_maker.td("\u00a0")
+        blank = self.create_cell("\u00a0")
         blank.set("class", "label cell")
         row.append(blank)
 
@@ -316,8 +330,7 @@ class IxbrlReporter:
         periods = ds.periods
         sections = ds.sections
 
-        grid = self.par.xhtml_maker.table()
-        grid.set("class", "sheet table")
+        grid = self.create_table()
 
         self.add_header(grid, periods)
 
