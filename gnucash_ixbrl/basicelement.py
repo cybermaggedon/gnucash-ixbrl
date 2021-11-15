@@ -31,7 +31,7 @@ class BasicElement:
 
         style_text = """
 
-h2 {
+DIV.page:not(:first-child) {
   page-break-before: always;
 }
 
@@ -54,35 +54,8 @@ h2 {
     width: 21cm;
 
     margin: 2em 0;
-
   }
 
-/*
-  DIV.title.page h1 {
-    margin: 4rem 4rem 0.5rem 4rem;
-    padding: 0;
-  }
-
-  DIV.title.page DIV.subheading {
-    font-weight: bold;
-    margin: 0.5rem 4em 2rem 4em;
-    padding: 0;
-  }
-
-  DIV.title.page DIV.information {
-    margin: 0.2em 4em 0.2em 4em;
-    padding: 0;
-  }
-
-  DIV.title.page DIV.signature {
-    padding: 4rem;
-  }
-*/
-
-}
-
-h3 {
-  font-size: medium;
 }
 
 .titlepage .company-number {
@@ -196,7 +169,7 @@ h3 {
     width: 18%;
   }
   * {
-    font-size: 1.1rem;
+    font-size: 0.9rem;
   }
   .label {
     width: 40%; 
