@@ -23,33 +23,6 @@ class BasicElement:
         self.id = id
         self.data = data
 
-    @staticmethod
-    def load(elt_def, data):
-
-        kind = elt_def.get("kind")
-
-        if kind == "composite":
-            from . composite import Composite
-            return Composite.load(elt_def, data)
-
-        if kind == "title":
-            from . title import Title
-            return Title.load(elt_def, data)
-
-        if kind == "worksheet":
-            from . worksheetelement import WorksheetElement
-            return WorksheetElement.load(elt_def, data)
-
-        if kind == "notes":
-            from . notes import NotesElement
-            return NotesElement.load(elt_def, data)
-
-        if kind == "facttable":
-            from . facttable import FactTable
-            return FactTable.load(elt_def, data)
-
-        raise RuntimeError("Don't know element kind '%s'" % kind)
-
     def add_style(self, elt):
 
         style_text = """

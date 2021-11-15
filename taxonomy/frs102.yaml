@@ -11,16 +11,16 @@ taxonomy:
     # One or more taxonomy definitions to include.  You can have more than
     # one to mix multiple taxonomies in a document.
     schema:
-    - https://xbrl.frc.org.uk/FRS-102/2019-01-01/FRS-102-2019-01-01.xsd
+    - https://xbrl.frc.org.uk/FRS-102/2021-01-01/FRS-102-2021-01-01.xsd
 
     # XML namespaces which are added to the iXBRL output.  A bunch of
     # standard iXBRL outputs are added automatically and don't need to be
     # listed here.
     namespaces:
-      uk-bus: http://xbrl.frc.org.uk/cd/2019-01-01/business
-      uk-core: http://xbrl.frc.org.uk/fr/2019-01-01/core
-      uk-direp: http://xbrl.frc.org.uk/reports/2019-01-01/direp
-      uk-geo: http://xbrl.frc.org.uk/cd/2019-01-01/countries
+      uk-bus: http://xbrl.frc.org.uk/cd/2021-01-01/business
+      uk-core: http://xbrl.frc.org.uk/fr/2021-01-01/core
+      uk-direp: http://xbrl.frc.org.uk/reports/2021-01-01/direp
+      uk-geo: http://xbrl.frc.org.uk/cd/2021-01-01/countries
 
     # Contexts are references invoke by tagged data, they describe an
     # entity, any dimensions, and a time period/instant.  We define
@@ -456,6 +456,12 @@ taxonomy:
         financial statements have been prepared in accordance with the
 	micro-entity provisions and delivered in accordance with the
 	provisions applicable under the small companies regime.}'
+      micro-entity-pl-provisions: '~{accounts-prepared-small-company-regime=These
+        financial statements have been prepared in accordance with the
+	micro-entity provisions.}'
+      small-company-provisions: '~{accounts-prepared-small-company-regime=These
+        financial statements have been prepared in accordance with the
+	small company provisions.}'
       no-audit-required: '~{members-not-required-audit=The members have
         not required the company to obtain an audit of its financial
 	statements for the accounting period in accordance with section 476.}'

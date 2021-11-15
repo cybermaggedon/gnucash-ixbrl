@@ -18,7 +18,7 @@ class NotesElement(BasicElement):
 
         e = NotesElement(
             elt_def.get("id"),
-            elt_def.get("title", "Notes"),
+            elt_def.get("title", mandatory=False),
             elt_def.get("notes"),
             data
         )
@@ -127,14 +127,12 @@ class NotesElement(BasicElement):
     def to_ixbrl_elt(self, par, taxonomy):
 
         div = par.xhtml_maker.div()
-        div.set("class", "notes page")
+        div.set("class", "notes")
         div.set("id", self.id + "-element")
 
         if self.title:
             title = par.xhtml_maker.h2(self.title)
-        else:
-            title = par.xhtml_maker.h2("Notes")
-        div.append(title)
+            div.append(title)
 
         ol = par.xhtml_maker.ol()
         div.append(ol)
