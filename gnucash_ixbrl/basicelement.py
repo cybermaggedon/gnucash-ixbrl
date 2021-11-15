@@ -16,11 +16,15 @@ from lxml import objectify, etree
 
 import json
 from datetime import datetime
+from . computation import create_uuid
 
 class BasicElement:
 
     def __init__(self, id, data):
-        self.id = id
+        if id:
+            self.id = id
+        else:
+            self.id = create_uuid()
         self.data = data
 
     def add_style(self, elt):
@@ -53,6 +57,7 @@ h2 {
 
   }
 
+/*
   DIV.title.page h1 {
     margin: 4rem 4rem 0.5rem 4rem;
     padding: 0;
@@ -72,11 +77,56 @@ h2 {
   DIV.title.page DIV.signature {
     padding: 4rem;
   }
+*/
 
 }
 
+h3 {
+  font-size: medium;
+}
+
+.titlepage .company-number {
+  text-align: right;
+  font-size: small;
+  font-weight: bold;
+}
+
+.titlepage .company-name {
+  text-align: center;
+  font-size: xx-large;
+  font-weight: bold;
+  padding: 12rem 0rem 1rem 0rem;
+}
+
+.titlepage .title {
+  text-align: center;
+  font-size: large;
+  font-weight: bold;
+  padding: 0.5rem;
+}
+
+.titlepage .subtitle {
+  text-align: center;
+  font-size: large;
+  font-weight: bold;
+  padding: 0.5rem;
+}
+
+.page .heading {
+  text-align: center;
+  font-weight: bold;
+}
+
+.page .heading div:last-child {
+  padding-bottom: 0.5rem;
+}
+
+.page .heading hr {
+  margin-bottom: 2rem;
+}
+
 .sheet {
-  padding: 1rem;
+  padding: 0.1rem;
 }
 
 .table {
@@ -84,6 +134,23 @@ h2 {
   table-layout: fixed;  
   border-spacing: 0.3rem 0rem;
   border-collapse: separate;
+  font-size: small;
+}
+
+.company-info {
+  border-collapse: separate;
+  border-spacing: 0em 1em;
+  display: table;
+  table-layout: fixed;  
+}
+
+.company-info tr td {
+  vertical-align: top;
+}
+
+.company-info tr td:nth-child(1) {
+  width: 15em;
+  font-weight: bold;
 }
 
 .row {
@@ -109,7 +176,6 @@ h2 {
 
 .value {
   font-family: Source Code Pro, monospace;
-  font-size: 10pt;
   width: 8rem;
   padding-left: 1rem;
   padding-right: 1rem;

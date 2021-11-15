@@ -12,7 +12,7 @@ class PageElement(BasicElement):
     def load(elt_def, data):
 
         c = PageElement(
-            elt_def.get("id"),
+            elt_def.get("id", mandatory=False),
             [
                 data.get_element(v)
                 for v in elt_def.get("elements")

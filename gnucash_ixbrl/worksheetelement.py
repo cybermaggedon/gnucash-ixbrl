@@ -17,7 +17,7 @@ class WorksheetElement(BasicElement):
     def load(elt_def, data):
 
         e = WorksheetElement(
-            elt_def.get("id"),
+            elt_def.get("id", mandatory=False),
             elt_def.get("title", mandatory=False),
             data.get_worksheet(elt_def.get("worksheet")),
             data
