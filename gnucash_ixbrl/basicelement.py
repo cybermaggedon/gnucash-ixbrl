@@ -260,14 +260,21 @@ DIV.page:not(:first-child) {
   font-size: small;
 }
 
-.fact .value {
+.fact .factvalue {
   border: 2px solid black;
   background-color: white;
+  font-family: Source Code Pro, monospace;
+  font-size: small;
+  width: 12rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin-right: 1rem;
 }
 
-.fact .value.false {
+.fact .factvalue.false {
   color: #a0a0a0;
 }
+
         """
 
         elt.append(
