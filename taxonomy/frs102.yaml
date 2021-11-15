@@ -395,9 +395,12 @@ taxonomy:
       config: metadata.business.directors.19
     - id: signing-officer
       context: signing-officer
-      config: metadata.report.signing-officer
+      value: ''
     - id: signed-by
       context: signing-officer
+      value: 'FIXME'
+    - id: signers-name
+      context: report-period
       config: metadata.report.signed-by
     - id: jurisdiction
       context: report-period

@@ -24,7 +24,7 @@ class BasicElement:
         if id:
             self.id = id
         else:
-            self.id = create_uuid()
+            self.id = "elt-" + create_uuid()
         self.data = data
 
     def add_style(self, elt):
@@ -91,11 +91,18 @@ h3 {
   font-weight: bold;
 }
 
+.titlepage img {
+  margin: auto;
+  width: 25%;
+  display: block;
+  padding: 12rem 0rem 1rem 0rem;
+}
+
 .titlepage .company-name {
   text-align: center;
   font-size: xx-large;
   font-weight: bold;
-  padding: 12rem 0rem 1rem 0rem;
+  padding: 1rem 0rem 1rem 0rem;
 }
 
 .titlepage .title {
