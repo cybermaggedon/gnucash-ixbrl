@@ -1,13 +1,18 @@
 "
+
 DIV.page:not(:first-child) {
   page-break-before: always;
+}
+
+body {
+  font-family: Helvetica, Georgia, sans-serif;
 }
 
 @media screen, projection, tv {
 
   body {
     margin: 2% 4% 2% 4%;
-    background-color: gray;
+    background-color: gray; 
   }
 
   DIV.page {
@@ -80,9 +85,9 @@ DIV.page:not(:first-child) {
 .table {
   display: table;
   table-layout: fixed;  
-  border-spacing: 0.3rem 0rem;
+  border-spacing: 0.4rem 0.2rem;
   border-collapse: separate;
-  font-size: small;
+  font-size: medium;
 }
 
 .company-info {
@@ -123,11 +128,12 @@ DIV.page:not(:first-child) {
 }
 
 .value {
-  font-family: Source Code Pro, monospace;
+  font-family: Source Code Pro, monospace, Courier New;
   width: 8rem;
   padding-left: 1rem;
   padding-right: 1rem;
   margin-right: 1rem;
+  font-size: smaller;
 }
 
 @media print {

@@ -712,8 +712,3 @@ elements:
     # These accounts were generated using gnucash-ixbrl...  You don't need
     # to have this one in your report.
     - software-version
-
-    # Just showing how custom notes are created.
-    - 'note:These are fictional accounts, ~[company-name] is intended to
-      reference a fictional entity.  Any references to real-world entities or
-      persons is unintentional.'
