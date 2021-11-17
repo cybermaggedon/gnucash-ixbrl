@@ -26,11 +26,11 @@ try:
     elt = d.get_element(sys.argv[2])
 
     if sys.argv[3] == "ixbrl":
-        tx_cfg = cfg.get("taxonomy")
+        tx_cfg = cfg.get("report.taxonomy")
         tx = Taxonomy(tx_cfg)
         elt.to_ixbrl(tx, sys.stdout)
     elif sys.argv[3] == "html":
-        tx_cfg = cfg.get("taxonomy")
+        tx_cfg = cfg.get("report.taxonomy")
         tx = Taxonomy(tx_cfg)
         elt.to_html(tx, sys.stdout)
     elif sys.argv[3] == "text":

@@ -1,33 +1,10 @@
 
 #############################################################################
-### GnuCash accounts source #################################################
-#############################################################################
-accounts:
-  # Filename of GnuCash accounts
-  file: example.gnucash
-
-#############################################################################
 ### Taxonomy configuration ##################################################
 #############################################################################
 # This sets up the iXBRL taxonomy.  There should be a filename and a
 # taxonomy ID.
 taxonomy: //import taxonomy/frs102.yaml
-
-#############################################################################
-### Report metadata #########################################################
-#############################################################################
-# Metadata used in reports.  Note that some of the metadata here is only
-# referenced from the taxonomy files, so different taxonomies will demand
-# different metadata.
-metadata:
-
-  # Metadata about the business
-  business: //import business.yaml
-  # Report metadata
-  report: //import report.yaml
-
-  # Tax details, used by the Corporation tax profile
-  tax: //import tax.yaml
 
 #############################################################################
 ### Report computations #####################################################
