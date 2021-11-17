@@ -51,4 +51,4 @@ class WorksheetElement(BasicElement):
 
         div.append(elt)
         
-        return div
+        return [div]

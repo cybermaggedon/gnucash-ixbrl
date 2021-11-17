@@ -208,8 +208,12 @@ class BasicElement:
             schema.set("{%s}href" % xlink_ns, url)
             self.header.references.append(schema)
 
-        elt = self.to_ixbrl_elt(self, taxonomy)
-        self.html.body.append(elt)
+        report = self.xhtml_maker.div({"id": "report", "class": "report"})
+        self.html.body.append(report)
+
+        elts = self.to_ixbrl_elt(self, taxonomy)
+        for elt in elts:
+            report.append(elt)
 
         # Contexts get created above, hence do this last.
         self.create_contexts(taxonomy)

@@ -65,5 +65,5 @@ class HtmlElement(BasicElement):
 
         root = self.root
 
-        return self.to_html(root, par, taxonomy)
+        return [self.to_html(root, par, taxonomy)]
 

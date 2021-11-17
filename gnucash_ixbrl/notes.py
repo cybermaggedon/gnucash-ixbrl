@@ -174,4 +174,4 @@ class NotesElement(BasicElement):
             elt = self.expander.expand(note, par, taxonomy)
             p.append(elt)
 
-        return div
+        return [div]
