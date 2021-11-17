@@ -531,9 +531,7 @@ elements:
   - title
   - company-info
   - directors-report
-  - auditors-report-1
-  - auditors-report-2
-  - auditors-report-3
+  - auditors-report
   - balance-sheet
   - profit-and-loss
   - notes
@@ -700,9 +698,7 @@ elements:
             - QQ99 9AB
 
 - //ref directors-report
-- //ref auditors-report.0
-- //ref auditors-report.1
-- //ref auditors-report.2
+- //ref auditors-report
 
 - id: signature
   kind: html

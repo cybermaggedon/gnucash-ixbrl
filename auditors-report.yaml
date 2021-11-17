@@ -1,4 +1,8 @@
 
+id: auditors-report
+kind: composite
+elements:
+
 - id: auditors-report-1
   kind: page
   elements:
