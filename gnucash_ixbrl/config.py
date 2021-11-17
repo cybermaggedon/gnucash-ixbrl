@@ -61,7 +61,7 @@ class Config(dict):
                     for elt in val[k]
                 ]
             else:
-                rtn[k] = val
+                rtn[k] = val[k]
 
         return Config(rtn)
         

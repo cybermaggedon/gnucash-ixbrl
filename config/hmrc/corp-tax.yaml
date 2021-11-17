@@ -11,9 +11,7 @@ accounts:
 #############################################################################
 # This sets up the iXBRL taxonomy.  There should be a filename and a
 # taxonomy ID.
-taxonomy:
-  file: taxonomy/ct-dpl.yaml
-  id: corptax
+taxonomy: //import taxonomy/ct-dpl.yaml
 
 #############################################################################
 ### Report metadata #########################################################
