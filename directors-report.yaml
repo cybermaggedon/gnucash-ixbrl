@@ -39,7 +39,8 @@ elements:
       - tag: h3
         content: Auditor
       - tag: p
-        content: XXX has been appointed as Auditor on Xth XXXXX 20XX.
+        content: "ABC Chartered Accountants has been appointed as Auditor
+          on Xth XXXXX 20XX."
       - tag: h3
         content: Statement of disclosure to auditor
       - tag: p
