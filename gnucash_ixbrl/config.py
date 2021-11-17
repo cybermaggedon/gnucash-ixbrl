@@ -20,7 +20,7 @@ class Config(dict):
     @staticmethod
     def load(file="config.yaml"):
         val = yaml.load(open(file), Loader=yaml.FullLoader)
-        c = Config(val)
+        c = Config.makevalue(val)
         c.file = file
         return c
     @staticmethod
@@ -36,10 +36,35 @@ class Config(dict):
         if isinstance(val, int):
             return IntValue(val)
         if isinstance(val, dict):
-            return Config(val)
+            return Config.import_dict(val)
         if isinstance(val, float):
             return FloatValue(val)
         raise RuntimeError("Can't help with type {0}".format(type(val)))
+    @staticmethod
+    def import_dict(val):
+
+        rtn = {}
+
+        for k in val:
+            
+            if isinstance(val[k], str):
+
+                if val[k].startswith("//import "):
+                    rtn[k] = Config.load(val[k][9:])
+                else:
+                    rtn[k] = Config.makevalue(val[k])
+            elif isinstance(val[k], dict):
+                rtn[k] = Config.import_dict(val[k])
+            elif isinstance(val[k], list):
+                rtn[k] = [
+                    Config.makevalue(elt)
+                    for elt in val[k]
+                ]
+            else:
+                rtn[k] = val
+
+        return Config(rtn)
+        
     def get(self, key, deflt=None, mandatory=True):
         if "." not in key:
             if key in self:
