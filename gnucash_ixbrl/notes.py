@@ -65,8 +65,14 @@ class NoteExpansion:
 
                 else:
 
-                    if tk.null != "":
-                        elements[-1].append(par.xhtml_maker.span(tk.null))
+                    val = self.data.get_config(tk.name, mandatory=False)
+
+                    # Metadata can be a config variable.
+                    if val:
+                        elements[-1].append(par.xhtml_maker.span(val))
+                    else:
+                        if tk.null != "":
+                            elements[-1].append(par.xhtml_maker.span(tk.null))
 
             elif isinstance(tk, ComputationToken):
 

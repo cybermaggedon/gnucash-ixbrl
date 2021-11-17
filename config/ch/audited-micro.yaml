@@ -689,13 +689,11 @@ elements:
             content: Auditor
           - tag: td
             content:
-            - "Bunchy McGlochlain BSc FCA (Auditor)"
+            - expand:note:~[auditor.name]
             - tag: br
-            - "123a High Avenue Street"
+            - expand:note:~[auditor.address]
             - tag: br
-            - "Threapminchington"
-            - tag: br
-            - QQ99 9AB
+            - expand:note:~[auditor.city], ~[auditor.postcode]
 
 - //ref directors-report
 - //ref auditors-report
