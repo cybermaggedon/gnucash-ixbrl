@@ -80,9 +80,6 @@ class Accounts:
                 raise RuntimeError("Can't locate account '%s'" % locator)
         return acct
 
-#         return par.get_account(fullname=locator)
-#                 raise RuntimeError("Can't locate account '%s'" % locator)
-
     def get_accounts(self, acct=None, pfx=""):
 
         if acct == None: acct = self.book.root_account

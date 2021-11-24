@@ -87,7 +87,10 @@ class Accounts:
     # Return an account given an account locator.  Navigates through
     # hierarchy, account parts are colon separated.
     def get_account(self, par, locator):
-        acct = par
+        if par == None:
+            acct = self.root
+        else:
+            acct = par
         for v in locator.split(":"):
             acct = acct.lookup_by_name(v)
             if acct == None:
@@ -111,7 +114,8 @@ class Accounts:
             )
         return res
 
-    def is_debit(self, tp):
+    def is_debit(self, accts):
+        tp = accts.GetType()
         if tp == gnucash.ACCT_TYPE_INCOME: return True
         if tp == gnucash.ACCT_TYPE_EQUITY: return True
         if tp == gnucash.ACCT_TYPE_EXPENSE: return True
