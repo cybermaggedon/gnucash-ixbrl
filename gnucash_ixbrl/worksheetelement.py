@@ -3,7 +3,7 @@
 
 from . basicelement import BasicElement
 from . report import TextReporter
-from . worksheet_ixbrl import IxbrlReporter
+from . worksheet_ixbrl import WorksheetIxbrl
 from lxml import objectify
 
 class WorksheetElement(BasicElement):
@@ -38,7 +38,7 @@ class WorksheetElement(BasicElement):
 
     def to_ixbrl_elt(self, par, taxonomy):
 
-        rep = IxbrlReporter()
+        rep = WorksheetIxbrl()
         elt = rep.get_elt(self.worksheet, par, taxonomy, self.data)
 
         div = par.xhtml_maker.div()

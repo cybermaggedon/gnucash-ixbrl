@@ -5,7 +5,7 @@ from . format import NegativeParenFormatter
 from datetime import datetime, date
 from lxml import objectify
 
-class IxbrlReporter:
+class WorksheetIxbrl:
 
     def add_empty_row(self, table):
 
@@ -173,11 +173,11 @@ class IxbrlReporter:
 
         if len(section.total.values) > 0 and section.total.values[0].id:
             desc = self.taxonomy.create_description_fact(
-                section.total.values[0], section.header
+                section.total.values[0], section.metadata.description
             )
             div.append(desc.to_elt(self.par))
         else:
-            div.append(self.par.xhtml_maker.span(section.header))
+            div.append(self.par.xhtml_maker.span(section.metadata.description))
 
         row.append(div)
 
@@ -205,11 +205,11 @@ class IxbrlReporter:
 
         if len(section.total.values) > 0 and section.total.values[0].id:
             desc = self.taxonomy.create_description_fact(
-                section.total.values[0], section.header
+                section.total.values[0], section.metadata.description
             )
             div.append(desc.to_elt(self.par))
         else:
-            div.append(self.par.xhtml_maker.span(section.header))
+            div.append(self.par.xhtml_maker.span(section.metadata.description))
 
         row.append(div)
 
@@ -249,11 +249,11 @@ class IxbrlReporter:
 
         if len(section.total.values) > 0 and section.total.values[0].id:
             desc = self.taxonomy.create_description_fact(
-                section.total.values[0], section.header
+                section.total.values[0], section.metadata.description
             )
             div.append(desc.to_elt(self.par))
         else:
-            div.append(self.par.xhtml_maker.span(section.header))
+            div.append(self.par.xhtml_maker.span(section.metadata.description))
         row.append(div)
 
         self.add_row(table, row)
@@ -267,11 +267,11 @@ class IxbrlReporter:
 
             if len(item.values) > 0 and item.values[0].id:
                 desc = self.taxonomy.create_description_fact(
-                    item.values[0], item.description
+                    item.values[0], item.metadata.description
                 )
                 div.append(desc.to_elt(self.par))
             else:
-                div.append(self.par.xhtml_maker.span(item.description))
+                div.append(self.par.xhtml_maker.span(item.metadata.description))
 
             row.append(div)
 

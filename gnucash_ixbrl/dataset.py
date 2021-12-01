@@ -7,21 +7,20 @@ class Dataset:
 class Section:
     def __init__(self):
         self.id = None
-        self.header = None
+        self.metadata = None
         self.items = None
         self.total = None
 
     def add_data(self, computation, comp_def, results):
 
-        self.id = computation.id
-        self.description = computation.description
+        self.metadata = computation.metadata
 
         for result in results:
             comp_res = computation.get_output(result)
             comp_res.add_data(computation, comp_def, result, self)
 
 class Series:
-    def __init__(self, desc, values, rank=0):
-        self.description = desc
+    def __init__(self, metadata, values, rank=0):
+        self.metadata = metadata
         self.values = values
         self.rank = rank

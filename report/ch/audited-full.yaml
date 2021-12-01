@@ -269,6 +269,7 @@ computations:
   description: Fixed Assets
   kind: sum
   period: at-end
+  note: 10
   inputs:
   - tangible-assets
 
