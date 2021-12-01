@@ -7,6 +7,9 @@ from lxml import objectify
 
 class WorksheetIxbrl:
 
+    def __init__(self, hide_notes):
+        self.hide_notes = hide_notes
+
     def add_empty_row(self, table):
 
         row = self.par.xhtml_maker.tr({"class": "row"})
@@ -69,6 +72,12 @@ class WorksheetIxbrl:
         blank.set("class", "label cell")
         row.append(blank)
 
+        if not self.hide_notes:
+            # Blank note cell
+            blank = self.create_cell("\u00a0")
+            blank.set("class", "note cell")
+            row.append(blank)
+
         # Header cells for period names
         for period in periods:
 
@@ -84,6 +93,12 @@ class WorksheetIxbrl:
         blank = self.create_cell("\u00a0")
         blank.set("class", "label cell")
         row.append(blank)
+
+        if not self.hide_notes:
+            # Blank note cell
+            blank = self.create_cell("\u00a0note")
+            blank.set("class", "note header cell")
+            row.append(blank)
 
         # Header cells for currencies
         for period in periods:
@@ -181,6 +196,15 @@ class WorksheetIxbrl:
 
         row.append(div)
 
+        if not self.hide_notes:
+            # note cell
+            if section.metadata.note:
+                note = self.create_cell(section.metadata.note)
+            else:
+                note = self.create_cell("\u00a0")
+            note.set("class", "note cell")
+            row.append(note)
+
         for i in range(0, len(periods)):
             div = self.create_cell()
             div.set(
@@ -212,6 +236,15 @@ class WorksheetIxbrl:
             div.append(self.par.xhtml_maker.span(section.metadata.description))
 
         row.append(div)
+
+        if not self.hide_notes:
+            # note cell
+            if section.metadata.note:
+                note = self.create_cell(section.metadata.note)
+            else:
+                note = self.create_cell("\u00a0")
+            note.set("class", "note cell")
+            row.append(note)
 
         for i in range(0, len(periods)):
             div = self.create_cell()
@@ -256,6 +289,15 @@ class WorksheetIxbrl:
             div.append(self.par.xhtml_maker.span(section.metadata.description))
         row.append(div)
 
+        if not self.hide_notes:
+            # note cell
+            if section.metadata.note:
+                note = self.create_cell(section.metadata.note)
+            else:
+                note = self.create_cell("\u00a0")
+            note.set("class", "note cell")
+            row.append(note)
+
         self.add_row(table, row)
 
         for item in section.items:
@@ -274,6 +316,15 @@ class WorksheetIxbrl:
                 div.append(self.par.xhtml_maker.span(item.metadata.description))
 
             row.append(div)
+
+            if not self.hide_notes:
+                # note cell
+                if item.metadata.note:
+                    note = self.create_cell(item.metadata.note)
+                else:
+                    note = self.create_cell("\u00a0")
+                note.set("class", "note cell")
+                row.append(note)
 
             for i in range(0, len(periods)):
 
@@ -303,6 +354,12 @@ class WorksheetIxbrl:
         div.set("class", "label breakdown total cell")
         row.append(div)
         div.append(self.par.xhtml_maker.span("Total"))
+
+        if not self.hide_notes:
+            # note cell
+            blank = self.create_cell("\u00a0")
+            blank.set("class", "note cell")
+            row.append(blank)
 
         for i in range(0, len(periods)):
 

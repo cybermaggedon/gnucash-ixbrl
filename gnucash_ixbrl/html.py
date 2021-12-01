@@ -122,8 +122,14 @@ class HtmlElement(BasicElement):
 
         worksheet = root.get("worksheet", mandatory=False)
         if worksheet:
-            ws = self.data.get_worksheet(worksheet)
-            wse = WorksheetElement(None, None, ws, self.data)
+
+            if isinstance(worksheet, str):
+                ws = self.data.get_worksheet(worksheet)
+                wse = WorksheetElement(None, None, ws, self.data)
+            else:
+                # Assume dict
+                wse = WorksheetElement.load(root.get("worksheet"), self.data)
+            return wse.to_ixbrl_elt(par, taxonomy)[0]
 
             # Assumption about WorksheetElement: Returns single element in list
             return wse.to_ixbrl_elt(par, taxonomy)[0]
