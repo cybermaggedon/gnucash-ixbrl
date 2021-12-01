@@ -307,9 +307,8 @@ elements:
 
         - tag: p
           content: "Profit from operations has been arrived at after charging:"
-        - worksheet:
-            worksheet: charges
-            hide-notes: true
+        - worksheet: charges
+          hide-notes: true
 
 
 
@@ -336,15 +335,13 @@ elements:
 
         - tag: h3
           content: "4. Financial income"
-        - worksheet:
-            worksheet: financial-income
-            hide-notes: true
+        - worksheet: financial-income
+          hide-notes: true
 
         - tag: h3
           content: "5. Finance costs"
-        - worksheet:
-            worksheet: financial-costs
-            hide-notes: true
+        - worksheet: financial-costs
+          hide-notes: true
 
         - tag: h3
           content: "6. Staff numbers and costs"
@@ -384,9 +381,8 @@ elements:
           content: "The aggregate payroll costs of these persons was as
             follows:"
 
-        - worksheet:
-            worksheet: staff-costs
-            hide-notes: true
+        - worksheet: staff-costs
+          hide-notes: true
 
 - kind: page
   elements:
@@ -414,27 +410,23 @@ elements:
           content: "7. Directors' renumeration and transactions"
         - tag: p
           content: "The remuneration of the directors was as follows:"
-        - worksheet:
-            worksheet: zero
-            hide-notes: true
+        - worksheet: zero
+          hide-notes: true
 
         - tag: h3
           content: "8. Taxation"
-        - worksheet:
-            worksheet: corporation-tax
-            hide-notes: true
+        - worksheet: corporation-tax
+          hide-notes: true
 
         - tag: h3
           content: "9. Intangible fixed assets"
-        - worksheet:
-            worksheet: zero
-            hide-notes: true
+        - worksheet: zero
+          hide-notes: true
 
         - tag: h3
           content: "10. Property, plant and equipment"
-        - worksheet: 
-            worksheet: fixed-assets
-            hide-notes: true
+        - worksheet: fixed-assets
+          hide-notes: true
 
 - kind: page
   elements:
@@ -459,27 +451,23 @@ elements:
 
         - tag: h3
           content: "11. Trade and other receivables"
-        - worksheet:
-            worksheet: zero
-            hide-notes: true
+        - worksheet: zero
+          hide-notes: true
 
         - tag: h3
           content: "12. Cash and cash equivalents"
-        - worksheet:
-            worksheet: cash
-            hide-notes: true
+        - worksheet: cash
+          hide-notes: true
 
         - tag: h3
           content: "13. Trade and other payables"
-        - worksheet:
-            worksheet: zero
-            hide-notes: true
+        - worksheet: zero
+          hide-notes: true
 
         - tag: h3
           content: "14. Deferred tax assets and liabilities"
-        - worksheet:
-            worksheet: zero
-            hide-notes: true
+        - worksheet: zero
+          hide-notes: true
 
 - kind: page
   elements:
@@ -504,21 +492,18 @@ elements:
 
         - tag: h3
           content: "15. Share capital"
-        - worksheet:
-            worksheet: share-capital
-            hide-notes: true
+        - worksheet: share-capital
+          hide-notes: true
 
         - tag: h3
           content: "16. Operating leases and commitments"
-        - worksheet:
-            worksheet: zero
-            hide-notes: true
+        - worksheet: zero
+          hide-notes: true
 
         - tag: h3
           content: "17. Related party transactions"
-        - worksheet:
-            worksheet: zero
-            hide-notes: true
+        - worksheet: zero
+          hide-notes: true
 
         - tag: h3
           content: "18. Software"
