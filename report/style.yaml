@@ -197,10 +197,10 @@ table {
     font-size: medium;
   }
   TABLE.sheet {
-    margin-left: 10em;
+    margin-left: 5%;
   }
   TABLE.spacetable {
-    margin-left: 10em;
+    margin-left: 5%;
   }
   body {
     font-size: 11pt;
