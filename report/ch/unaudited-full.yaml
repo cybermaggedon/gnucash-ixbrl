@@ -93,6 +93,7 @@ computations:
 # Salaries expense
 - id: staff-costs
   kind: group
+  note: staff-costs-note
   inputs:
   - salaries-expense
   - pensions-expense
@@ -198,6 +199,7 @@ computations:
 # Profit, computed from gross profit without the expenses
 - id: profit
   kind: group
+  note: profit-note
   description: Profit (Loss)
   period: in-year
   inputs:
@@ -207,7 +209,6 @@ computations:
   - staff-costs
   - depreciation
   - other-charges
-#  - tax
 
 - id: charges
   kind: group
@@ -220,6 +221,7 @@ computations:
 
 - id: interest-received
   kind: line
+  note: financial-income-note
   period: in-year
   description: Interest on current account
   accounts:
@@ -235,6 +237,7 @@ computations:
 - id: interest-paid
   kind: line
   period: in-year
+  note: financial-costs-note
   description: Interest on bank loans
   accounts:
   - Expenses:Interest Paid
@@ -269,6 +272,7 @@ computations:
   description: Fixed Assets
   kind: sum
   period: at-end
+  note: equipment-note
   inputs:
   - tangible-assets
 
@@ -551,6 +555,7 @@ computations:
 
 - id: corporation-tax-paid
   kind: line
+  note: taxation-note
   description: Corporation tax
   period: in-year
   accounts:
@@ -559,6 +564,7 @@ computations:
 # Sign-reversed depreciation to add back in
 - id: depreciation-adjustment
   kind: line
+  note: equipment-note
   description: Adjustment for depreciation
   period: in-year
   reverse-sign: true
@@ -657,6 +663,7 @@ computations:
 - id: proceeds-from-issuing-shares
   kind: group
   period: in-year
+  note: share-capital-note
   description: Issue of share capital
   inputs:
   - shares-issued
@@ -694,6 +701,7 @@ computations:
 
 - id: cash-at-end-of-year
   kind: group
+  note: cash-note
   description: Cash and cash equivalents at end of year
   inputs:
   - cash-at-start-of-year
@@ -805,6 +813,7 @@ worksheets:
 
 - id: staff-costs
   kind: multi-period
+  note: staff-costs-note
   description: Staff costs
   computations:
   - staff-costs

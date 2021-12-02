@@ -331,6 +331,7 @@ elements:
             interest rate method."
 
         - element:
+            id: profit-note
             kind: noteheading
             title: Profit from operations
             level: 1
@@ -364,6 +365,7 @@ elements:
         content:
 
         - element:
+            id: financial-income-note
             kind: noteheading
             title: Financial income
             level: 1
@@ -373,6 +375,7 @@ elements:
 
 
         - element:
+            id: financial-costs-note
             kind: noteheading
             title: Finance costs
             level: 1
@@ -381,6 +384,7 @@ elements:
           hide-notes: true
 
         - element:
+            id: staff-costs-note
             kind: noteheading
             title: Staff numbers and costs
             level: 1
@@ -455,6 +459,7 @@ elements:
           hide-notes: true
 
         - element:
+            id: taxation-note
             kind: noteheading
             title: Taxation
             level: 1
@@ -471,7 +476,7 @@ elements:
           hide-notes: true
 
         - element:
-            id: equipment
+            id: equipment-note
             kind: noteheading
             title: Property, plant and equipment
             level: 1
@@ -509,6 +514,7 @@ elements:
           hide-notes: true
 
         - element:
+            id: cash-note
             kind: noteheading
             title: Cash and cash equivalents
             level: 1
@@ -554,6 +560,7 @@ elements:
         content:
 
         - element:
+            id: share-capital-note
             kind: noteheading
             title: Share capital
             level: 1

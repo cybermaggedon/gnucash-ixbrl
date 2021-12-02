@@ -198,10 +198,17 @@ class WorksheetIxbrl:
 
         if not self.hide_notes:
             # note cell
+            
+            note = "\u00a0"
+
             if section.metadata.note:
-                note = self.create_cell(section.metadata.note)
-            else:
-                note = self.create_cell("\u00a0")
+                try:
+                    note = self.data.get_note(section.metadata.note)
+                    
+                except Exception as e:
+                    pass
+
+            note = self.create_cell(note)
             note.set("class", "note cell")
             row.append(note)
 
@@ -239,14 +246,17 @@ class WorksheetIxbrl:
 
         if not self.hide_notes:
             # note cell
+            
+            note = "\u00a0"
+
             if section.metadata.note:
                 try:
                     note = self.data.get_note(section.metadata.note)
+                    
                 except Exception as e:
-                    note = str(e)
-                note = self.create_cell(note)
-            else:
-                note = self.create_cell("\u00a0")
+                    pass
+
+            note = self.create_cell(note)
             note.set("class", "note cell")
             row.append(note)
 
@@ -295,12 +305,9 @@ class WorksheetIxbrl:
 
         if not self.hide_notes:
             # note cell
-            if section.metadata.note:
-                note = self.create_cell(section.metadata.note)
-            else:
-                note = self.create_cell("\u00a0")
-            note.set("class", "note cell")
-            row.append(note)
+            blank = self.create_cell("\u00a0")
+            blank.set("class", "note cell")
+            row.append(blank)
 
         self.add_row(table, row)
 
@@ -323,10 +330,17 @@ class WorksheetIxbrl:
 
             if not self.hide_notes:
                 # note cell
+
+                note = "\u00a0"
+
                 if item.metadata.note:
-                    note = self.create_cell(item.metadata.note)
-                else:
-                    note = self.create_cell("\u00a0")
+                    try:
+                        note = self.data.get_note(item.metadata.note)
+
+                    except Exception as e:
+                        pass
+
+                note = self.create_cell(note)
                 note.set("class", "note cell")
                 row.append(note)
 
@@ -361,9 +375,19 @@ class WorksheetIxbrl:
 
         if not self.hide_notes:
             # note cell
-            blank = self.create_cell("\u00a0")
-            blank.set("class", "note cell")
-            row.append(blank)
+            
+            note = "\u00a0"
+
+            if section.metadata.note:
+                try:
+                    note = self.data.get_note(section.metadata.note)
+                    
+                except Exception as e:
+                    pass
+
+            note = self.create_cell(note)
+            note.set("class", "note cell")
+            row.append(note)
 
         for i in range(0, len(periods)):
 
