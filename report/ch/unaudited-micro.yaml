@@ -734,10 +734,6 @@ elements:
     # Company number and address.
     - company
 
-    # These accounts were generated using gnucash-ixbrl...  You don't need
-    # to have this one in your report.
-    - software-version
-
 - id: revision-info
   kind: page
   elements:

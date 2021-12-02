@@ -24,6 +24,10 @@ class NoteExpansion:
         if n.startswith("template:"):
             note = taxonomy.get_note(n[9:])
             if note:
+
+                if note.startswith("expand:"):
+                    return note[7:]
+
                 return note
             raise RuntimeError("Note '%s' not known." % n)
 

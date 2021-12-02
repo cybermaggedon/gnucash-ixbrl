@@ -553,24 +553,26 @@ elements:
       - tag: div
         content:
 
-        - tag: h3
-          content: "15. Share capital"
+        - element:
+            kind: noteheading
+            title: Share capital
+            level: 1
+
         - worksheet: share-capital
           hide-notes: true
 
-        - tag: h3
-          content: "16. Operating leases and commitments"
+        - element:
+            kind: noteheading
+            title: Operating leases and commitments
+            level: 1
+
         - worksheet: zero
           hide-notes: true
 
-        - tag: h3
-          content: "17. Related party transactions"
+        - element:
+            kind: noteheading
+            title: Related party transactions
+            level: 1
+
         - worksheet: zero
           hide-notes: true
-
-        - tag: h3
-          content: "18. Software"
-
-        - tag: p
-          content: "template:software-version"
-

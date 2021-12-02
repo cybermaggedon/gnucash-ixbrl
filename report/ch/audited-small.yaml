@@ -808,10 +808,6 @@ elements:
     # Company number and address.
     - template:company
 
-    # These accounts were generated using gnucash-ixbrl...  You don't need
-    # to have this one in your report.
-    - template:software-version
-
 - id: revision-info
   kind: page
   elements:

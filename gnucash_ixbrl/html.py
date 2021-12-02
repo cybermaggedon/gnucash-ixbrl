@@ -2,7 +2,6 @@
 # A Composite element is used to wrap several elements into a single document.
 
 from . basicelement import BasicElement
-from . notes import NoteExpansion
 from . datum import StringDatum
 from . worksheetelement import WorksheetElement
 from . note_parse import *
@@ -62,7 +61,6 @@ class Elt:
 
         if isinstance(root, str):
             return expand_string(root, data)
-#            return StringElt.load(root, data)
 
         if "tag" in root:
             return TagElt.load(root, data)
@@ -144,11 +142,7 @@ class TemplateElt(Elt):
 
     def to_html(self, par, taxonomy):
         note = taxonomy.get_note(self.value)
-
-        # FIXME: Logic error?
-        note = "expand:" + note
         return expand_string(note, self.data).to_html(par, taxonomy)
-#        return par.xhtml_maker.span("FIXME: " + note)
 
 class MetadataElt(Elt):
     def __init__(self, name, prefix, suffix, null, data):
@@ -349,13 +343,6 @@ class HtmlElement(BasicElement):
 
         self.init_html(taxonomy)
         self.write_text(self.root, out, taxonomy)
-
-    def expand_text(self, text, par, taxonomy):
-
-        if not text.startswith("expand:"): return text
-
-        ne = NoteExpansion(self.data)
-        return ne.expand(text[7:], par, taxonomy)
 
     def to_html(self, root, par, taxonomy):
         return root.to_html(par, taxonomy)
