@@ -12,12 +12,12 @@ elements:
         attributes: { class: heading }
         content:
         - tag: div
-          content: 'expand:note:~[company-name]'
+          content: 'expand:~[company-name]'
         - tag: div
           content: Notes to the accounts
         - tag: div
           attributes: { class: subtitle }
-          content: 'expand:note:For the year ended ~[period-end]'
+          content: 'expand:For the year ended ~[period-end]'
         - tag: hr
       - tag: div
         content:
@@ -28,7 +28,7 @@ elements:
             level: 1
 
         - tag: p
-          content: "expand:company"
+          content: "template:company"
 
         - element:
             kind: noteheading
@@ -46,7 +46,7 @@ elements:
             level: 2
 
         - tag: p
-          content: "expand:note:~{statement-of-compliance-reporting-framework=
+          content: "expand:~{statement-of-compliance-reporting-framework=
             These financial statements have been prepared in
             accordance with applicable United Kingdom accounting
             standards, including Financial Reporting Standard 102,
@@ -67,7 +67,7 @@ elements:
             level: 2
 
         - tag: p
-          content: "expand:note:~{revenue-recognition-policy=
+          content: "expand:~{revenue-recognition-policy=
             Where the company agrees to provide a service for
             a fixed period, revenue is allocated on a monthly basis,
             for the period of the contract. Revenue which is
@@ -128,12 +128,12 @@ elements:
         attributes: { class: heading }
         content:
         - tag: div
-          content: 'expand:note:~[company-name]'
+          content: 'expand:~[company-name]'
         - tag: div
           content: Notes to the accounts
         - tag: div
           attributes: { class: subtitle }
-          content: 'expand:note:For the year ended ~[period-end]'
+          content: 'expand:For the year ended ~[period-end]'
         - tag: hr
 
       - tag: div
@@ -145,14 +145,14 @@ elements:
             level: 2
 
         - tag: p
-          content: "expand:note:
+          content: "expand:
             ~{description-of-measurement-property-plant-equipment=
             Property, plant and equipment are stated in the
             Statement of Financial Position at cost less accumulated
             depreciation.}"
 
         - tag: p
-          content: "expand:note:
+          content: "expand:
             ~{description-of-depreciation-method-property-plant-equipment=
             Depreciation is charged so as to write off the
             cost of assets over their estimated useful lives on the
@@ -180,7 +180,7 @@ elements:
 
         - tag: p
 
-          content: "expand:note:
+          content: "expand:
             ~{description-recognition-basis-intangible-assets=
             Intangible assets include software development
             costs that in the opinion of the directors meets the
@@ -216,7 +216,7 @@ elements:
             level: 2
 
         - tag: p
-          content: "expand:note:~{lessee-operating-lease-policy=
+          content: "expand:~{lessee-operating-lease-policy=
             Costs of operating leases are charged to the Statement
             of Comprehensive Income on a straight line basis over the
             lease term.}"
@@ -227,7 +227,7 @@ elements:
             level: 2
 
         - tag: p
-          content: "expand:note:~{current-income-tax-policy=
+          content: "expand:~{current-income-tax-policy=
             Income tax on the profits for the year comprises
             current tax and deferred tax. Income tax is recognised in
             the Statement of Comprehensive Income except where items
@@ -253,19 +253,19 @@ elements:
         attributes: { class: heading }
         content:
         - tag: div
-          content: 'expand:note:~[company-name]'
+          content: 'expand:~[company-name]'
         - tag: div
           content: Notes to the accounts
         - tag: div
           attributes: { class: subtitle }
-          content: 'expand:note:For the year ended ~[period-end]'
+          content: 'expand:For the year ended ~[period-end]'
         - tag: hr
 
       - tag: div
         content:
 
         - tag: p
-          content: "expand:note:~{deferred-tax-policy=
+          content: "expand:~{deferred-tax-policy=
             Deferred tax is provided using the Statement of
             Financial Position liability method, which recognises
             temporary differences between the carrying amounts of
@@ -283,7 +283,7 @@ elements:
             level: 2
 
         - tag: p
-          content: "expand:note:~{defined-contribution-pensions-policy=
+          content: "expand:~{defined-contribution-pensions-policy=
             All company employees are entitled to be members
             of the Example Limited stakeholder pension scheme, the
             assets of which are held in an independently administered
@@ -298,7 +298,7 @@ elements:
             level: 2
 
         - tag: p
-          content: "expand:note:~{cash-and-cash-equivalents-policy=
+          content: "expand:~{cash-and-cash-equivalents-policy=
             For the purpose of the Statement of Cash Flows,
             cash comprises cash in hand and loans and advances to
             credit institutions repayable on demand, and cash and cash
@@ -352,12 +352,12 @@ elements:
         attributes: { class: heading }
         content:
         - tag: div
-          content: 'expand:note:~[company-name]'
+          content: 'expand:~[company-name]'
         - tag: div
           content: Notes to the accounts
         - tag: div
           attributes: { class: subtitle }
-          content: 'expand:note:For the year ended ~[period-end]'
+          content: 'expand:For the year ended ~[period-end]'
         - tag: hr
 
       - tag: div
@@ -411,10 +411,10 @@ elements:
               content: "Employees"
             - tag: td
               attributes: { class: period value }
-              content: expand:note:~[average-employees-this]
+              content: expand:~[average-employees-this]
             - tag: td
               attributes: { class: period value }
-              content: expand:note:~[average-employees-previous]
+              content: expand:~[average-employees-previous]
 
         - tag: p
           content: "The aggregate payroll costs of these persons was as
@@ -433,12 +433,12 @@ elements:
         attributes: { class: heading }
         content:
         - tag: div
-          content: 'expand:note:~[company-name]'
+          content: 'expand:~[company-name]'
         - tag: div
           content: Notes to the accounts
         - tag: div
           attributes: { class: subtitle }
-          content: 'expand:note:For the year ended ~[period-end]'
+          content: 'expand:For the year ended ~[period-end]'
         - tag: hr
 
       - tag: div
@@ -489,12 +489,12 @@ elements:
         attributes: { class: heading }
         content:
         - tag: div
-          content: 'expand:note:~[company-name]'
+          content: 'expand:~[company-name]'
         - tag: div
           content: Notes to the accounts
         - tag: div
           attributes: { class: subtitle }
-          content: 'expand:note:For the year ended ~[period-end]'
+          content: 'expand:For the year ended ~[period-end]'
         - tag: hr
 
       - tag: div
@@ -542,12 +542,12 @@ elements:
         attributes: { class: heading }
         content:
         - tag: div
-          content: 'expand:note:~[company-name]'
+          content: 'expand:~[company-name]'
         - tag: div
           content: Notes to the accounts
         - tag: div
           attributes: { class: subtitle }
-          content: 'expand:note:For the year ended ~[period-end]'
+          content: 'expand:For the year ended ~[period-end]'
         - tag: hr
 
       - tag: div
@@ -572,5 +572,5 @@ elements:
           content: "18. Software"
 
         - tag: p
-          content: "expand:software-version"
+          content: "template:software-version"
 

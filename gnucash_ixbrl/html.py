@@ -11,17 +11,18 @@ from lxml import objectify, etree
 
 def expand_string(value, data):
 
-    # If it's just a string, (no expand: prefix) return a StringElt
+    # This is template:, return a template elt
+    if value.startswith("template:"):
+        return TemplateElt(value[9:], data)
+
+    # If it's just a string, (no expand: or template: prefix) return a
+    # StringElt
     if not value.startswith("expand:"):
         return StringElt(value, data)
 
-    # This is expand: without note:, return a template elt
-    if not value.startswith("expand:note:"):
-        return TemplateElt(value[7:], data)
+    # The rest of this is the expand: case.
 
-    # The rest of this is the expand:note case.
-
-    value = value[12:]
+    value = value[7:]
 
     stack = []
     tkstack = []
@@ -129,9 +130,8 @@ class IfdefElt(Elt):
         return IfdefElt(key, content, data)
 
     def to_html(self, par, taxonomy):
-
         try:
-            self.data.get_config(ifdef)
+            self.data.get_config(self.key)
         except:
             return par.xhtml_maker.span()
 
@@ -146,7 +146,7 @@ class TemplateElt(Elt):
         note = taxonomy.get_note(self.value)
 
         # FIXME: Logic error?
-        note = "expand:note:" + note
+        note = "expand:" + note
         return expand_string(note, self.data).to_html(par, taxonomy)
 #        return par.xhtml_maker.span("FIXME: " + note)
 
@@ -189,46 +189,7 @@ class StringElt(Elt):
 
     @staticmethod
     def load(value, data):
-
-        if not value.startswith("expand:"):
-            return StringElt(value, data)
-
-        if not value.startswith("expand:note:"):
-            return TemplateElt(value[7:], data)
-
-        value = value[12:]
-
-        stack = []
-        tkstack = []
-        content = []
-
-        exp = NoteParser.parse(value)
-        for tk in exp:
-            if isinstance(tk, TextToken):
-                content.append(StringElt(tk.text, data))
-            elif isinstance(tk, MetadataToken):
-                content.append(
-                    MetadataElt(tk.name, tk.prefix, tk.suffix, tk.null, data)
-                )
-            elif isinstance(tk, ComputationToken):
-                content.append(
-                    ComputationElt(tk.name, tk.period)
-                )
-            elif isinstance(tk, TagOpen):
-                if tk.kind != "string":
-                    raise RuntimeError("Only string tags, currently")
-                tkstack.append(tk)
-                stack.append(content)
-                content = []
-            elif isinstance(tk, TagClose):
-                ftk = tkstack[-1]
-                tkstack.pop()
-                elt = FactElt(ftk.name, ftk.context, {}, content, data)
-                content = stack[-1]
-                stack.pop()
-                content.append(elt)
-
-        return TagElt("span", {}, content, data)
+        return StringElt(value, data)
 
     def to_html(self, par, taxonomy):
         return par.xhtml_maker.span(self.value)
@@ -397,159 +358,7 @@ class HtmlElement(BasicElement):
         return ne.expand(text[7:], par, taxonomy)
 
     def to_html(self, root, par, taxonomy):
-
         return root.to_html(par, taxonomy)
-
-        # FIXME: Too many logic paths through this functiona, refactor?
-        ifdef = root.get("ifdef", mandatory=False)
-        if ifdef:
-            try:
-                self.data.get_config(ifdef)
-            except:
-                # Tag does not exist.
-                return par.xhtml_maker.span()
-
-            # No exception, the config element exists
-            content = root.get("content")
-            return self.to_html(content, par, taxonomy)
-
-        iftrue = root.get("iftrue", mandatory=False)
-        if iftrue:
-            if self.data.get_config_bool(iftrue, False, mandatory=False):
-                # No exception, the config element exists
-                content = root.get("content")
-                return self.to_html(content, par, taxonomy)
-            else:
-                # Tag is not true.
-                return par.xhtml_maker.span()
-
-        iffalse = root.get("iffalse", mandatory=False)
-        if iffalse:
-            if not self.data.get_config_bool(iffalse, False, mandatory=False):
-                # No exception, the config element exists
-                content = root.get("content")
-                return self.to_html(content, par, taxonomy)
-            else:
-                # Tag is not true.
-                return par.xhtml_maker.span()
-
-        tag = root.get("tag", mandatory=False)
-        fact = root.get("fact", mandatory=False)
-
-        worksheet = root.get("worksheet", mandatory=False)
-        if worksheet:
-
-            wse = WorksheetElement.load(root, self.data)
-            return wse.to_ixbrl_elt(par, taxonomy)[0]
-
-            # Assumption about WorksheetElement: Returns single element in list
-            return wse.to_ixbrl_elt(par, taxonomy)[0]
-
-        element = root.get("element", mandatory=False)
-        if element:
-
-            if isinstance(element, str):
-            
-                elt = self.data.get_element(element)
-
-                cntr = par.xhtml_maker.div()
-
-                # Assumption about Element: Returns single element in list
-                for child in elt.to_ixbrl_elt(par, taxonomy):
-                    cntr.append(child)
-
-                return cntr
-
-            else:
-                elt = self.data.get_element(element)
-                
-                cntr = par.xhtml_maker.div()
-
-                # Assumption about Element: Returns single element in list
-                for child in elt.to_ixbrl_elt(par, taxonomy):
-                    cntr.append(child)
-
-                return cntr
-
-
-        if not tag and not fact:
-            raise RuntimeError(
-                "HTML elements must have tag, fact, etc. property"
-            )
-
-        attrs = root.get("attributes", mandatory=False)
-        content = root.get("content", mandatory=False)
-
-        if not attrs:
-            attrs = {}
-
-        if not content:
-            content = []
-
-        if fact:
-            context_id = root.get("context")
-            ctxt = taxonomy.get_context(context_id, self.data)
-
-        if isinstance(content, int):
-            content = str(content)
-        if isinstance(content, bool):
-            content = str(content)
-        if isinstance(content, float):
-            content = str(content)
-
-        # The content element is a string
-        if isinstance(content, str):
-
-            content = self.expand_text(content, par, taxonomy)
-
-            if isinstance(content, str):
-
-                # Expands to a string
-                if fact:
-                    datum = StringDatum(fact, content, ctxt)
-                    fact = taxonomy.create_fact(datum)
-                    return fact.to_elt(par)
-                else:
-                    return par.xhtml_maker(tag, attrs, content)
-
-            else:
-
-                # Expands to a list of elements
-                elt = par.xhtml_maker(tag, attrs)
-                for child in content:
-                    elt.append(child)
-                return elt
-
-        # The content element is an array of elts.
-
-        # If fact, parent elt is a fact tag
-        if fact:
-            datum = StringDatum(fact, [], ctxt)
-            fact = taxonomy.create_fact(datum)
-            elt = fact.to_elt(par)
-        else:
-            elt = par.xhtml_maker(tag, attrs)
-        
-        for child in content:
-            if isinstance(child, str):
-                child = self.expand_text(child, par, taxonomy)
-                if isinstance(child, str):
-                    elt.append(par.xhtml_maker.span(child))
-                else:
-                    for child2 in child:
-                        if isinstance(child2, str):
-                            elt.append(par.xhtml_maker.span(child2))
-                        else:
-                            elt.append(child2)
-            elif isinstance(child, dict):
-                elt.append(self.to_html(child, par, taxonomy))
-            else:
-                raise RuntimeError(
-                    "HTMLElement can't work with content of type %s" %
-                    str(type(child))
-                )
-
-        return elt
 
     def to_ixbrl_elt(self, par, taxonomy):
 

@@ -18,14 +18,16 @@ class NoteExpansion:
 
     def get_note(self, n, taxonomy):
 
-        if n.startswith("note:"):
-            return n[5:]
+        if n.startswith("expand:"):
+            return n[7:]
 
-        note = taxonomy.get_note(n)
-        if note:
-            return note
+        if n.startswith("template:"):
+            note = taxonomy.get_note(n[9:])
+            if note:
+                return note
+            raise RuntimeError("Note '%s' not known." % n)
 
-        raise RuntimeError("Note '%s' not known." % n)
+        return n
 
     def expand(self, input, par, taxonomy):
         
