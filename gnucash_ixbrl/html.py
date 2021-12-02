@@ -9,12 +9,59 @@ from . note_parse import *
 
 from lxml import objectify, etree
 
+def expand_string(value, data):
+
+    # If it's just a string, (no expand: prefix) return a StringElt
+    if not value.startswith("expand:"):
+        return StringElt(value, data)
+
+    # This is expand: without note:, return a template elt
+    if not value.startswith("expand:note:"):
+        return TemplateElt(value[7:], data)
+
+    # The rest of this is the expand:note case.
+
+    value = value[12:]
+
+    stack = []
+    tkstack = []
+    content = []
+
+    exp = NoteParser.parse(value)
+    for tk in exp:
+        if isinstance(tk, TextToken):
+            content.append(StringElt(tk.text, data))
+        elif isinstance(tk, MetadataToken):
+            content.append(
+                MetadataElt(tk.name, tk.prefix, tk.suffix, tk.null, data)
+            )
+        elif isinstance(tk, ComputationToken):
+            content.append(
+                ComputationElt(tk.name, tk.period)
+            )
+        elif isinstance(tk, TagOpen):
+            if tk.kind != "string":
+                raise RuntimeError("Only string tags, currently")
+            tkstack.append(tk)
+            stack.append(content)
+            content = []
+        elif isinstance(tk, TagClose):
+            ftk = tkstack[-1]
+            tkstack.pop()
+            elt = FactElt(ftk.name, ftk.context, {}, content, data)
+            content = stack[-1]
+            stack.pop()
+            content.append(elt)
+    
+    return TagElt("span", {}, content, data)
+
 class Elt:
     @staticmethod
     def load(root, data):
 
         if isinstance(root, str):
-            return StringElt.load(root, data)
+            return expand_string(root, data)
+#            return StringElt.load(root, data)
 
         if "tag" in root:
             return TagElt.load(root, data)
@@ -97,7 +144,11 @@ class TemplateElt(Elt):
 
     def to_html(self, par, taxonomy):
         note = taxonomy.get_note(self.value)
-        return par.xhtml_maker.span("FIXME: " + note)
+
+        # FIXME: Logic error?
+        note = "expand:note:" + note
+        return expand_string(note, self.data).to_html(par, taxonomy)
+#        return par.xhtml_maker.span("FIXME: " + note)
 
 class MetadataElt(Elt):
     def __init__(self, name, prefix, suffix, null, data):
@@ -180,7 +231,6 @@ class StringElt(Elt):
         return TagElt("span", {}, content, data)
 
     def to_html(self, par, taxonomy):
-
         return par.xhtml_maker.span(self.value)
 
 class FactElt(Elt):
