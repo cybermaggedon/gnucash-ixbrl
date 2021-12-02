@@ -579,6 +579,7 @@ elements:
           content: 'expand:As at ~[balance-sheet-date]'
         - tag: hr
       - worksheet: balance-sheet
+        hide-notes: true
       - element: balance-sheet-notes
       - element: signature
 

@@ -566,6 +566,7 @@ elements:
           content: 'expand:As at ~[balance-sheet-date]'
         - tag: hr
       - worksheet: balance-sheet
+        hide-notes: true
       - element: balance-sheet-notes
       - element: signature
 
@@ -732,7 +733,7 @@ elements:
     # Some boilerplate notes...
 
     # Company number and address.
-    - company
+    - template:company
 
 - id: revision-info
   kind: page
