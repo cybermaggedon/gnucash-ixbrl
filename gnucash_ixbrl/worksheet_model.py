@@ -31,7 +31,7 @@ class Breakdown(WorksheetItem):
             sec.metadata = computation.metadata
 
         if sec.total == None:
-            sec.total = Series("Total", [], rank=cdef.total_rank)
+            sec.total = Series(self.defn.metadata, [], rank=cdef.total_rank)
 
         if sec.items == None:
             sec.items = [
@@ -60,7 +60,7 @@ class NilValue(WorksheetItem):
             sec.metadata = computation.metadata
 
         if sec.total == None:
-            sec.total = Series("Total", [], rank=cdef.total_rank)
+            sec.total = Series(self.defn.metadata, [], rank=cdef.total_rank)
 
         sec.total.values.append(self.value.value)
 
@@ -77,7 +77,7 @@ class Total(WorksheetItem):
             sec.metadata = computation.metadata
 
         if sec.total == None:
-            sec.total = Series("Total", [], rank=cdef.total_rank)
+            sec.total = Series(self.defn.metadata, [], rank=cdef.total_rank)
 
         sec.total.values.append(self.value.value)
 

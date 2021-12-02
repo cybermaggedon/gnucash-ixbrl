@@ -154,7 +154,7 @@ table {
 .note.header {
   font-size: smaller;
   font-weight: bold;
-  border-bottom: 0.2em solid black;
+//  border-bottom: 0.2em solid black;
   text-align: center;
 }
 

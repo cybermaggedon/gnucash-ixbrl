@@ -432,6 +432,10 @@ class WorksheetIxbrl:
     def create_report(self, worksheet):
 
         ds = worksheet.get_dataset()
+
+        # Hide notes if the option is set, or there are no notes.
+        self.hide_notes = self.hide_notes or not ds.has_notes()
+
         periods = ds.periods
         sections = ds.sections
 
