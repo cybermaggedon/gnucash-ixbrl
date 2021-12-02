@@ -5,6 +5,8 @@ from . basicelement import BasicElement
 from . notes import NoteExpansion
 from . datum import StringDatum
 from . worksheetelement import WorksheetElement
+from . note_parse import *
+
 from lxml import objectify, etree
 
 class Elt:
@@ -12,7 +14,7 @@ class Elt:
     def load(root, data):
 
         if isinstance(root, str):
-            return StringElt(root, data)
+            return StringElt.load(root, data)
 
         if "tag" in root:
             return TagElt.load(root, data)
@@ -88,21 +90,98 @@ class IfdefElt(Elt):
 
         return self.content.to_html(par, taxonomy)
 
-class StringElt(Elt):
+class TemplateElt(Elt):
     def __init__(self, value, data):
         self.value = value
         self.data = data
 
     def to_html(self, par, taxonomy):
+        note = taxonomy.get_note(self.value)
+        return par.xhtml_maker.span("FIXME: " + note)
+
+class MetadataElt(Elt):
+    def __init__(self, name, prefix, suffix, null, data):
+        self.name = name
+        self.prefix = prefix
+        self.suffix = suffix
+        self.null = null
+        self.data = data
+
+    def to_html(self, par, taxonomy):
+
+        elt = par.xhtml_maker.span()
+
+        fact = taxonomy.get_metadata_by_id(self.data, self.name)
+        if fact:
+            if self.prefix != "":
+                elt.append(par.xhtml_maker.span(self.prefix))
+            elt.append(fact.to_elt(par))
+            if self.suffix != "":
+                elt.append(par.xhtml_maker.span(self.suffix))
+            return elt
+
+        val = self.data.get_config(self.name, mandatory=False)
+        if val:
+            if self.prefix != "":
+                elt.append(par.xhtml_maker.span(self.prefix))
+            elt.append(par.xhtml_maker.span(str(val)))
+            if self.suffix != "":
+                elt.append(par.xhtml_maker.span(self.suffix))
+            return elt
+
+        return par.xhtml_maker.span(self.null)
+
+class StringElt(Elt):
+    def __init__(self, value, data):
+        self.value = value
+        self.data = data
+
+    @staticmethod
+    def load(value, data):
+
+        if not value.startswith("expand:"):
+            return StringElt(value, data)
+
+        if not value.startswith("expand:note:"):
+            return TemplateElt(value[7:], data)
+
+        value = value[12:]
+
+        stack = []
+        tkstack = []
+        content = []
+
+        exp = NoteParser.parse(value)
+        for tk in exp:
+            if isinstance(tk, TextToken):
+                content.append(StringElt(tk.text, data))
+            elif isinstance(tk, MetadataToken):
+                content.append(
+                    MetadataElt(tk.name, tk.prefix, tk.suffix, tk.null, data)
+                )
+            elif isinstance(tk, ComputationToken):
+                content.append(
+                    ComputationElt(tk.name, tk.period)
+                )
+            elif isinstance(tk, TagOpen):
+                if tk.kind != "string":
+                    raise RuntimeError("Only string tags, currently")
+                tkstack.append(tk)
+                stack.append(content)
+                content = []
+            elif isinstance(tk, TagClose):
+                ftk = tkstack[-1]
+                tkstack.pop()
+                elt = FactElt(ftk.name, ftk.context, {}, content, data)
+                content = stack[-1]
+                stack.pop()
+                content.append(elt)
+
+        return TagElt("span", {}, content, data)
+
+    def to_html(self, par, taxonomy):
 
         return par.xhtml_maker.span(self.value)
-
-    def expand_text(self, text, par, taxonomy):
-
-        if not text.startswith("expand:"): return text
-
-        ne = NoteExpansion(self.data)
-        return ne.expand(text[7:], par, taxonomy)
 
 class FactElt(Elt):
     def __init__(self, fact, ctxt, attrs, content, data):
@@ -133,7 +212,11 @@ class FactElt(Elt):
 
     def to_html(self, par, taxonomy):
 
-        ctxt = taxonomy.get_context(self.ctxt, self.data)
+        if self.ctxt == None:
+            period = self.data.get_report_period()
+            ctxt = self.data.business_context.with_period(period)
+        else:
+            ctxt = taxonomy.get_context(self.ctxt, self.data)
         datum = StringDatum(self.fact, [], ctxt)
         fact = taxonomy.create_fact(datum)
         elt = fact.to_elt(par)
