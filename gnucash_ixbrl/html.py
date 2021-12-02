@@ -7,6 +7,186 @@ from . datum import StringDatum
 from . worksheetelement import WorksheetElement
 from lxml import objectify, etree
 
+class Elt:
+    @staticmethod
+    def load(root, data):
+
+        if isinstance(root, str):
+            return StringElt(root, data)
+
+        if "tag" in root:
+            return TagElt.load(root, data)
+
+        if "fact" in root:
+            return FactElt.load(root, data)
+
+        if "element" in root:
+            return ElementElt.load(root, data)
+
+        if "worksheet" in root:
+            return WorksheetElt.load(root, data)
+
+        if "ifdef" in root:
+            return IfdefElt.load(root, data)
+
+        raise RuntimeError("Can't handle ", root)
+
+class TagElt(Elt):
+    def __init__(self, tag, attrs, content, data):
+        self.tag = tag
+        self.attrs = attrs
+        self.content = content
+        self.data = data
+
+    @staticmethod
+    def load(root, data):
+        tag = root.get("tag")
+        attrs = root.get("attributes", {}, mandatory=False)
+        content = root.get("content", [], mandatory=False)
+
+        if isinstance(content, str):
+            content = [Elt.load(content, data)]
+        elif isinstance(content, list):
+            content = [Elt.load(v, data) for v in content]
+        elif isinstance(content, dict):
+            content = [Elt.load(content, data)]
+        else:
+            raise RuntimeError(
+                "Can't handle content being type %s" % str(type(content))
+            )
+
+        return TagElt(tag, attrs, content, data)
+
+    def to_html(self, par, taxonomy):
+
+        elt = par.xhtml_maker(self.tag, self.attrs)
+
+        for c in self.content:
+            elt.append(c.to_html(par, taxonomy))
+
+        return elt
+
+class IfdefElt(Elt):
+    def __init__(self, key, content, data):
+        self.key = key
+        self.content = content
+        self.data = data
+
+    @staticmethod
+    def load(root, data):
+        key = root.get("ifdef")
+        content = root.get("content")
+        content = Elt.load(content, data)
+        return IfdefElt(key, content, data)
+
+    def to_html(self, par, taxonomy):
+
+        try:
+            self.data.get_config(ifdef)
+        except:
+            return par.xhtml_maker.span()
+
+        return self.content.to_html(par, taxonomy)
+
+class StringElt(Elt):
+    def __init__(self, value, data):
+        self.value = value
+        self.data = data
+
+    def to_html(self, par, taxonomy):
+
+        return par.xhtml_maker.span(self.value)
+
+    def expand_text(self, text, par, taxonomy):
+
+        if not text.startswith("expand:"): return text
+
+        ne = NoteExpansion(self.data)
+        return ne.expand(text[7:], par, taxonomy)
+
+class FactElt(Elt):
+    def __init__(self, fact, ctxt, attrs, content, data):
+        self.fact = fact
+        self.ctxt = ctxt
+        self.attrs = attrs
+        self.content = content
+        self.data = data
+    @staticmethod
+    def load(root, data):
+        fact = root.get("fact")
+        attrs = root.get("attributes", {}, mandatory=False)
+        content = root.get("content", [], mandatory=False)
+
+        if isinstance(content, str):
+            content = [Elt.load(content, data)]
+        elif isinstance(content, list):
+            content = [Elt.load(v, data) for v in content]
+        elif isinstance(content, dict):
+            content = [Elt.load(content, data)]
+        else:
+            raise RuntimeError(
+                "Can't handle content being type %s" % str(type(content))
+            )
+
+        ctxt = root.get("context")
+        return FactElt(fact, ctxt, attrs, content, data)
+
+    def to_html(self, par, taxonomy):
+
+        ctxt = taxonomy.get_context(self.ctxt, self.data)
+        datum = StringDatum(self.fact, [], ctxt)
+        fact = taxonomy.create_fact(datum)
+        elt = fact.to_elt(par)
+
+        for child in self.content:
+            elt.append(child.to_html(par, taxonomy))
+
+        return elt
+
+class ElementElt(Elt):
+    def __init__(self, elt, data):
+        self.elt = elt
+        self.data = data
+    @staticmethod
+    def load(root, data):
+        element = root.get("element")
+
+        if isinstance(element, str):
+            return ElementElt(data.get_element(element), data)
+        elif isinstance(element, dict):
+            return ElementElt(data.get_element(element), data)
+        else:        
+            raise RuntimeError(
+                "Can't handle element being type %s" % str(type(content))
+            )
+
+    def to_html(self, par, taxonomy):
+
+        content = self.elt.to_ixbrl_elt(par, taxonomy)
+        
+        cntr = par.xhtml_maker.div()
+        for c in content:
+            cntr.append(c)
+
+        return cntr
+
+class WorksheetElt(Elt):
+
+    def __init__(self, ws, data):
+        self.wse = ws
+        self.data = data
+
+    @staticmethod
+    def load(root, data):
+        wse = WorksheetElement.load(root, data)
+        return WorksheetElt(wse, data)
+
+    def to_html(self, par, taxonomy):
+
+        # Assumption about WorksheetElement: Returns single element in list
+        return self.wse.to_ixbrl_elt(par, taxonomy)[0]
+
+
 class HtmlElement(BasicElement):
     def __init__(self, id, root, data):
         super().__init__(id, data)
@@ -15,11 +195,12 @@ class HtmlElement(BasicElement):
     @staticmethod
     def load(elt_def, data):
 
-        c = HtmlElement(
-            elt_def.get("id", mandatory=False),
-            elt_def.get("root"),
-            data
-        )
+        id = elt_def.get("id", mandatory=False)
+        root = elt_def.get("root")
+        root = Elt.load(root, data)
+
+        c = HtmlElement(id, root, data)
+
         return c
 
     def html_to_text(self, root, out):
@@ -84,6 +265,8 @@ class HtmlElement(BasicElement):
 
     def to_html(self, root, par, taxonomy):
 
+        return root.to_html(par, taxonomy)
+
         # FIXME: Too many logic paths through this functiona, refactor?
         ifdef = root.get("ifdef", mandatory=False)
         if ifdef:
@@ -131,15 +314,30 @@ class HtmlElement(BasicElement):
 
         element = root.get("element", mandatory=False)
         if element:
-            elt = self.data.get_element(element)
 
-            cntr = par.xhtml_maker.div()
+            if isinstance(element, str):
+            
+                elt = self.data.get_element(element)
 
-            # Assumption about Element: Returns single element in list
-            for child in elt.to_ixbrl_elt(par, taxonomy):
-                cntr.append(child)
+                cntr = par.xhtml_maker.div()
 
-            return cntr
+                # Assumption about Element: Returns single element in list
+                for child in elt.to_ixbrl_elt(par, taxonomy):
+                    cntr.append(child)
+
+                return cntr
+
+            else:
+                elt = self.data.get_element(element)
+                
+                cntr = par.xhtml_maker.div()
+
+                # Assumption about Element: Returns single element in list
+                for child in elt.to_ixbrl_elt(par, taxonomy):
+                    cntr.append(child)
+
+                return cntr
+
 
         if not tag and not fact:
             raise RuntimeError(

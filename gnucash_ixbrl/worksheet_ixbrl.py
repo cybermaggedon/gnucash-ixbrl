@@ -240,7 +240,11 @@ class WorksheetIxbrl:
         if not self.hide_notes:
             # note cell
             if section.metadata.note:
-                note = self.create_cell(section.metadata.note)
+                try:
+                    note = self.data.get_note(section.metadata.note)
+                except Exception as e:
+                    note = str(e)
+                note = self.create_cell(note)
             else:
                 note = self.create_cell("\u00a0")
             note.set("class", "note cell")

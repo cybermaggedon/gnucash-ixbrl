@@ -209,7 +209,6 @@ computations:
   - staff-costs
   - depreciation
   - other-charges
-#  - tax
 
 - id: charges
   kind: group
@@ -273,7 +272,7 @@ computations:
   description: Fixed Assets
   kind: sum
   period: at-end
-  note: 10
+  note: equipment
   inputs:
   - tangible-assets
 

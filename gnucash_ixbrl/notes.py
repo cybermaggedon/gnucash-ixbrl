@@ -112,7 +112,6 @@ class NoteExpansion:
 
         return [elt]
 
-
 class NotesElement(BasicElement):
     def __init__(self, id, title, notes, numbered, data):
         super().__init__(id, data)
