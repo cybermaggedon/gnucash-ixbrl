@@ -56,7 +56,7 @@ class NilResult(Result):
         self.defn = defn
         self.value = value
 
-    def add_data(self, computation, cdef, result, sec):
+    def add_total(self, computation, cdef, result, sec):
 
         if sec.metadata == None:
             sec.metadata = computation.metadata
@@ -65,6 +65,23 @@ class NilResult(Result):
             sec.total = Series(self.defn.metadata, [], rank=cdef.total_rank)
 
         sec.total.values.append(self.value.value)
+
+    def add_items(self, computation, cdef, result, sec):
+        pass
+
+    def add_data(self, computation, cdef, result, sec):
+        self.add_items(computation, cdef, result, sec)
+        self.add_total(computation, cdef, result, sec)
+
+    # def add_data(self, computation, cdef, result, sec):
+
+    #     if sec.metadata == None:
+    #         sec.metadata = computation.metadata
+
+    #     if sec.total == None:
+    #         sec.total = Series(self.defn.metadata, [], rank=cdef.total_rank)
+
+    #     sec.total.values.append(self.value.value)
 
 class TotalResult(Result):
 
@@ -73,7 +90,7 @@ class TotalResult(Result):
         self.value = value
         self.items = items
 
-    def add_data(self, computation, cdef, result, sec):
+    def add_total(self, computation, cdef, result, sec):
 
         if sec.metadata == None:
             sec.metadata = computation.metadata
@@ -82,3 +99,20 @@ class TotalResult(Result):
             sec.total = Series(self.defn.metadata, [], rank=cdef.total_rank)
 
         sec.total.values.append(self.value.value)
+
+    def add_items(self, computation, cdef, result, sec):
+        pass
+
+    def add_data(self, computation, cdef, result, sec):
+        self.add_items(computation, cdef, result, sec)
+        self.add_total(computation, cdef, result, sec)
+
+    # def add_data(self, computation, cdef, result, sec):
+
+    #     if sec.metadata == None:
+    #         sec.metadata = computation.metadata
+
+    #     if sec.total == None:
+    #         sec.total = Series(self.defn.metadata, [], rank=cdef.total_rank)
+
+    #     sec.total.values.append(self.value.value)

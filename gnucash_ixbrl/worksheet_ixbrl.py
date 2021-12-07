@@ -568,8 +568,7 @@ class WorksheetIxbrl:
         self.add_header(grid, periods)
 
         for section in sections:
-#            self.add_section(grid, section, periods)
-            section.FIXME(self, grid, periods)
+            section.update(self, grid, periods)
 
         return grid
 

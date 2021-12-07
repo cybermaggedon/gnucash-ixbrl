@@ -8,7 +8,7 @@
 
 from . period import Period
 from . worksheet import Worksheet
-from . dataset import Dataset, Section, Series
+from . dataset import Dataset, Section, Series, Heading, Items, Totals, Break
 
 class WorksheetSection:
     def __init__(self, id, rank=0, total_rank=0, hide_total=False):
@@ -76,13 +76,22 @@ class SimpleWorksheet(Worksheet):
             cid = comp_def.id
             computation = computations[cid]
 
-            sec = Section()
 
             if len(results) < 1:
                 raise RuntimeError("No periods in worksheet?")
 
-            sec.add_data(computation, comp_def, results)
-
+            sec = Heading(computation.metadata)
             ds.sections.append(sec)
+
+            sec = Items(computation, comp_def, results)
+            ds.sections.append(sec)
+
+#            sec = Section()
+#            sec.add_data(computation, comp_def, results)
+
+#            sec = Break()
+#            ds.sections.append(sec)
+
+#            ds.sections.append(sec)
 
         return ds

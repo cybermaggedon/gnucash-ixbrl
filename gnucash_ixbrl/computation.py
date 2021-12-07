@@ -4,7 +4,7 @@ import json
 import datetime
 import uuid
 
-from . worksheet_model import SimpleResult, BreakdownResult, NilResult, TotalResult
+from . result import SimpleResult, BreakdownResult, NilResult, TotalResult
 from . period import Period
 
 def get_computation(item, comps, context, data, gcfg):

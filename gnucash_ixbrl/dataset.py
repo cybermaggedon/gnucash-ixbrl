@@ -31,7 +31,7 @@ class Section:
             for item in self.items:
                 if item.has_notes(): return True
         return False
-    def FIXME(self, reporter, grid, periods):
+    def update(self, reporter, grid, periods):
         reporter.add_section(grid, self, periods)
 
 class Series:
@@ -52,7 +52,7 @@ class Heading:
         if self.metadata.note:
             return True
         return False
-    def FIXME(self, reporter, grid, periods):
+    def update(self, reporter, grid, periods):
         reporter.add_heading(grid, self, periods)
 
 class Items:
@@ -71,7 +71,7 @@ class Items:
             for item in self.items:
                 if item.has_notes(): return True
         return False
-    def FIXME(self, reporter, grid, periods):
+    def update(self, reporter, grid, periods):
         reporter.add_items(grid, self, periods)
 
 class Totals:
@@ -90,10 +90,10 @@ class Totals:
             return True
         return False
 
-    def FIXME(self, reporter, grid, periods):
+    def update(self, reporter, grid, periods):
         reporter.add_totals(grid, self, periods, self.super_total)
 
 class Break:
-    def FIXME(self, reporter, grid, periods):
+    def update(self, reporter, grid, periods):
         reporter.add_break(grid)
 
