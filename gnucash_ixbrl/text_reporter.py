@@ -5,27 +5,31 @@ import io
 
 class TextReporter:
 
+    def format_number(self, n):
+        if abs(n.value) < 0.001:
+            return "- "
+        return self.fmt.format("{0:.2f}", n.value)
+
     def output(self, worksheet, out):
 
-        fmt = NegativeParenFormatter()
-
-        def format_number(n):
-            if abs(n.value) < 0.001:
-                return "- "
-            return fmt.format("{0:.2f}", n.value)
+        self.out = out
+        self.fmt = NegativeParenFormatter()
 
         ds = worksheet.get_dataset()
 
         periods = ds.periods
         sections = ds.sections
 
-        out.write(fmt.format("{0:40}  ", ""))
+        out.write(self.fmt.format("{0:40}  ", ""))
         for period in periods:
-            out.write(fmt.format("{0:>10} ", period.name + " "))
+            out.write(self.fmt.format("{0:>10} ", period.name + " "))
 
         out.write("\n")
 
         for section in sections:
+            section.update(self, None, periods)
+
+            continue
 
             out.write("\n")
 
@@ -37,7 +41,7 @@ class TextReporter:
                     out.write(fmt.format("{0:>10} ", " - "))
 
                 out.write("\n")
-                
+                out.write("\n")
 
             elif section.items == None:
 
@@ -77,4 +81,23 @@ class TextReporter:
 
                 out.write("\n")
 
+    def add_heading(self, table, section, periods):
+        self.out.write(self.fmt.format("{0}:\n", section.metadata.description))
+        
+    def add_items(self, table, section, periods):
+        pass
 
+    def add_nil_section(self, table, section, periods):
+        pass
+
+    def add_totals(self, table, section, periods, super_total=False):
+
+        self.out.write(self.fmt.format("{0:40}: ", "Total"))
+
+        for period in periods:
+            self.out.write(self.fmt.format("{0:>10} ", " - "))
+
+        self.out.write("\n\n")
+
+    def add_break(self, table):
+        self.out.write("\n")

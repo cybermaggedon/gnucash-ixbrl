@@ -5,7 +5,7 @@ from . format import NegativeParenFormatter
 from datetime import datetime, date
 from lxml import objectify
 
-class WorksheetIxbrl:
+class IxbrlReporter:
 
     def __init__(self, hide_notes):
         self.hide_notes = hide_notes
