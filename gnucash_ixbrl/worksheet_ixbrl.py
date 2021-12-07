@@ -219,66 +219,6 @@ class WorksheetIxbrl:
         # Empty row
         self.add_empty_row(table)
 
-    def add_total_section(self, table, section, periods):
-
-        row = []
-
-        div = self.create_cell()
-        div.set("class", "label header total cell")
-
-        if len(section.total.values) > 0 and section.total.values[0].id:
-            desc = self.taxonomy.create_description_fact(
-                section.total.values[0], section.metadata.description
-            )
-            div.append(desc.to_elt(self.par))
-        else:
-            div.append(self.par.xhtml_maker.span(section.metadata.description))
-
-        row.append(div)
-
-        if not self.hide_notes:
-            # note cell
-            
-            note = "\u00a0"
-
-            if section.metadata.note:
-                try:
-                    note = self.data.get_note(section.metadata.note)
-                    
-                except Exception as e:
-                    pass
-
-            note = self.create_cell(note)
-            note.set("class", "note cell")
-            row.append(note)
-
-        for i in range(0, len(periods)):
-            div = self.create_cell()
-            row.append(div)
-            value = section.total.values[i]
-            if abs(value.value) < self.tiny:
-                div.set(
-                    "class",
-                    "period total value nil rank%d cell" % section.total.rank
-                )
-            elif value.value < 0:
-                div.set(
-                    "class",
-                    "period total value negative rank%d cell" % section.total.rank
-                )
-            else:
-                div.set(
-                    "class",
-                    "period total value rank%d cell" % section.total.rank
-                )
-            content = self.maybe_tag(value, section, i)
-            div.append(content)
-
-        self.add_row(table, row)
-
-        # Empty row
-        self.add_empty_row(table)
-
     def add_single_line(self, table, section, periods):
 
         row = []
@@ -336,134 +276,6 @@ class WorksheetIxbrl:
 
         self.add_row(table, row)
 
-    def add_breakdown_section(self, table, section, periods):
-
-        row = []
-
-        div = self.create_cell()
-        div.set("class", "label breakdown header cell")
-
-        if len(section.total.values) > 0 and section.total.values[0].id:
-            desc = self.taxonomy.create_description_fact(
-                section.total.values[0], section.metadata.description
-            )
-            div.append(desc.to_elt(self.par))
-        else:
-            div.append(self.par.xhtml_maker.span(section.metadata.description))
-        row.append(div)
-
-        if not self.hide_notes:
-            # note cell
-            blank = self.create_cell("\u00a0")
-            blank.set("class", "note cell")
-            row.append(blank)
-
-        self.add_row(table, row)
-
-        for item in section.items:
-
-            row = []
-
-            div = self.create_cell()
-            div.set("class", "label breakdown item cell")
-
-            if len(item.values) > 0 and item.values[0].id:
-                desc = self.taxonomy.create_description_fact(
-                    item.values[0], item.metadata.description
-                )
-                div.append(desc.to_elt(self.par))
-            else:
-                div.append(self.par.xhtml_maker.span(item.metadata.description))
-
-            row.append(div)
-
-            if not self.hide_notes:
-                # note cell
-
-                note = "\u00a0"
-
-                if item.metadata.note:
-                    try:
-                        note = self.data.get_note(item.metadata.note)
-
-                    except Exception as e:
-                        pass
-
-                note = self.create_cell(note)
-                note.set("class", "note cell")
-                row.append(note)
-
-            for i in range(0, len(periods)):
-
-                value = item.values[i]
-
-                div = self.create_cell()
-                if abs(value.value) < self.tiny:
-                    div.set("class",
-                            "period value nil rank%d cell" % item.rank )
-                elif value.value < 0:
-                    div.set("class",
-                            "period value negative rank%d cell" % item.rank)
-                else:
-                    div.set("class",
-                            "period value rank%d cell" % item.rank)
-
-                content = self.maybe_tag(value, item, i)
-
-                div.append(content)
-                row.append(div)
-
-            self.add_row(table, row)
-
-        row = []
-
-        div = self.create_cell()
-        div.set("class", "label breakdown total cell")
-        row.append(div)
-        div.append(self.par.xhtml_maker.span("Total"))
-
-        if not self.hide_notes:
-            # note cell
-            
-            note = "\u00a0"
-
-            if section.metadata.note:
-                try:
-                    note = self.data.get_note(section.metadata.note)
-                    
-                except Exception as e:
-                    pass
-
-            note = self.create_cell(note)
-            note.set("class", "note cell")
-            row.append(note)
-
-        for i in range(0, len(periods)):
-
-            div = self.create_cell()
-
-            row.append(div)
-
-            value = section.total.values[i]
-
-            if abs(value.value) < self.tiny:
-                div.set("class",
-                        "period value nil breakdown total rank%d cell" % section.total.rank)
-            elif value.value < 0:
-                div.set("class",
-                        "period value negative breakdown total rank%d cell" % section.total.rank)
-            else:
-                div.set("class",
-                        "period value breakdown total rank%d cell" % section.total.rank)
-
-            content = self.maybe_tag(value, section, i)
-            div.append(content)
-
-        self.add_row(table, row)
-
-        # Empty row
-        self.add_empty_row(table)
-
     def add_break(self, table):
 
         # Empty row
@@ -486,7 +298,6 @@ class WorksheetIxbrl:
             if section.metadata.note:
                 try:
                     note = self.data.get_note(section.metadata.note)
-                    
                 except Exception as e:
                     pass
 
@@ -528,6 +339,7 @@ class WorksheetIxbrl:
             div = self.create_cell()
             div.set("class", "label breakdown item cell")
 
+            # FIXME: Section has metadata?
             if len(item.values) > 0 and item.values[0].id:
                 desc = self.taxonomy.create_description_fact(
                     item.values[0], item.metadata.description
@@ -585,8 +397,20 @@ class WorksheetIxbrl:
         div = self.create_cell()
         div.set("class", "label breakdown header cell")
 
-        div.append(self.par.xhtml_maker.span(section.metadata.description))
+        if hasattr(section, "total"):
+            if len(section.total.values) > 0 and section.total.values[0].id:
+                desc = self.taxonomy.create_description_fact(
+                    section.total.values[0], section.metadata.description
+                )
+                div.append(desc.to_elt(self.par))
+            else:
+                div.append(self.par.xhtml_maker.span(section.metadata.description))
+        else:
+            div.append(self.par.xhtml_maker.span(section.metadata.description))
         row.append(div)
+
+#        div.append(self.par.xhtml_maker.span(section.metadata.description))
+#        row.append(div)
 
         if not self.hide_notes:
             # note cell
@@ -595,20 +419,6 @@ class WorksheetIxbrl:
             row.append(blank)
 
         self.add_row(table, row)
-
-    def add_section(self, grid, section, periods):
-
-        if section.total == None and section.items == None:
-
-            self.add_nil_section(grid, section, periods)
-
-        elif section.items == None:
-
-            self.add_total_section(grid, section, periods)
-
-        else:
-
-            self.add_breakdown_section(grid, section, periods)
 
     def create_report(self, worksheet):
 
