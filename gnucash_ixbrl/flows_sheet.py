@@ -1,13 +1,8 @@
 
 # A worksheet with a bunch of computations shown.
 
-
-# Dataset
-#   Section
-#     Series
-
 from . worksheet import Worksheet
-from . dataset import Dataset, Section, Series, Heading, Items, Totals, Break
+from . dataset import Dataset, Heading, Items, Totals, Break
 
 class WorksheetSection:
     def __init__(self, comp, kind, rank=0, total_rank=0, hide_total=False):

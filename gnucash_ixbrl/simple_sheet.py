@@ -1,11 +1,6 @@
 
 # A worksheet with a bunch of computations shown.
 
-
-# Dataset
-#   Section
-#     Series
-
 from . period import Period
 from . worksheet import Worksheet
 from . dataset import Dataset, Series, Heading, Items, Totals, Break, SingleLine

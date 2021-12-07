@@ -13,8 +13,6 @@ class SimpleResult(Result):
     def __init__(self, defn, value):
         self.defn = defn
         self.value = value
-    def add_data(self, computation, cdef, result, sec):
-        raise RuntimeError("Not implemented")
 
 class BreakdownResult(Result):
     def __init__(self, defn, value, items):
@@ -48,10 +46,6 @@ class BreakdownResult(Result):
             value = result[computation.metadata.id].items[i].value
             sec.items[i].values.append(value)
 
-    def add_data(self, computation, cdef, result, sec):
-        self.add_items(computation, cdef, result, sec)
-        self.add_total(computation, cdef, result, sec)
-
     def is_single_line(self):
         return False
 
@@ -73,20 +67,6 @@ class NilResult(Result):
     def add_items(self, computation, cdef, result, sec):
         pass
 
-    def add_data(self, computation, cdef, result, sec):
-        self.add_items(computation, cdef, result, sec)
-        self.add_total(computation, cdef, result, sec)
-
-    # def add_data(self, computation, cdef, result, sec):
-
-    #     if sec.metadata == None:
-    #         sec.metadata = computation.metadata
-
-    #     if sec.total == None:
-    #         sec.total = Series(self.defn.metadata, [], rank=cdef.total_rank)
-
-    #     sec.total.values.append(self.value.value)
-
 class TotalResult(Result):
 
     def __init__(self, defn, value, items):
@@ -107,16 +87,3 @@ class TotalResult(Result):
     def add_items(self, computation, cdef, result, sec):
         pass
 
-    def add_data(self, computation, cdef, result, sec):
-        self.add_items(computation, cdef, result, sec)
-        self.add_total(computation, cdef, result, sec)
-
-    # def add_data(self, computation, cdef, result, sec):
-
-    #     if sec.metadata == None:
-    #         sec.metadata = computation.metadata
-
-    #     if sec.total == None:
-    #         sec.total = Series(self.defn.metadata, [], rank=cdef.total_rank)
-
-    #     sec.total.values.append(self.value.value)
