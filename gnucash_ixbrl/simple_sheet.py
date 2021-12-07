@@ -1,5 +1,5 @@
 
-# A worksheet with multiple periods.
+# A worksheet with a bunch of computations shown.
 
 
 # Dataset
@@ -18,7 +18,7 @@ class WorksheetSection:
         self.total_rank = total_rank
         self.hide_total = hide_total
 
-class MultiPeriodWorksheet(Worksheet):
+class SimpleWorksheet(Worksheet):
 
     def __init__(self, comps, periods, data):
         self.computations = comps
@@ -45,7 +45,7 @@ class MultiPeriodWorksheet(Worksheet):
                     hide_total=comp.get("hide-total", False)
                 ))
 
-        mpr = MultiPeriodWorksheet(ws_elts, periods, data)
+        mpr = SimpleWorksheet(ws_elts, periods, data)
 
         return mpr
 

@@ -3,7 +3,8 @@ from . period import Period
 from . context import Context
 from . computation import get_computations, Result
 from . valueset import ValueSet
-from . multi_period import MultiPeriodWorksheet
+from . simple_sheet import SimpleWorksheet
+from . flows_sheet import FlowsWorksheet
 from . element import Element
 from . config import NoneValue
 from . datum import *
@@ -92,8 +93,10 @@ class DataSource:
 
                 kind = ws_def.get("kind")
 
-                if kind == "multi-period":
-                    return MultiPeriodWorksheet.load(ws_def, self)
+                if kind == "simple":
+                    return SimpleWorksheet.load(ws_def, self)
+                if kind == "flows":
+                    return FlowsWorksheet.load(ws_def, self)
 
                 raise RuntimeError("Don't know worksheet type '%s'" % kind)
 

@@ -25,13 +25,17 @@ class Breakdown(WorksheetItem):
         self.value = value
         self.items = items
 
-    def add_data(self, computation, cdef, result, sec):
+    def add_total(self, computation, cdef, result, sec):
 
         if sec.metadata == None:
             sec.metadata = computation.metadata
 
         if sec.total == None:
             sec.total = Series(self.defn.metadata, [], rank=cdef.total_rank)
+
+        sec.total.values.append(self.value.value)
+
+    def add_items(self, computation, cdef, result, sec):
 
         if sec.items == None:
             sec.items = [
@@ -42,12 +46,14 @@ class Breakdown(WorksheetItem):
                 for i in range(0, len(computation.inputs))
             ]
 
-        sec.total.values.append(self.value.value)
-
         for i in range(0, len(computation.inputs)):
             id = computation.inputs[i].metadata.id
             value = result[computation.metadata.id].items[i].value
             sec.items[i].values.append(value)
+
+    def add_data(self, computation, cdef, result, sec):
+        self.add_items(computation, cdef, result, sec)
+        self.add_total(computation, cdef, result, sec)
 
 class NilValue(WorksheetItem):
     def __init__(self, defn, value):
