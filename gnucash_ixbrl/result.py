@@ -3,7 +3,7 @@
 # up the output of a worksheet: Simple value, line-item breakdown,
 # a total (without line-item breakdown), and a special nil value.
 
-from . dataset import *
+from . worksheet_structure import Series
 
 class Result:
     def is_single_line(self):

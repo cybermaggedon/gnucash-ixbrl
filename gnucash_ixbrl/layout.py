@@ -1,6 +1,6 @@
 
 from . datum import StringDatum
-from . worksheetelement import WorksheetElement
+from . worksheet_element import WorksheetElement
 
 class Elt:
 

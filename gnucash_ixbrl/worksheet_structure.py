@@ -75,7 +75,6 @@ class Break:
     def update(self, reporter, grid, periods):
         reporter.add_break(grid)
 
-
 class SingleLine:
     def __init__(self, computation, comp_def, results):
         self.id = None

@@ -3,8 +3,9 @@
 
 from . period import Period
 from . worksheet import Worksheet
-from . dataset import Dataset, Series, Heading, Items, Totals, Break, SingleLine
-import sys
+from . worksheet_structure import (
+    Dataset, Series, Heading, Items, Totals, Break, SingleLine
+)
 
 class WorksheetSection:
     def __init__(self, id, rank=0, total_rank=0, hide_total=False):

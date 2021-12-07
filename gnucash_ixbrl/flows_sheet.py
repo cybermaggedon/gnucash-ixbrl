@@ -2,7 +2,7 @@
 # A worksheet with a bunch of computations shown.
 
 from . worksheet import Worksheet
-from . dataset import Dataset, Heading, Items, Totals, Break
+from . worksheet_structure import Dataset, Heading, Items, Totals, Break
 
 class WorksheetSection:
     def __init__(self, comp, kind, rank=0, total_rank=0, hide_total=False):

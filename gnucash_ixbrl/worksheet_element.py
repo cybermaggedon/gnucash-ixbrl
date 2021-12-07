@@ -1,7 +1,7 @@
 
 # A worksheet element is an element of a report which displays a worksheet.
 
-from . basicelement import BasicElement
+from . basic_element import BasicElement
 from . report import TextReporter
 from . worksheet_ixbrl import WorksheetIxbrl
 from lxml import objectify
