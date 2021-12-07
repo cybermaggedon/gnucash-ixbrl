@@ -1,7 +1,7 @@
 
 from . period import Period
 from . context import Context
-from . computation import get_computations, Result
+from . computation import get_computations, ResultSet
 from . valueset import ValueSet
 from . simple_sheet import SimpleWorksheet
 from . flows_sheet import FlowsWorksheet
@@ -61,7 +61,7 @@ class DataSource:
         c = self.business_context.with_period(period)
 
         if c not in self.results:
-            res = Result()
+            res = ResultSet()
             self.results[c] = res
 
             for comp in self.computations.values():

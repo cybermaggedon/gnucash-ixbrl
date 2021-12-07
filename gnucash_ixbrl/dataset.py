@@ -94,7 +94,6 @@ class Totals:
         reporter.add_totals(grid, self, periods, self.super_total)
 
 class Break:
-
     def FIXME(self, reporter, grid, periods):
         reporter.add_break(grid)
 

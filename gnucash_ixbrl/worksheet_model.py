@@ -5,21 +5,17 @@
 
 from . dataset import *
 
-class WorksheetItem:
+class Result:
     pass
 
-class WsStructure:
-    def __init__(self):
-        pass
-
-class SimpleValue(WorksheetItem):
+class SimpleResult(Result):
     def __init__(self, defn, value):
         self.defn = defn
         self.value = value
     def add_data(self, computation, cdef, result, sec):
         raise RuntimeError("Not implemented")
 
-class Breakdown(WorksheetItem):
+class BreakdownResult(Result):
     def __init__(self, defn, value, items):
         self.defn = defn
         self.value = value
@@ -55,7 +51,7 @@ class Breakdown(WorksheetItem):
         self.add_items(computation, cdef, result, sec)
         self.add_total(computation, cdef, result, sec)
 
-class NilValue(WorksheetItem):
+class NilResult(Result):
     def __init__(self, defn, value):
         self.defn = defn
         self.value = value
@@ -70,7 +66,7 @@ class NilValue(WorksheetItem):
 
         sec.total.values.append(self.value.value)
 
-class Total(WorksheetItem):
+class TotalResult(Result):
 
     def __init__(self, defn, value, items):
         self.defn = defn
@@ -86,6 +82,3 @@ class Total(WorksheetItem):
             sec.total = Series(self.defn.metadata, [], rank=cdef.total_rank)
 
         sec.total.values.append(self.value.value)
-
-class Worksheet:
-    pass

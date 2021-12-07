@@ -6,9 +6,7 @@
 #   Section
 #     Series
 
-from . period import Period
-from . computation import Result
-from . worksheet_model import Worksheet, SimpleValue, Breakdown, NilValue, Total
+from . worksheet import Worksheet
 from . dataset import Dataset, Section, Series, Heading, Items, Totals, Break
 
 class WorksheetSection:
