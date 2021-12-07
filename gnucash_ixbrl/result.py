@@ -6,7 +6,8 @@
 from . dataset import *
 
 class Result:
-    pass
+    def is_single_line(self):
+        return True
 
 class SimpleResult(Result):
     def __init__(self, defn, value):
@@ -50,6 +51,9 @@ class BreakdownResult(Result):
     def add_data(self, computation, cdef, result, sec):
         self.add_items(computation, cdef, result, sec)
         self.add_total(computation, cdef, result, sec)
+
+    def is_single_line(self):
+        return False
 
 class NilResult(Result):
     def __init__(self, defn, value):

@@ -8,7 +8,8 @@
 
 from . period import Period
 from . worksheet import Worksheet
-from . dataset import Dataset, Section, Series, Heading, Items, Totals, Break
+from . dataset import Dataset, Series, Heading, Items, Totals, Break, SingleLine
+import sys
 
 class WorksheetSection:
     def __init__(self, id, rank=0, total_rank=0, hide_total=False):
@@ -76,9 +77,16 @@ class SimpleWorksheet(Worksheet):
             cid = comp_def.id
             computation = computations[cid]
 
-
             if len(results) < 1:
                 raise RuntimeError("No periods in worksheet?")
+
+            result0 = results[0].get(cid)
+
+            if result0.is_single_line():
+                sec = SingleLine(computation, comp_def, results)
+                ds.sections.append(sec)
+                ds.sections.append(Break())
+                continue
 
             sec = Heading(computation.metadata)
             ds.sections.append(sec)
@@ -86,12 +94,9 @@ class SimpleWorksheet(Worksheet):
             sec = Items(computation, comp_def, results)
             ds.sections.append(sec)
 
-#            sec = Section()
-#            sec.add_data(computation, comp_def, results)
+            sec = Totals(computation, comp_def, results)
+            ds.sections.append(sec)
 
-#            sec = Break()
-#            ds.sections.append(sec)
-
-#            ds.sections.append(sec)
+            ds.sections.append(Break())
 
         return ds

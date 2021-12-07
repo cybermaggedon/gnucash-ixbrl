@@ -279,6 +279,63 @@ class WorksheetIxbrl:
         # Empty row
         self.add_empty_row(table)
 
+    def add_single_line(self, table, section, periods):
+
+        row = []
+
+        div = self.create_cell()
+        div.set("class", "label header total cell")
+
+        if len(section.total.values) > 0 and section.total.values[0].id:
+            desc = self.taxonomy.create_description_fact(
+                section.total.values[0], section.metadata.description
+            )
+            div.append(desc.to_elt(self.par))
+        else:
+            div.append(self.par.xhtml_maker.span(section.metadata.description))
+
+        row.append(div)
+
+        if not self.hide_notes:
+            # note cell
+            
+            note = "\u00a0"
+
+            if section.metadata.note:
+                try:
+                    note = self.data.get_note(section.metadata.note)
+                    
+                except Exception as e:
+                    pass
+
+            note = self.create_cell(note)
+            note.set("class", "note cell")
+            row.append(note)
+
+        for i in range(0, len(periods)):
+            div = self.create_cell()
+            row.append(div)
+            value = section.total.values[i]
+            if abs(value.value) < self.tiny:
+                div.set(
+                    "class",
+                    "period total value nil rank%d cell" % section.total.rank
+                )
+            elif value.value < 0:
+                div.set(
+                    "class",
+                    "period total value negative rank%d cell" % section.total.rank
+                )
+            else:
+                div.set(
+                    "class",
+                    "period total value rank%d cell" % section.total.rank
+                )
+            content = self.maybe_tag(value, section, i)
+            div.append(content)
+
+        self.add_row(table, row)
+
     def add_breakdown_section(self, table, section, periods):
 
         row = []

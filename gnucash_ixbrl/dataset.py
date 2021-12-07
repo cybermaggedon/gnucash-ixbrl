@@ -97,3 +97,21 @@ class Break:
     def update(self, reporter, grid, periods):
         reporter.add_break(grid)
 
+
+class SingleLine:
+    def __init__(self, computation, comp_def, results):
+        self.id = None
+        self.total = None
+        self.metadata = computation.metadata
+
+        for result in results:
+            comp_res = computation.get_output(result)
+            comp_res.add_total(computation, comp_def, result, self)
+
+    def has_notes(self):
+        if self.total.has_notes():
+            return True
+        return False
+
+    def update(self, reporter, grid, periods):
+        reporter.add_single_line(grid, self, periods)
