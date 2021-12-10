@@ -390,6 +390,66 @@ class IxbrlReporter:
 
         self.add_row(table, row)
 
+    def add_item(self, table, section, periods):
+
+        item = section
+
+        row = []
+
+        div = self.create_cell()
+        div.set("class", "label breakdown item cell")
+
+        # FIXME: Section has metadata?
+        if item.value.values[0].id:
+            desc = self.taxonomy.create_description_fact(
+                item.value.values[0], item.metadata.description
+            )
+            div.append(desc.to_elt(self.par))
+        else:
+            div.append(self.par.xhtml_maker.span(item.metadata.description))
+
+#        div.append(self.par.xhtml_maker.span(item.metadata.description))
+
+        row.append(div)
+
+        if not self.hide_notes:
+            # note cell
+
+            note = "\u00a0"
+
+            if item.metadata.note:
+                try:
+                    note = self.data.get_note(item.metadata.note)
+
+                except Exception as e:
+                    pass
+
+            note = self.create_cell(note)
+            note.set("class", "note cell")
+            row.append(note)
+
+        for i in range(0, len(periods)):
+
+            value = item.value.values[i]
+
+            div = self.create_cell()
+            if abs(value.value) < self.tiny:
+                div.set("class",
+                        "period value nil rank%d cell" % item.value.rank )
+            elif value.value < 0:
+                div.set("class",
+                        "period value negative rank%d cell" % item.value.rank)
+            else:
+                div.set("class",
+                        "period value rank%d cell" % item.value.rank)
+
+            content = self.maybe_tag(value, item, i)
+
+            div.append(content)
+            row.append(div)
+
+        self.add_row(table, row)
+
     def add_heading(self, table, section, periods):
 
         row = []

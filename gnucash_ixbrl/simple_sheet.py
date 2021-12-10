@@ -4,7 +4,7 @@
 from . period import Period
 from . worksheet import Worksheet
 from . worksheet_structure import (
-    Dataset, Series, Heading, Items, Totals, Break, SingleLine
+    Dataset, Series, Heading, Item, Totals, Break, SingleLine
 )
 
 class WorksheetSection:
@@ -59,13 +59,9 @@ class SimpleWorksheet(Worksheet):
             for period in self.periods
         ]
 
-        results = [
-            {
-                cid: computations[cid].get_output(results[i])
-                for cid in computations
-            }
-            for i in range(0, len(self.periods))
-        ]
+        if len(results) < 1:
+            raise RuntimeError("No periods in worksheet?")
+
 
         for cix in range(0, len(self.computations)):
 
@@ -73,25 +69,21 @@ class SimpleWorksheet(Worksheet):
             cid = comp_def.id
             computation = computations[cid]
 
-            if len(results) < 1:
-                raise RuntimeError("No periods in worksheet?")
+            if computation.is_single_line():
 
-            result0 = results[0].get(cid)
-
-            if result0.is_single_line():
-                sec = SingleLine(computation, comp_def, results)
+                sec = computation.to_single_line(results)
                 ds.sections.append(sec)
-                ds.sections.append(Break())
-                continue
 
-            sec = Heading(computation.metadata)
-            ds.sections.append(sec)
+            else:
 
-            sec = Items(computation, comp_def, results)
-            ds.sections.append(sec)
+                sec = computation.to_heading()
+                ds.sections.append(sec)
 
-            sec = Totals(computation, comp_def, results)
-            ds.sections.append(sec)
+                for item in computation.to_items(results):
+                    ds.sections.append(item)
+
+                sec = Totals(computation, results)
+                ds.sections.append(sec)
 
             ds.sections.append(Break())
 

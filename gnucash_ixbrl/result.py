@@ -6,8 +6,7 @@
 from . worksheet_structure import Series
 
 class Result:
-    def is_single_line(self):
-        return True
+    pass
 
 class SimpleResult(Result):
     def __init__(self, defn, value):
@@ -20,51 +19,52 @@ class BreakdownResult(Result):
         self.value = value
         self.items = items
 
-    def add_total(self, computation, cdef, result, sec):
+    def add_total(self, computation, result, sec):
 
         if sec.metadata == None:
             sec.metadata = computation.metadata
 
         if sec.total == None:
-            sec.total = Series(self.defn.metadata, [], rank=cdef.total_rank)
+            sec.total = Series(self.defn.metadata, [])
 
-        sec.total.values.append(self.value.value)
+        sec.total.values.append(self.value)
 
-    def add_items(self, computation, cdef, result, sec):
+    def add_value(self, computation, result, sec):
 
-        if sec.items == None:
-            sec.items = [
-                Series(
-                    computation.inputs[i].metadata, [],
-                    rank=cdef.rank
-                )
-                for i in range(0, len(computation.inputs))
-            ]
+        if sec.metadata == None:
+            sec.metadata = computation.metadata
 
-        for i in range(0, len(computation.inputs)):
-            id = computation.inputs[i].metadata.id
-            value = result[computation.metadata.id].items[i].value
-            sec.items[i].values.append(value)
+        if sec.value == None:
+            sec.value = Series(computation.metadata, [])
 
-    def is_single_line(self):
-        return False
+        sec.value.values.append(self.value)
 
 class NilResult(Result):
     def __init__(self, defn, value):
         self.defn = defn
         self.value = value
 
-    def add_total(self, computation, cdef, result, sec):
+    def add_total(self, computation, result, sec):
 
         if sec.metadata == None:
             sec.metadata = computation.metadata
 
         if sec.total == None:
-            sec.total = Series(self.defn.metadata, [], rank=cdef.total_rank)
+            sec.total = Series(self.defn.metadata, [])
 
-        sec.total.values.append(self.value.value)
+        sec.total.values.append(self.value)
 
-    def add_items(self, computation, cdef, result, sec):
+    def add_value(self, computation, result, sec):
+
+        if sec.metadata == None:
+            sec.metadata = computation.metadata
+
+        if sec.value == None:
+            sec.value = Series(self.defn.metadata, [])
+
+        sec.value.values.append(self.value)
+
+    def add_items(self, computation, result, sec):
         pass
 
 class TotalResult(Result):
@@ -74,16 +74,26 @@ class TotalResult(Result):
         self.value = value
         self.items = items
 
-    def add_total(self, computation, cdef, result, sec):
+    def add_total(self, computation, result, sec):
 
         if sec.metadata == None:
             sec.metadata = computation.metadata
 
         if sec.total == None:
-            sec.total = Series(self.defn.metadata, [], rank=cdef.total_rank)
+            sec.total = Series(self.defn.metadata, [])
 
-        sec.total.values.append(self.value.value)
+        sec.total.values.append(self.value)
 
-    def add_items(self, computation, cdef, result, sec):
+    def add_value(self, computation, result, sec):
+
+        if sec.metadata == None:
+            sec.metadata = computation.metadata
+
+        if sec.value == None:
+            sec.value = Series(self.defn.metadata, [])
+
+        sec.value.values.append(self.value)
+
+    def add_items(self, computation, result, sec):
         pass
 

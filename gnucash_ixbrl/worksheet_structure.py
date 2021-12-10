@@ -53,7 +53,7 @@ class Items:
         reporter.add_items(grid, self, periods)
 
 class Totals:
-    def __init__(self, computation, comp_def, results, super_total=False):
+    def __init__(self, computation, results, super_total=False):
         self.id = None
         self.total = None
         self.metadata = computation.metadata
@@ -61,7 +61,7 @@ class Totals:
 
         for result in results:
             comp_res = computation.get_output(result)
-            comp_res.add_total(computation, comp_def, result, self)
+            comp_res.add_total(computation, result, self)
 
     def has_notes(self):
         if self.total.has_notes():
@@ -74,16 +74,18 @@ class Totals:
 class Break:
     def update(self, reporter, grid, periods):
         reporter.add_break(grid)
+    def has_notes(self):
+        return False
 
 class SingleLine:
-    def __init__(self, computation, comp_def, results):
+    def __init__(self, computation, results):
         self.id = None
         self.total = None
         self.metadata = computation.metadata
 
         for result in results:
             comp_res = computation.get_output(result)
-            comp_res.add_total(computation, comp_def, result, self)
+            comp_res.add_total(computation, result, self)
 
     def has_notes(self):
         if self.total.has_notes():
@@ -92,3 +94,24 @@ class SingleLine:
 
     def update(self, reporter, grid, periods):
         reporter.add_single_line(grid, self, periods)
+
+class Item:
+    def __init__(self, computation, results):
+        self.id = None
+        self.value = None
+        self.metadata = computation.metadata
+
+        # FIXME, what's this???
+        self.super_total = False
+
+        for result in results:
+            comp_res = computation.get_output(result)
+            comp_res.add_value(computation, result, self)
+
+    def has_notes(self):
+        if self.value.has_notes():
+            return True
+        return False
+
+    def update(self, reporter, grid, periods):
+        reporter.add_item(grid, self, periods)
