@@ -29,58 +29,6 @@ class TextReporter:
         for section in sections:
             section.update(self, None, periods)
 
-            continue
-
-            out.write("\n")
-
-            if section.total == None and section.items == None:
-
-                out.write(fmt.format("{0:40}: ", section.metadata.description))
-
-                for period in periods:
-                    out.write(fmt.format("{0:>10} ", " - "))
-
-                out.write("\n")
-                out.write("\n")
-
-            elif section.items == None:
-
-                out.write(fmt.format("{0:40}: ", section.metadata.description))
-
-                for i in range(0, len(periods)):
-
-                    s = format_number(section.total.values[i])
-                    out.write("{0:>10} ".format(s))
-
-                out.write("\n")
-
-            else:
-
-                out.write(fmt.format("{0}:\n", section.metadata.description))
-
-                for item in section.items:
-                    
-                    out.write(
-
-                        fmt.format("  {0:38}: ", item.metadata.description)
-                    )
-
-                    for i in range(0, len(periods)):
-
-                        s = format_number(item.values[i])
-                        out.write(fmt.format("{0:>10} ", s))
-
-                    out.write("\n")
-
-                out.write(fmt.format("{0:40}: ", "Total"))
-
-                for i in range(0, len(periods)):
-
-                    s = format_number(section.total.values[i])
-                    out.write(fmt.format("{0:>10} ", s))
-
-                out.write("\n")
-
     def add_heading(self, table, section, periods):
         self.out.write(self.fmt.format("{0}:\n", section.metadata.description))
         
@@ -116,3 +64,4 @@ class TextReporter:
 
     def add_break(self, table):
         self.out.write("\n")
+
