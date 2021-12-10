@@ -45,7 +45,7 @@ class SimpleWorksheet(Worksheet):
 
         return mpr
 
-    def get_dataset(self):
+    def get_structure(self):
 
         ds = Dataset(self.periods, [])
 
