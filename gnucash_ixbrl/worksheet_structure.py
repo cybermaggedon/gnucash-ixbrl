@@ -36,16 +36,16 @@ class Heading:
 class Totals:
     def __init__(self, computation, results, super_total=False):
         self.id = None
-        self.total = None
+        self.value = None
         self.metadata = computation.metadata
         self.super_total = super_total
 
         for result in results:
             comp_res = computation.get_output(result)
-            comp_res.add_total(computation, result, self)
+            comp_res.add_value(computation, result, self)
 
     def has_notes(self):
-        if self.total.has_notes():
+        if self.value.has_notes():
             return True
         return False
 
@@ -61,15 +61,15 @@ class Break:
 class SingleLine:
     def __init__(self, computation, results):
         self.id = None
-        self.total = None
+        self.value = None
         self.metadata = computation.metadata
 
         for result in results:
             comp_res = computation.get_output(result)
-            comp_res.add_total(computation, result, self)
+            comp_res.add_value(computation, result, self)
 
     def has_notes(self):
-        if self.total.has_notes():
+        if self.value.has_notes():
             return True
         return False
 

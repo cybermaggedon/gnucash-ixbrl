@@ -178,9 +178,9 @@ class IxbrlReporter:
         div = self.create_cell()
         div.set("class", "label header cell")
 
-        if len(section.total.values) > 0 and section.total.values[0].id:
+        if len(section.value.values) > 0 and section.value.values[0].id:
             desc = self.taxonomy.create_description_fact(
-                section.total.values[0], section.metadata.description
+                section.value.values[0], section.metadata.description
             )
             div.append(desc.to_elt(self.par))
         else:
@@ -208,7 +208,7 @@ class IxbrlReporter:
             div = self.create_cell()
             div.set(
                 "class",
-                "period total value nil rank%d cell" % section.total.rank
+                "period total value nil rank%d cell" % section.value.rank
             )
             row.append(div)
             content = self.maybe_tag(0, section, i)
@@ -226,9 +226,9 @@ class IxbrlReporter:
         div = self.create_cell()
         div.set("class", "label header total cell")
 
-        if len(section.total.values) > 0 and section.total.values[0].id:
+        if len(section.value.values) > 0 and section.value.values[0].id:
             desc = self.taxonomy.create_description_fact(
-                section.total.values[0], section.metadata.description
+                section.value.values[0], section.metadata.description
             )
             div.append(desc.to_elt(self.par))
         else:
@@ -255,21 +255,21 @@ class IxbrlReporter:
         for i in range(0, len(periods)):
             div = self.create_cell()
             row.append(div)
-            value = section.total.values[i]
+            value = section.value.values[i]
             if abs(value.value) < self.tiny:
                 div.set(
                     "class",
-                    "period total value nil rank%d cell" % section.total.rank
+                    "period total value nil rank%d cell" % section.value.rank
                 )
             elif value.value < 0:
                 div.set(
                     "class",
-                    "period total value negative rank%d cell" % section.total.rank
+                    "period total value negative rank%d cell" % section.value.rank
                 )
             else:
                 div.set(
                     "class",
-                    "period total value rank%d cell" % section.total.rank
+                    "period total value rank%d cell" % section.value.rank
                 )
             content = self.maybe_tag(value, section, i)
             div.append(content)
@@ -311,10 +311,10 @@ class IxbrlReporter:
 
             row.append(div)
 
-            value = section.total.values[i]
+            value = section.value.values[i]
 
             cls = "period value breakdown total cell"
-            cls += " rank%d" % section.total.rank
+            cls += " rank%d" % section.value.rank
 
             if abs(value.value) < self.tiny:
                 cls += " nil"
@@ -458,9 +458,9 @@ class IxbrlReporter:
         div.set("class", "label breakdown header cell")
 
         if hasattr(section, "total"):
-            if len(section.total.values) > 0 and section.total.values[0].id:
+            if len(section.value.values) > 0 and section.value.values[0].id:
                 desc = self.taxonomy.create_description_fact(
-                    section.total.values[0], section.metadata.description
+                    section.value.values[0], section.metadata.description
                 )
                 div.append(desc.to_elt(self.par))
             else:

@@ -47,7 +47,7 @@ class TextReporter:
         self.out.write(self.fmt.format("{0:40}: ", "Total"))
 
         for i in range(0, len(periods)):
-            s = self.format_number(section.total.values[i])
+            s = self.format_number(section.value.values[i])
             self.out.write(self.fmt.format("{0:>10} ", s))
 
         self.out.write("\n")
@@ -57,7 +57,7 @@ class TextReporter:
         self.out.write(self.fmt.format("{0:40}: ", section.metadata.description))
 
         for i in range(0, len(periods)):
-            s = self.format_number(section.total.values[i])
+            s = self.format_number(section.value.values[i])
             self.out.write(self.fmt.format("{0:>10} ", s))
 
         self.out.write("\n")
