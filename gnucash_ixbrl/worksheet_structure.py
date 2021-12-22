@@ -1,6 +1,24 @@
 
 from . datum import *
 
+# Series is a 1-dimensional array of facts
+class Series:
+    def __init__(self, metadata, values, rank=0):
+        self.metadata = metadata
+        self.values = values
+        self.rank = rank
+
+# Base class for tabular data
+class StructElt:
+    def __init__(self):
+        self.notes = None
+    def set_notes(self, note):
+        self.notes = note
+    def has_notes(self):
+        return self.notes is not None
+    def get_notes(self):
+        return self.notes
+
 class Dataset:
 
     def __init__(self, periods, sections):
@@ -12,34 +30,19 @@ class Dataset:
             if sec.has_notes(): return True
         return False
 
-class Series:
-
-    def __init__(self, metadata, values, rank=0):
-        self.metadata = metadata
-        self.values = values
-        self.rank = rank
-
-    def has_notes(self):
-        if self.metadata.note:
-            return True
-        return False
-
-class Heading:
+class Heading(StructElt):
 
     def __init__(self, metadata):
+        super().__init__()
         self.metadata = metadata
-
-    def has_notes(self):
-        if self.metadata.note:
-            return True
-        return False
 
     def emit(self, reporter, grid, periods):
         reporter.add_heading(grid, self, periods)
 
-class Totals:
+class Totals(StructElt):
 
     def __init__(self, computation, results, super_total=False):
+        super().__init__()
         self.id = None
         self.value = None
         self.metadata = computation.metadata
@@ -49,25 +52,21 @@ class Totals:
             comp_res = computation.get_output(result)
             comp_res.add_value(computation, result, self)
 
-    def has_notes(self):
-        if self.value.has_notes():
-            return True
-        return False
-
     def emit(self, reporter, grid, periods):
         reporter.add_totals(grid, self, periods, self.super_total)
 
-class Break:
+class Break(StructElt):
 
-    def has_notes(self):
-        return False
+    def __init__(self):
+        super().__init__()
 
     def emit(self, reporter, grid, periods):
         reporter.add_break(grid)
 
-class SingleLine:
+class SingleLine(StructElt):
 
     def __init__(self, computation, results):
+        super().__init__()
         self.id = None
         self.value = None
         self.metadata = computation.metadata
@@ -76,17 +75,13 @@ class SingleLine:
             comp_res = computation.get_output(result)
             comp_res.add_value(computation, result, self)
 
-    def has_notes(self):
-        if self.value.has_notes():
-            return True
-        return False
-
     def emit(self, reporter, grid, periods):
         reporter.add_single_line(grid, self, periods)
 
-class Item:
+class Item(StructElt):
 
     def __init__(self, computation, results):
+        super().__init__()
         self.id = None
         self.value = None
         self.metadata = computation.metadata
@@ -97,11 +92,6 @@ class Item:
         for result in results:
             comp_res = computation.get_output(result)
             comp_res.add_value(computation, result, self)
-
-    def has_notes(self):
-        if self.value.has_notes():
-            return True
-        return False
 
     def emit(self, reporter, grid, periods):
         reporter.add_item(grid, self, periods)
