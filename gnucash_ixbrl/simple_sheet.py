@@ -3,11 +3,8 @@
 
 from . period import Period
 from . worksheet import Worksheet
-#from . worksheet_structure import (
-#    Dataset, Series, Heading, Item, Totals, Break, SingleLine
-#)
 from . table import (
-    Cell, Row, Index, Column, Table
+    Cell, Row, Index, Column, Table, TotalIndex, VerticalSpacer
 )
 from . computation import Metadata, Group
 
@@ -102,11 +99,13 @@ class SimpleWorksheet(Worksheet):
                             computation.get_output(result).value
                         )
                     )
-                ix = Index(computation.metadata, Row(cells))
+                ix = TotalIndex(computation.metadata, Row(cells))
                 item_ixs.append(ix)
 
             ix = Index(computation.metadata, item_ixs)
             ixs.append(ix)
+
+            ixs.append(VerticalSpacer())
 
         tbl = Table(columns, ixs)
 

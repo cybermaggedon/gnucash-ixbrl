@@ -19,6 +19,11 @@ class DebugReporter:
             for ix in thing.ixs:
                 self.handle(ix, out, indent + 1)
 
+            print()
+            print("Table has", thing.column_count(), "columns")
+            print("Table has", thing.row_count(), "rows")
+            print("Table has", thing.ix_count(), "index levels")
+
         if isinstance(thing, Column):
 
             out.write("  " * indent)
@@ -31,13 +36,22 @@ class DebugReporter:
         if isinstance(thing, Index):
 
             out.write("  " * indent)
-            print("Index:", thing.metadata.description)
+
+            if isinstance(thing, TotalIndex):
+                print("Total:")
+            else:
+                print("Index:", thing.metadata.description)
 
             if isinstance(thing.child, Row):
                 self.handle(thing.child, out, indent + 1)
             else:
                 for ix in thing.child:
                     self.handle(ix, out, indent + 1)
+
+        if isinstance(thing, VerticalSpacer):
+
+            out.write("  " * indent)
+            out.write("----\n")
 
         if isinstance(thing, Row):
 
@@ -51,3 +65,4 @@ class DebugReporter:
 
             out.write("  " * indent)
             print("Cell:", round(thing.value.value, 2))
+
