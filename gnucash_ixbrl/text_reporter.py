@@ -34,7 +34,8 @@ class TextReporter:
         
     def add_item(self, table, section, periods):
 
-        self.out.write(self.fmt.format("{0:40}: ", section.metadata.description))
+        self.out.write(self.fmt.format("{0:40}: ",
+                                       section.metadata.description[:40]))
 
         for i in range(0, len(periods)):
             s = self.format_number(section.value.values[i])

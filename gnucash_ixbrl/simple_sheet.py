@@ -3,9 +3,13 @@
 
 from . period import Period
 from . worksheet import Worksheet
-from . worksheet_structure import (
-    Dataset, Series, Heading, Item, Totals, Break, SingleLine
+#from . worksheet_structure import (
+#    Dataset, Series, Heading, Item, Totals, Break, SingleLine
+#)
+from . table import (
+    Cell, Row, Index, Column, Table
 )
+from . computation import Metadata, Group
 
 class WorksheetSection:
     def __init__(self, id, rank=0, total_rank=0, hide_total=False):
@@ -47,7 +51,8 @@ class SimpleWorksheet(Worksheet):
 
     def get_structure(self):
 
-        ds = Dataset(self.periods, [])
+        if len(self.periods) < 1:
+            raise RuntimeError("No periods in worksheet?")
 
         computations = {
             v.id: self.data.get_computation(v.id)
@@ -55,13 +60,16 @@ class SimpleWorksheet(Worksheet):
         }
 
         results = [
-            self.data.perform_computations(period)
+            (period, self.data.perform_computations(period))
             for period in self.periods
         ]
 
-        if len(results) < 1:
-            raise RuntimeError("No periods in worksheet?")
+        columns = []
+        for period in self.periods:
+            m = Metadata(None, period.name, None, {}, period, None)
+            columns.append(Column(m))
 
+        ixs = []
 
         for cix in range(0, len(self.computations)):
 
@@ -69,22 +77,37 @@ class SimpleWorksheet(Worksheet):
             cid = comp_def.id
             computation = computations[cid]
 
-            if computation.is_single_line():
+            if isinstance(computation, Group):
 
-                sec = computation.to_single_line(results)
-                ds.sections.append(sec)
+                item_ixs = []
+                for item in computation.inputs:
+                    
+                    cells = []
+                    for period, result in results:
+                        cells.append(
+                            Cell(
+                                item.metadata,
+                                item.get_output(result).value
+                            )
+                        )
+                    ix = Index(item.metadata, Row(cells))
+                    item_ixs.append(ix)
 
-            else:
+                # Total
+                cells = []
+                for period, result in results:
+                    cells.append(
+                        Cell(
+                            computation.metadata,
+                            computation.get_output(result).value
+                        )
+                    )
+                ix = Index(computation.metadata, Row(cells))
+                item_ixs.append(ix)
 
-                sec = computation.to_heading()
-                ds.sections.append(sec)
+            ix = Index(computation.metadata, item_ixs)
+            ixs.append(ix)
 
-                for item in computation.to_items(results):
-                    ds.sections.append(item)
+        tbl = Table(columns, ixs)
 
-                sec = Totals(computation, results)
-                ds.sections.append(sec)
-
-            ds.sections.append(Break())
-
-        return ds
+        return tbl

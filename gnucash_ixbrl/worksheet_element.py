@@ -3,6 +3,7 @@
 
 from . basic_element import BasicElement
 from . text_reporter import TextReporter
+from . debug_reporter import DebugReporter
 from . ixbrl_reporter import IxbrlReporter
 from lxml import objectify
 
@@ -35,8 +36,12 @@ class WorksheetElement(BasicElement):
         
         rep = TextReporter()
         rep.output(self.worksheet, out)
-
         out.write("\n")
+
+    def to_debug(self, taxonomy, out):
+        
+        rep = DebugReporter()
+        rep.output(self.worksheet, out)
 
     def to_ixbrl_elt(self, par, taxonomy):
 
