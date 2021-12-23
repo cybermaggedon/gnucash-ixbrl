@@ -6,7 +6,7 @@ from . worksheet import Worksheet
 from . table import (
     Cell, Row, Index, Column, Table, TotalIndex
 )
-from . computation import Metadata, Group
+from . computation import Metadata, Group, Sum
 
 class WorksheetSection:
     def __init__(self, id, rank=0, total_rank=0, hide_total=False):
@@ -46,6 +46,21 @@ class SimpleWorksheet(Worksheet):
 
         return mpr
 
+    def get_single_line_ix(self, computation, results):
+
+        cells = []
+
+        for period, result in results:
+            cells.append(
+                Cell(
+                    computation.metadata,
+                    computation.get_output(result).value
+                )
+            )
+
+        ix = Index(computation.metadata, Row(cells))
+        ixs.append(ix)
+
     def get_structure(self):
 
         if len(self.periods) < 1:
@@ -56,6 +71,10 @@ class SimpleWorksheet(Worksheet):
             for v in self.computations
         }
 
+        self.currency_label = self.data.get_config(
+            "metadata.accounting.currency-label", "€"
+        )
+
         results = [
             (period, self.data.perform_computations(period))
             for period in self.periods
@@ -64,12 +83,13 @@ class SimpleWorksheet(Worksheet):
         columns = []
         for period in self.periods:
             m = Metadata(None, period.name, None, {}, period, None)
-            columns.append(Column(m))
+            col = Column(m, None, self.currency_label)
+            columns.append(col)
 
-        columns = [
-            Column(Metadata(None, "FIXME", None, {}, None, None),
-                   columns)
-        ]
+#        columns = [
+#            Column(Metadata(None, "FIXME", None, {}, None, None),
+#                   columns, self.currency_label)
+#        ]
 
         ixs = []
 
@@ -107,10 +127,26 @@ class SimpleWorksheet(Worksheet):
                 ix = TotalIndex(computation.metadata, Row(cells))
                 item_ixs.append(ix)
 
-            ix = Index(computation.metadata, item_ixs)
-            ixs.append(ix)
+                ix = Index(computation.metadata, item_ixs)
+                ixs.append(ix)
 
-#            ixs.append(VerticalSpacer())
+            elif isinstance(computation, Sum):
+
+                # Total
+                cells = []
+                for period, result in results:
+                    cells.append(
+                        Cell(
+                            computation.metadata,
+                            computation.get_output(result).value
+                        )
+                    )
+                ix = Index(computation.metadata, Row(cells))
+                ixs.append(ix)
+
+            else:
+                raise RuntimeError("Type %s not implemented" %
+                                   str(type(computation)))
 
         tbl = Table(columns, ixs)
 
