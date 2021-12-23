@@ -4,6 +4,7 @@
 from . format import NegativeParenFormatter
 from datetime import datetime, date
 from lxml import objectify
+from . table import Row, TotalIndex
 
 class IxbrlReporter:
 
@@ -94,7 +95,7 @@ class IxbrlReporter:
         # Empty row
         self.add_empty_row(table)
 
-    def maybe_tag(self, datum, section, pid):
+    def maybe_tag(self, datum, section):
 
         fact = self.taxonomy.create_fact(datum)
         val = fact.value
@@ -211,7 +212,7 @@ class IxbrlReporter:
                 "period total value nil rank%d cell" % section.value.rank
             )
             row.append(div)
-            content = self.maybe_tag(0, section, i)
+            content = self.maybe_tag(0, section)
             div.append(content)
 
         self.add_row(table, row)
@@ -475,9 +476,109 @@ class IxbrlReporter:
 
         self.add_row(table, row)
 
+    def handle_header(self, t, grid):
+
+        for lvl in range(0, t.header_levels()):
+
+            cols = []
+
+            def doit(col, l):
+                if l == lvl:
+                    cols.append((col, col.column_count()))
+
+            t.column_recurse(doit)
+
+            row = []
+
+            blank = self.create_cell("\u00a0")
+            blank.set("class", "label cell")
+            row.append(blank)
+
+            for col, span in cols:
+
+                txt = col.metadata.description
+                cell = self.create_cell(txt)
+                cell.set("class", "period periodname cell")
+                cell.set("colspan", str(span))
+                row.append(cell)
+
+            self.add_row(grid, row)
+
+    def handle_body(self, t, grid):
+
+        def doit(x, level=0):
+
+            if isinstance(x.child, Row):
+
+                row = []
+
+                if isinstance(x, TotalIndex):
+                    txt = "Total"
+                else:
+                    txt = x.metadata.description
+
+                elt = self.create_cell(txt)
+                elt.set("class", "label breakdown item cell")
+                row.append(elt)
+
+                for cell in x.child.values:
+
+                    value = cell.value
+                    elt = self.create_cell()
+                    if abs(value.value) < self.tiny:
+                        elt.set("class", "period value nil cell")
+                    elif value.value < 0:
+                        elt.set("class", "period value negative cell")
+                    else:
+                        elt.set("class", "period value cell")
+
+                    content = self.maybe_tag(value, value)
+                    elt.append(content)
+
+                    row.append(elt)
+
+                self.add_row(grid, row)
+
+
+            else:
+
+                row = []
+
+                elt = self.create_cell()
+                elt.set("class", "label breakdown header cell")
+
+                if x.metadata.id == "FIXME":
+                    desc = self.taxonomy.create_description_fact(
+                        x.value, x.metadata.description
+                    )
+                    elt.append(desc.to_elt(self.par))
+                else:
+                    elt.append(
+                        self.par.xhtml_maker.span(x.metadata.description)
+                    )
+
+                row.append(elt)
+
+                self.add_row(grid, row)
+
+                for ix in x.child:
+                    doit(ix, level + 1)
+
+                self.add_empty_row(grid)
+
+        for ix in t.ixs:
+            doit(ix)
+
     def create_report(self, worksheet):
 
+        grid = self.create_table()
+
         ds = worksheet.get_structure()
+
+        self.handle_header(ds, grid)
+        self.handle_body(ds, grid)
+
+        return grid
 
         # Hide notes if the option is set, or there are no notes.
         self.hide_notes = self.hide_notes or not ds.has_notes()
@@ -485,7 +586,6 @@ class IxbrlReporter:
         periods = ds.periods
         sections = ds.sections
 
-        grid = self.create_table()
 
         self.add_header(grid, periods)
 
