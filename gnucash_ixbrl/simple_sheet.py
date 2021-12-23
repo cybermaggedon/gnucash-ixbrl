@@ -4,7 +4,7 @@
 from . period import Period
 from . worksheet import Worksheet
 from . table import (
-    Cell, Row, Index, Column, Table, TotalIndex, VerticalSpacer
+    Cell, Row, Index, Column, Table, TotalIndex
 )
 from . computation import Metadata, Group
 
@@ -66,6 +66,11 @@ class SimpleWorksheet(Worksheet):
             m = Metadata(None, period.name, None, {}, period, None)
             columns.append(Column(m))
 
+        columns = [
+            Column(Metadata(None, "FIXME", None, {}, None, None),
+                   columns)
+        ]
+
         ixs = []
 
         for cix in range(0, len(self.computations)):
@@ -105,7 +110,7 @@ class SimpleWorksheet(Worksheet):
             ix = Index(computation.metadata, item_ixs)
             ixs.append(ix)
 
-            ixs.append(VerticalSpacer())
+#            ixs.append(VerticalSpacer())
 
         tbl = Table(columns, ixs)
 

@@ -20,9 +20,10 @@ class DebugReporter:
                 self.handle(ix, out, indent + 1)
 
             print()
+            print("Table has", thing.header_levels(), "header levels")
             print("Table has", thing.column_count(), "columns")
             print("Table has", thing.row_count(), "rows")
-            print("Table has", thing.ix_count(), "index levels")
+            print("Table has", thing.ix_levels(), "index levels")
 
         if isinstance(thing, Column):
 
@@ -47,11 +48,6 @@ class DebugReporter:
             else:
                 for ix in thing.child:
                     self.handle(ix, out, indent + 1)
-
-        if isinstance(thing, VerticalSpacer):
-
-            out.write("  " * indent)
-            out.write("----\n")
 
         if isinstance(thing, Row):
 

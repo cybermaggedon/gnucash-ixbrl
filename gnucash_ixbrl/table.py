@@ -41,18 +41,28 @@ class Index(Notable):
                 c += ix.row_count()
             return c
 
-    def ix_count(self):
+    def ix_levels(self):
         if isinstance(self.child, Row): return 1
         
-        return 1 + max([ix.ix_count() for ix in self.child])
+        return 1 + max([ix.ix_levels() for ix in self.child])
 
-class VerticalSpacer:
-    def __init__(self):
-        pass
-    def row_count(self):
-        return 1
-    def ix_count(self):
-        return 0
+    def recurse(self, fn, level=0):
+        fn(self, level)
+        if isinstance(self.child, Row):
+            return
+        for ix in self.child:
+            ix.recurse(fn, level + 1)
+
+# class VerticalSpacer:
+#     def __init__(self):
+#         pass
+#     def row_count(self):
+#         return 1
+#     def ix_levels(self):
+#         return 0
+
+#     def recurse(self, fn, level=0):
+#         fn(self, level)
 
 class TotalIndex(Index):
     pass
@@ -70,6 +80,17 @@ class Column:
             return c
         else:
             return 1
+    def header_levels(self):
+        if self.children == None:
+            return 1
+        else:
+            return 1 + max([col.header_levels() for col in self.children])
+
+    def recurse(self, fn, level=0):
+        fn(self, level)
+        if self.children:
+            for col in self.children:
+                col.recurse(fn, level + 1)
 
 class Table:
     def __init__(self, columns, ixs):
@@ -88,5 +109,16 @@ class Table:
             c += ix.row_count()
         return c
 
-    def ix_count(self):
-        return max([ix.ix_count() for ix in self.ixs])
+    def ix_levels(self):
+        return max([ix.ix_levels() for ix in self.ixs])
+
+    def header_levels(self):
+        return max([col.header_levels() for col in self.columns])
+
+    def column_recurse(self, fn):
+        for col in self.columns:
+            col.recurse(fn)
+
+    def index_recurse(self, fn):
+        for ix in self.ixs:
+            ix.recurse(fn)
