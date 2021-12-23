@@ -536,24 +536,16 @@ class IxbrlReporter:
 
         if isinstance(x, TotalIndex):
             txt = "Total"
-        else:
-            txt = x.metadata.description
-
-        elt = self.create_cell()
-        if isinstance(x, TotalIndex):
+            elt = self.create_cell(txt)
             elt.set("class", "label breakdown total cell")
         else:
+            txt = x.metadata.description
+            elt = self.create_cell()
             elt.set("class", "label breakdown item cell")
-
-        if x.metadata:
             desc = self.taxonomy.create_description_fact(
-                x.metadata, x.metadata.description
+                x.metadata, txt,
             )
             elt.append(desc.to_elt(self.par))
-        else:
-            elt.append(
-                self.par.xhtml_maker.span(x.metadata.description)
-            )
 
         row.append(elt)
 
