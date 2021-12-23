@@ -256,6 +256,13 @@ class FactElt(Elt):
 
         return
 
+    def to_debug(self, taxonomy, out):
+
+        for child in self.content:
+            child.to_debug(taxonomy, out)
+
+        return
+
 class ElementElt(Elt):
     def __init__(self, elt, data):
         self.elt = elt
@@ -285,6 +292,9 @@ class ElementElt(Elt):
 
     def to_text(self, taxonomy, out):
         self.elt.to_text(taxonomy, out)
+
+    def to_debug(self, taxonomy, out):
+        self.elt.to_debug(taxonomy, out)
 
 class WorksheetElt(Elt):
 

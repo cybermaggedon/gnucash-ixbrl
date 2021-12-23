@@ -105,10 +105,10 @@ class Taxonomy:
         key = "description-tags.{0}".format(id)
         return self.cfg.get(key, mandatory=False)
 
-    def create_description_fact(self, val, desc):
-        fact = StringFact(self.get_context_id(val.context),
-                          self.get_description_tag_name(val.id), desc)
-        fact.dimensions = self.get_tag_dimensions(val.id)
+    def create_description_fact(self, meta, desc):
+        fact = StringFact(self.get_context_id(meta.context),
+                          self.get_description_tag_name(meta.id), desc)
+        fact.dimensions = self.get_tag_dimensions(meta.id)
         self.observe_fact(fact)
         return fact
 
