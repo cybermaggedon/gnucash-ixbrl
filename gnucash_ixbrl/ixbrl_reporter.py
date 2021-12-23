@@ -539,11 +539,22 @@ class IxbrlReporter:
         else:
             txt = x.metadata.description
 
-        elt = self.create_cell(txt)
+        elt = self.create_cell()
         if isinstance(x, TotalIndex):
             elt.set("class", "label breakdown total cell")
         else:
             elt.set("class", "label breakdown item cell")
+
+        if x.metadata:
+            desc = self.taxonomy.create_description_fact(
+                x.metadata, x.metadata.description
+            )
+            elt.append(desc.to_elt(self.par))
+        else:
+            elt.append(
+                self.par.xhtml_maker.span(x.metadata.description)
+            )
+
         row.append(elt)
 
         for cell in x.child.values:
@@ -578,8 +589,19 @@ class IxbrlReporter:
 
         txt = x.metadata.description
 
-        elt = self.create_cell(txt)
+        elt = self.create_cell()
         elt.set("class", "label header total cell")
+
+        if x.metadata:
+            desc = self.taxonomy.create_description_fact(
+                x.metadata, x.metadata.description
+            )
+            elt.append(desc.to_elt(self.par))
+        else:
+            elt.append(
+                self.par.xhtml_maker.span(x.metadata.description)
+            )
+
         row.append(elt)
 
         for cell in x.child.values:
@@ -608,10 +630,9 @@ class IxbrlReporter:
         elt = self.create_cell()
         elt.set("class", "label breakdown header cell")
 
-        if x.metadata.id == "FIXME":
-            # FIXME: Do this properly
+        if x.metadata:
             desc = self.taxonomy.create_description_fact(
-                x.value, x.metadata.description
+                x.metadata, x.metadata.description
             )
             elt.append(desc.to_elt(self.par))
         else:
