@@ -59,7 +59,40 @@ class SimpleWorksheet(Worksheet):
             )
 
         ix = Index(computation.metadata, Row(cells))
-        ixs.append(ix)
+
+        return ix
+
+    def get_breakdown_ix(self, computation, results):
+
+        item_ixs = []
+        for item in computation.inputs:
+
+            cells = []
+            for period, result in results:
+                cells.append(
+                    Cell(
+                        item.metadata,
+                        item.get_output(result).value
+                    )
+                )
+            ix = Index(item.metadata, Row(cells))
+            item_ixs.append(ix)
+
+        # Total
+        cells = []
+        for period, result in results:
+            cells.append(
+                Cell(
+                    computation.metadata,
+                    computation.get_output(result).value
+                )
+            )
+        ix = TotalIndex(computation.metadata, Row(cells))
+        item_ixs.append(ix)
+
+        ix = Index(computation.metadata, item_ixs)
+
+        return ix
 
     def get_structure(self):
 
@@ -101,48 +134,12 @@ class SimpleWorksheet(Worksheet):
 
             if isinstance(computation, Group):
 
-                item_ixs = []
-                for item in computation.inputs:
-                    
-                    cells = []
-                    for period, result in results:
-                        cells.append(
-                            Cell(
-                                item.metadata,
-                                item.get_output(result).value
-                            )
-                        )
-                    ix = Index(item.metadata, Row(cells))
-                    item_ixs.append(ix)
-
-                # Total
-                cells = []
-                for period, result in results:
-                    cells.append(
-                        Cell(
-                            computation.metadata,
-                            computation.get_output(result).value
-                        )
-                    )
-                ix = TotalIndex(computation.metadata, Row(cells))
-                item_ixs.append(ix)
-
-                ix = Index(computation.metadata, item_ixs)
+                ix = self.get_breakdown_ix(computation, results)
                 ixs.append(ix)
 
             elif isinstance(computation, Sum):
 
-                # Total
-                cells = []
-                for period, result in results:
-                    cells.append(
-                        Cell(
-                            computation.metadata,
-                            computation.get_output(result).value
-                        )
-                    )
-                ix = Index(computation.metadata, Row(cells))
-                ixs.append(ix)
+                ixs.append(self.get_single_line_ix(computation, results))
 
             else:
                 raise RuntimeError("Type %s not implemented" %

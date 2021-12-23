@@ -488,6 +488,8 @@ class IxbrlReporter:
 
             t.column_recurse(doit)
 
+
+            
             row = []
 
             blank = self.create_cell("\u00a0")
@@ -499,6 +501,26 @@ class IxbrlReporter:
                 txt = col.metadata.description
                 cell = self.create_cell(txt)
                 cell.set("class", "period periodname cell")
+                cell.set("colspan", str(span))
+                row.append(cell)
+
+            self.add_row(grid, row)
+
+            
+            row = []
+
+            blank = self.create_cell("\u00a0")
+            blank.set("class", "label cell")
+            row.append(blank)
+
+            for col, span in cols:
+
+                if col.units:
+                    txt = col.units
+                else:
+                    txt = "\u00a0"
+                cell = self.create_cell(txt)
+                cell.set("class", "period currency cell")
                 cell.set("colspan", str(span))
                 row.append(cell)
 
@@ -518,19 +540,30 @@ class IxbrlReporter:
                     txt = x.metadata.description
 
                 elt = self.create_cell(txt)
-                elt.set("class", "label breakdown item cell")
+                if isinstance(x, TotalIndex):
+                    elt.set("class", "label breakdown total cell")
+                else:
+                    elt.set("class", "label breakdown item cell")
                 row.append(elt)
 
                 for cell in x.child.values:
 
                     value = cell.value
                     elt = self.create_cell()
-                    if abs(value.value) < self.tiny:
-                        elt.set("class", "period value nil cell")
-                    elif value.value < 0:
-                        elt.set("class", "period value negative cell")
+                    if isinstance(x, TotalIndex):
+                        if abs(value.value) < self.tiny:
+                            elt.set("class", "period value breakdown total nil cell")
+                        elif value.value < 0:
+                            elt.set("class", "period value breakdown total negative cell")
+                        else:
+                            elt.set("class", "period value breakdown total cell")
                     else:
-                        elt.set("class", "period value cell")
+                        if abs(value.value) < self.tiny:
+                            elt.set("class", "period value nil cell")
+                        elif value.value < 0:
+                            elt.set("class", "period value negative cell")
+                        else:
+                            elt.set("class", "period value cell")
 
                     content = self.maybe_tag(value, value)
                     elt.append(content)
@@ -542,7 +575,10 @@ class IxbrlReporter:
 
             else:
 
+                self.add_empty_row(grid)
+
                 row = []
+
 
                 elt = self.create_cell()
                 elt.set("class", "label breakdown header cell")
@@ -564,7 +600,6 @@ class IxbrlReporter:
                 for ix in x.child:
                     doit(ix, level + 1)
 
-                self.add_empty_row(grid)
 
         for ix in t.ixs:
             doit(ix)
@@ -604,9 +639,6 @@ class IxbrlReporter:
         self.scale = self.data.get_config("metadata.accounting.scale", 0)
         self.currency = self.data.get_config(
             "metadata.accounting.currency", "EUR"
-        )
-        self.currency_label = self.data.get_config(
-            "metadata.accounting.currency-label", "€"
         )
         self.tiny = (10 ** -self.decimals) / 2
 

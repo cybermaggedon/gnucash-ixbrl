@@ -69,9 +69,10 @@ class TotalIndex(Index):
 
 class Column:
     # children is either None or an array of Column
-    def __init__(self, metadata, children=None):
+    def __init__(self, metadata, children=None, units=None):
         self.metadata = metadata
         self.children = children
+        self.units = units
     def column_count(self):
         if self.children:
             c = 0
