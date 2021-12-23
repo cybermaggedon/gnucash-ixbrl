@@ -6,7 +6,7 @@ from . worksheet import Worksheet
 from . table import (
     Cell, Row, Index, Column, Table, TotalIndex
 )
-from . computation import Metadata, Group, Sum
+from . computation import Metadata, Group
 
 class WorksheetSection:
     def __init__(self, id, rank=0, total_rank=0, hide_total=False):
@@ -58,7 +58,8 @@ class SimpleWorksheet(Worksheet):
                 )
             )
 
-        ix = Index(computation.metadata, Row(cells))
+        ix = TotalIndex(computation.metadata, Row(cells))
+        ix = Index(computation.metadata, [ix])
 
         return ix
 
@@ -119,11 +120,6 @@ class SimpleWorksheet(Worksheet):
             col = Column(m, None, self.currency_label)
             columns.append(col)
 
-#        columns = [
-#            Column(Metadata(None, "FIXME", None, {}, None, None),
-#                   columns, self.currency_label)
-#        ]
-
         ixs = []
 
         for cix in range(0, len(self.computations)):
@@ -137,13 +133,8 @@ class SimpleWorksheet(Worksheet):
                 ix = self.get_breakdown_ix(computation, results)
                 ixs.append(ix)
 
-            elif isinstance(computation, Sum):
-
-                ixs.append(self.get_single_line_ix(computation, results))
-
             else:
-                raise RuntimeError("Type %s not implemented" %
-                                   str(type(computation)))
+                ixs.append(self.get_single_line_ix(computation, results))
 
         tbl = Table(columns, ixs)
 

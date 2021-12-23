@@ -46,7 +46,7 @@ class IxbrlReporter:
             fmt = "{0:,.0f}"
         return fmt.format(v)
 
-    def add_header(self, table, periods):
+    def UNUSED_add_header(self, table, periods):
 
         row = []
 
@@ -172,7 +172,7 @@ class IxbrlReporter:
             txt = self.fmt(val) + "\u00a0\u00a0"
             return self.par.xhtml_maker.span(txt)
 
-    def add_nil_section(self, table, section, periods):
+    def UNUSED_add_nil_section(self, table, section, periods):
 
         row = []
 
@@ -220,7 +220,7 @@ class IxbrlReporter:
         # Empty row
         self.add_empty_row(table)
 
-    def add_single_line(self, table, section, periods):
+    def UNUSED_add_single_line(self, table, section, periods):
 
         row = []
 
@@ -277,12 +277,12 @@ class IxbrlReporter:
 
         self.add_row(table, row)
 
-    def add_break(self, table):
+    def UNUSED_add_break(self, table):
 
         # Empty row
         self.add_empty_row(table)
 
-    def add_totals(self, table, section, periods, super_total=False):
+    def UNUSED_add_totals(self, table, section, periods, super_total=False):
 
         row = []
 
@@ -331,7 +331,7 @@ class IxbrlReporter:
 
         self.add_row(table, row)
 
-    def add_items(self, table, section, periods):
+    def UNUSED_add_items(self, table, section, periods):
 
         for item in section.items:
 
@@ -391,7 +391,7 @@ class IxbrlReporter:
 
         self.add_row(table, row)
 
-    def add_item(self, table, section, periods):
+    def UNUSED_add_item(self, table, section, periods):
 
         item = section
 
@@ -449,7 +449,7 @@ class IxbrlReporter:
 
         self.add_row(table, row)
 
-    def add_heading(self, table, section, periods):
+    def UNUSED_add_heading(self, table, section, periods):
 
         row = []
 
@@ -476,7 +476,46 @@ class IxbrlReporter:
 
         self.add_row(table, row)
 
-    def handle_header(self, t, grid):
+    def add_column_headers(self, grid, cols):
+
+        row = []
+
+        blank = self.create_cell("\u00a0")
+        blank.set("class", "label cell")
+        row.append(blank)
+
+        for col, span in cols:
+
+            txt = col.metadata.description
+            cell = self.create_cell(txt)
+            cell.set("class", "period periodname cell")
+            cell.set("colspan", str(span))
+            row.append(cell)
+
+        self.add_row(grid, row)
+
+    def add_currency_subheaders(self, grid, cols):
+
+        row = []
+
+        blank = self.create_cell("\u00a0")
+        blank.set("class", "label cell")
+        row.append(blank)
+
+        for col, span in cols:
+
+            if col.units:
+                txt = col.units
+            else:
+                txt = "\u00a0"
+            cell = self.create_cell(txt)
+            cell.set("class", "period currency cell")
+            cell.set("colspan", str(span))
+            row.append(cell)
+
+        self.add_row(grid, row)
+
+    def add_header(self, t, grid):
 
         for lvl in range(0, t.header_levels()):
 
@@ -488,119 +527,117 @@ class IxbrlReporter:
 
             t.column_recurse(doit)
 
+            self.add_column_headers(grid, cols)
+            self.add_currency_subheaders(grid, cols)
 
-            
-            row = []
+    def add_row_ix(self, grid, x):
 
-            blank = self.create_cell("\u00a0")
-            blank.set("class", "label cell")
-            row.append(blank)
+        row = []
 
-            for col, span in cols:
+        if isinstance(x, TotalIndex):
+            txt = "Total"
+        else:
+            txt = x.metadata.description
 
-                txt = col.metadata.description
-                cell = self.create_cell(txt)
-                cell.set("class", "period periodname cell")
-                cell.set("colspan", str(span))
-                row.append(cell)
+        elt = self.create_cell(txt)
+        if isinstance(x, TotalIndex):
+            elt.set("class", "label breakdown total cell")
+        else:
+            elt.set("class", "label breakdown item cell")
+        row.append(elt)
 
-            self.add_row(grid, row)
+        for cell in x.child.values:
 
-            
-            row = []
-
-            blank = self.create_cell("\u00a0")
-            blank.set("class", "label cell")
-            row.append(blank)
-
-            for col, span in cols:
-
-                if col.units:
-                    txt = col.units
+            value = cell.value
+            elt = self.create_cell()
+            if isinstance(x, TotalIndex):
+                if abs(value.value) < self.tiny:
+                    elt.set("class", "period value breakdown total nil cell")
+                elif value.value < 0:
+                    elt.set("class", "period value breakdown total negative cell")
                 else:
-                    txt = "\u00a0"
-                cell = self.create_cell(txt)
-                cell.set("class", "period currency cell")
-                cell.set("colspan", str(span))
-                row.append(cell)
+                    elt.set("class", "period value breakdown total cell")
+            else:
+                if abs(value.value) < self.tiny:
+                    elt.set("class", "period value nil cell")
+                elif value.value < 0:
+                    elt.set("class", "period value negative cell")
+                else:
+                    elt.set("class", "period value cell")
 
-            self.add_row(grid, row)
+            content = self.maybe_tag(value, value)
+            elt.append(content)
 
-    def handle_body(self, t, grid):
+            row.append(elt)
+
+        self.add_row(grid, row)
+
+    def add_single_line_ix(self, grid, x):
+
+        row = []
+
+        txt = x.metadata.description
+
+        elt = self.create_cell(txt)
+        elt.set("class", "label header total cell")
+        row.append(elt)
+
+        for cell in x.child.values:
+
+            value = cell.value
+            elt = self.create_cell()
+
+            if abs(value.value) < self.tiny:
+                elt.set("class", "period value total nil cell")
+            elif value.value < 0:
+                elt.set("class", "period value total negative cell")
+            else:
+                elt.set("class", "period value total cell")
+
+            content = self.maybe_tag(value, value)
+            elt.append(content)
+
+            row.append(elt)
+
+        self.add_row(grid, row)
+
+    def add_header_ix(self, grid, x):
+
+        row = []
+
+        elt = self.create_cell()
+        elt.set("class", "label breakdown header cell")
+
+        if x.metadata.id == "FIXME":
+            # FIXME: Do this properly
+            desc = self.taxonomy.create_description_fact(
+                x.value, x.metadata.description
+            )
+            elt.append(desc.to_elt(self.par))
+        else:
+            elt.append(
+                self.par.xhtml_maker.span(x.metadata.description)
+            )
+
+        row.append(elt)
+
+        self.add_row(grid, row)
+
+    def add_body(self, t, grid):
 
         def doit(x, level=0):
-
             if isinstance(x.child, Row):
-
-                row = []
-
-                if isinstance(x, TotalIndex):
-                    txt = "Total"
-                else:
-                    txt = x.metadata.description
-
-                elt = self.create_cell(txt)
-                if isinstance(x, TotalIndex):
-                    elt.set("class", "label breakdown total cell")
-                else:
-                    elt.set("class", "label breakdown item cell")
-                row.append(elt)
-
-                for cell in x.child.values:
-
-                    value = cell.value
-                    elt = self.create_cell()
-                    if isinstance(x, TotalIndex):
-                        if abs(value.value) < self.tiny:
-                            elt.set("class", "period value breakdown total nil cell")
-                        elif value.value < 0:
-                            elt.set("class", "period value breakdown total negative cell")
-                        else:
-                            elt.set("class", "period value breakdown total cell")
-                    else:
-                        if abs(value.value) < self.tiny:
-                            elt.set("class", "period value nil cell")
-                        elif value.value < 0:
-                            elt.set("class", "period value negative cell")
-                        else:
-                            elt.set("class", "period value cell")
-
-                    content = self.maybe_tag(value, value)
-                    elt.append(content)
-
-                    row.append(elt)
-
-                self.add_row(grid, row)
-
-
+                self.add_row_ix(grid, x)
             else:
 
-                self.add_empty_row(grid)
-
-                row = []
-
-
-                elt = self.create_cell()
-                elt.set("class", "label breakdown header cell")
-
-                if x.metadata.id == "FIXME":
-                    desc = self.taxonomy.create_description_fact(
-                        x.value, x.metadata.description
-                    )
-                    elt.append(desc.to_elt(self.par))
+                if len(x.child) == 1 and type(x.child[0]) == TotalIndex:
+                    self.add_empty_row(grid)
+                    self.add_single_line_ix(grid, x.child[0])
                 else:
-                    elt.append(
-                        self.par.xhtml_maker.span(x.metadata.description)
-                    )
-
-                row.append(elt)
-
-                self.add_row(grid, row)
-
-                for ix in x.child:
-                    doit(ix, level + 1)
-
-
+                    self.add_empty_row(grid)
+                    self.add_header_ix(grid, x)
+                    for ix in x.child:
+                        doit(ix, level + 1)
         for ix in t.ixs:
             doit(ix)
 
@@ -610,8 +647,8 @@ class IxbrlReporter:
 
         ds = worksheet.get_structure()
 
-        self.handle_header(ds, grid)
-        self.handle_body(ds, grid)
+        self.add_header(ds, grid)
+        self.add_body(ds, grid)
 
         return grid
 
