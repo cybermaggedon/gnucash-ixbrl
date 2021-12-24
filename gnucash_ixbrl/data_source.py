@@ -4,7 +4,7 @@ from . context import Context
 from . computation import get_computations, ResultSet
 from . valueset import ValueSet
 from . simple_sheet import SimpleWorksheet
-from . computations_sheet import ComputationsWorksheet
+from . flex_sheet import FlexWorksheet
 from . element import Element
 from . config import NoneValue
 from . datum import *
@@ -95,8 +95,8 @@ class DataSource:
 
                 if kind == "simple":
                     return SimpleWorksheet.load(ws_def, self)
-                if kind == "computations":
-                    return ComputationsWorksheet.load(ws_def, self)
+                if kind == "flex":
+                    return FlexWorksheet.load(ws_def, self)
 
                 raise RuntimeError("Don't know worksheet type '%s'" % kind)
 
@@ -129,6 +129,8 @@ class DataSource:
         return self.cfg.get_bool(key, deflt, mandatory)
 
     def to_datum(self, defn, context):
+
+        # FIXME: All datum to over-ride context? (currently happens in fact_table)
 
         if defn.get("kind") == "config":
             id = defn.get("id")

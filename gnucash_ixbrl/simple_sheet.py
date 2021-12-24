@@ -95,7 +95,7 @@ class SimpleWorksheet(Worksheet):
 
         return ix
 
-    def get_structure(self):
+    def get_table(self, taxonomy):
 
         if len(self.periods) < 1:
             raise RuntimeError("No periods in worksheet?")
@@ -139,3 +139,4 @@ class SimpleWorksheet(Worksheet):
         tbl = Table(columns, ixs)
 
         return tbl
+

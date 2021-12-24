@@ -100,12 +100,12 @@ class TextReporter:
         for ix in t.ixs:
             doit(ix)
 
-    def output(self, worksheet, out):
+    def output(self, worksheet, out, taxonomy):
 
         self.out = out
         self.fmt = NegativeParenFormatter()
 
-        ds = worksheet.get_structure()
+        ds = worksheet.get_table(taxonomy)
 
         self.cols = ds.column_count()
         self.width = 80

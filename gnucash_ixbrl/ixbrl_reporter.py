@@ -305,7 +305,7 @@ class IxbrlReporter:
 
         grid = self.create_table()
 
-        ds = worksheet.get_structure()
+        ds = worksheet.get_table(self.taxonomy)
 
         self.add_header(ds, grid)
         self.add_body(ds, grid)

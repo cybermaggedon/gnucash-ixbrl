@@ -39,11 +39,15 @@ try:
         tx_cfg = cfg.get("report.taxonomy")
         tx = Taxonomy(tx_cfg)
         elt.to_text(tx, sys.stdout)
+    elif sys.argv[3] == "debug":
+        tx_cfg = cfg.get("report.taxonomy")
+        tx = Taxonomy(tx_cfg)
+        elt.to_debug(tx, sys.stdout)
     else:
         raise RuntimeError("Output type '%s' not known." % sys.argv[3])
 
 except Exception as e:
     sys.stderr.write("Exception: %s\n" % str(e))
-#    raise e
+    raise e
     sys.exit(1)
 

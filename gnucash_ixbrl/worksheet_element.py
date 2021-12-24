@@ -35,13 +35,13 @@ class WorksheetElement(BasicElement):
             out.write(title)
         
         rep = TextReporter()
-        rep.output(self.worksheet, out)
+        rep.output(self.worksheet, out, taxonomy)
         out.write("\n")
 
     def to_debug(self, taxonomy, out):
         
         rep = DebugReporter()
-        rep.output(self.worksheet, out)
+        rep.output(self.worksheet, out, taxonomy)
 
     def to_ixbrl_elt(self, par, taxonomy):
 

@@ -23,7 +23,6 @@ class NilResult(Result):
         self.value = value
 
 class TotalResult(Result):
-
     def __init__(self, defn, value, items):
         self.defn = defn
         self.value = value

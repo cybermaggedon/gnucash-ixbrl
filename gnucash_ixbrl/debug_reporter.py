@@ -2,8 +2,9 @@
 from . table import *
 
 class DebugReporter:
-    def output(self, ws, out):
-        ds = ws.get_structure()
+
+    def output(self, ws, out, taxonomy):
+        ds = ws.get_table(taxonomy)
         self.handle(ds, out)
 
     def handle(self, thing, out, indent=0):
@@ -60,5 +61,10 @@ class DebugReporter:
         if isinstance(thing, Cell):
 
             out.write("  " * indent)
-            print("Cell:", round(thing.value.value, 2))
+
+            value = thing.value.value
+            if isinstance(value, float):
+                print("Cell:", round(thing.value.value, 2))
+            else:
+                print("Cell:", value)
 
