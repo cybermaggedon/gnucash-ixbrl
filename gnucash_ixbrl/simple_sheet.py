@@ -9,11 +9,8 @@ from . table import (
 from . computation import Metadata, Group
 
 class WorksheetSection:
-    def __init__(self, id, rank=0, total_rank=0, hide_total=False):
+    def __init__(self, id):
         self.id = id
-        self.rank = rank
-        self.total_rank = total_rank
-        self.hide_total = hide_total
 
 class SimpleWorksheet(Worksheet):
 
@@ -35,12 +32,7 @@ class SimpleWorksheet(Worksheet):
             if isinstance(comp, str):
                 ws_elts.append(WorksheetSection(comp))
             else:
-                ws_elts.append(WorksheetSection(
-                    comp.get("id"),
-                    rank=comp.get("rank", 0),
-                    total_rank=comp.get("total-rank", 0),
-                    hide_total=comp.get("hide-total", False)
-                ))
+                ws_elts.append(WorksheetSection(comp.get("id")))
 
         mpr = SimpleWorksheet(ws_elts, periods, data)
 
