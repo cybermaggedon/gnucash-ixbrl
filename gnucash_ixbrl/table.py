@@ -17,8 +17,7 @@ class Notable:
         return self.notes
 
 class Cell:
-    def __init__(self, metadata, value):
-        self.metadata = metadata
+    def __init__(self, value):
         self.value = value
 
 class Row:

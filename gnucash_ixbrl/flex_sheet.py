@@ -61,7 +61,7 @@ class FlexWorksheet(Worksheet):
 
             datum = self.data.to_datum(elt, context)
             
-            cells.append(Cell(None, datum))
+            cells.append(Cell(datum))
                 
         return Row(cells)
 

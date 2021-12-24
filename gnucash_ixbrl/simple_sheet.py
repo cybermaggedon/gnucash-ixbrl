@@ -53,7 +53,6 @@ class SimpleWorksheet(Worksheet):
         for period, result in results:
             cells.append(
                 Cell(
-                    computation.metadata,
                     computation.get_output(result).value
                 )
             )
@@ -72,7 +71,6 @@ class SimpleWorksheet(Worksheet):
             for period, result in results:
                 cells.append(
                     Cell(
-                        item.metadata,
                         item.get_output(result).value
                     )
                 )
@@ -84,7 +82,6 @@ class SimpleWorksheet(Worksheet):
         for period, result in results:
             cells.append(
                 Cell(
-                    computation.metadata,
                     computation.get_output(result).value
                 )
             )
