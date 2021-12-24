@@ -239,7 +239,7 @@ class FactElt(Elt):
             period = self.data.get_report_period()
             ctxt = self.data.business_context.with_period(period)
         else:
-            ctxt = taxonomy.get_context(self.ctxt, self.data)
+            ctxt = taxonomy.get_context(self.ctxt)
         datum = StringDatum(self.fact, [], ctxt)
         fact = taxonomy.create_fact(datum)
         elt = fact.to_elt(par)

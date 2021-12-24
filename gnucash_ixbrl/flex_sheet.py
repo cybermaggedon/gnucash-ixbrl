@@ -55,7 +55,7 @@ class FlexWorksheet(Worksheet):
         for elt in row:
 
             if elt.get("context", mandatory=False):
-                context = self.taxonomy.get_context(elt.get("context"), self.data)
+                context = self.taxonomy.get_context(elt.get("context"))
             else:
                 context = self.context
 

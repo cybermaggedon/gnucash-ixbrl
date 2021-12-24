@@ -220,22 +220,20 @@ class Taxonomy:
         key = "schema"
         return self.cfg.get(key)
 
-    def get_predefined_contexts(self, data):
+    def get_predefined_contexts(self):
 
         contexts = {}
 
         for defn in self.cfg.get("contexts"):
-
-            ctxt = self.load_context(defn, data, contexts)
-            contexts[defn.get("id")] = ctxt
+            id = defn.get("id")
+            contexts[id] = self.contexts[id]
 
         return contexts
 
-    def get_context(self, id, data):
+    def get_context(self, id):
 
-        contexts = self.get_predefined_contexts(data)
-
-        if id in contexts: return contexts[id]
+        if id in self.contexts:
+            return self.contexts[id]
 
         raise RuntimeError("No such context: %s" % id)
 
@@ -278,23 +276,15 @@ class Taxonomy:
 
     def get_document_metadata(self, data):
 
-        ctxts = self.get_predefined_contexts(data)
+        ctxts = self.get_predefined_contexts()
 
         ids = self.cfg.get("document-metadata")
-        ids = set(ids)
 
         meta = []
 
-        key = "metadata"
-        for defn in self.cfg.get(key):
-
-            if defn.get("id") in ids:
-
-                fact = self.load_metadata(data, defn, ctxts)
-
-                # Ignore missing
-                if fact:
-                    meta.append(fact)
+        for id in ids:
+            if id in self.metadata:
+                meta.append(self.metadata[id])
 
         return meta
 
@@ -305,47 +295,9 @@ class Taxonomy:
 
         return NoneValue()
 
-#        ctxts = self.get_predefined_contexts(data)
+    def get_all_metadata(self, id):
 
-#        key = "metadata"
-#        for defn in self.cfg.get(key):
-
-#            if defn.get("id") == id:
-
-#                return self.load_metadata(data, defn, ctxts)
-
-#        return NoneValue()
-
-    def get_all_metadata(self, data, id):
-
-        ctxts = self.get_predefined_contexts(data)
-
-        meta = []
-
-        key = "metadata"
-        for defn in self.cfg.get(key):
-
-            if defn.get("id") == id:
-                fact = self.load_metadata(data, defn, ctxts)
-                if fact:
-                    meta.append(fact)
-
-        return meta
-
-    def get_all_metadata_by_id(self, data, id):
-
-        ctxts = self.get_predefined_contexts(data)
-
-        meta = []
-
-        key = "metadata"
-        for defn in self.cfg.get(key):
-
-            if defn.get("id").startswith(id):
-                fact = self.load_metadata(data, defn, ctxts)
-                if fact:
-                    meta.append(fact)
-
+        meta = [self.metadata[v] for v in self.metadata]
         return meta
 
     def load_metadata(self, data, defn, ctxts):
