@@ -58,25 +58,25 @@ employee-counts-note:
           attributes: { class: label }
           content: ""
         - tag: td
-          attributes: { class: period periodname }
+          attributes: { class: column header }
           content: "expand:~[metadata.accounting.periods.0.name]"
         - ifdef: metadata.business.average-employees.1
           content:
             tag: td
-            attributes: { class: period periodname }
+            attributes: { class: column header }
             content: "expand:~[metadata.accounting.periods.1.name]"
       - tag: tr
         content:
         - tag: td
-          attributes: { class: label header }
+          attributes: { class: label heading }
           content: "Employees"
         - tag: td
-          attributes: { class: period value }
+          attributes: { class: data value }
           content: expand:~[average-employees-this]
         - ifdef: metadata.business.average-employees.1
           content:
             tag: td
-            attributes: { class: period value }
+            attributes: { class: data value }
             content: expand:~[average-employees-previous]
 
 revision:
