@@ -49,10 +49,12 @@ class SimpleWorksheet(Worksheet):
                 )
             )
 
+        note = None
         if computation.metadata.note:
-            note = self.data.get_note(computation.metadata.note)
-        else:
-            note = None
+            try:
+                note = self.data.get_note(computation.metadata.note)
+            except:
+                pass
 
         ix = TotalIndex(computation.metadata, Row(cells), notes=note)
         ix = Index(computation.metadata, [ix])
@@ -64,10 +66,12 @@ class SimpleWorksheet(Worksheet):
         item_ixs = []
         for item in computation.inputs:
 
+            note = None
             if item.metadata.note:
-                note = self.data.get_note(item.metadata.note)
-            else:
-                note = None
+                try:
+                    note = self.data.get_note(item.metadata.note)
+                except:
+                    pass
 
             cells = []
             for period, result in results:
@@ -88,10 +92,12 @@ class SimpleWorksheet(Worksheet):
                 )
             )
 
+        note = None
         if computation.metadata.note:
-            note = self.data.get_note(computation.metadata.note)
-        else:
-            note = None
+            try:
+                note = self.data.get_note(computation.metadata.note)
+            except:
+                pass
 
         ix = TotalIndex(computation.metadata, Row(cells))
         item_ixs.append(ix)
