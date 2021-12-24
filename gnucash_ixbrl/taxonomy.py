@@ -43,7 +43,6 @@ class TypedDimension:
         )
 
         elt = mkr(tag, self.value)
-#        elt = base.xbrldi_maker(self.content["tag"])(self.value)
 
         mem = base.xbrldi_maker.typedMember()
         mem.set("dimension", self.dim)
@@ -129,7 +128,6 @@ class Taxonomy:
     def lookup_dimension(self, id, val):
 
         try:
-
             k1 = "segment.{0}.typed-dimension".format(
                 id
             )

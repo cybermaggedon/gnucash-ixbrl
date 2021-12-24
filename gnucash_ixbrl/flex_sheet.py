@@ -35,6 +35,7 @@ class FlexWorksheet(Worksheet):
         for col in cols:
 
             label = str(col.get("label"))
+            unit_label = col.get("units", mandatory=False)
 
             m = Metadata(None, label, None, {}, None, None)
             
@@ -44,7 +45,12 @@ class FlexWorksheet(Worksheet):
             else:
                 child = None
 
-            ret.append(Column(m, child, self.currency_label))
+            if unit_label:
+                col = Column(m, child, unit_label)
+            else:
+                col = Column(m, child)
+            ret.append(col)
+
 
         return ret
 
