@@ -5,7 +5,7 @@ from . format import NegativeParenFormatter
 from datetime import datetime, date
 from lxml import objectify
 from . table import Row, TotalIndex
-from . fact import MoneyFact
+from . datum import MoneyDatum
 
 class IxbrlReporter:
 
@@ -150,12 +150,12 @@ class IxbrlReporter:
         fact = self.taxonomy.create_fact(datum)
 
         if fact.name:
-            if isinstance(fact, MoneyFact):
+            if isinstance(datum, MoneyDatum):
                 return self.create_tagged_money_fact(fact, section)
             else:
                 return self.create_tagged_fact(fact, section)
         else:
-            if isinstance(fact, MoneyFact):
+            if isinstance(datum, MoneyDatum):
                 return self.create_untagged_money_fact(fact, section)
             else:
                 return self.create_untagged_fact(fact, section)
@@ -238,7 +238,7 @@ class IxbrlReporter:
             value = cell.value
             elt = self.create_cell()
             if isinstance(x, TotalIndex):
-                if not isinstance(value, MoneyFact):
+                if not isinstance(value, MoneyDatum):
                     elt.set("class", "period value breakdown total cell")
                 elif abs(value.value) < self.tiny:
                     elt.set("class", "period value breakdown total nil cell")
@@ -248,8 +248,8 @@ class IxbrlReporter:
                     elt.set("class", "period value breakdown total cell")
             else:
                 # FIXME breakdown?
-                if not isinstance(value, MoneyFact):
-                    elt.set("class", "period value cell")
+                if not isinstance(value, MoneyDatum):
+                    elt.set("class", "period value cell " + str(type(value)))
                 elif abs(value.value) < self.tiny:
                     elt.set("class", "period value nil cell")
                 elif value.value < 0:
@@ -290,7 +290,7 @@ class IxbrlReporter:
             value = cell.value
             elt = self.create_cell()
 
-            if not isinstance(value, MoneyFact):
+            if not isinstance(value, MoneyDatum):
                 elt.set("class", "period value total cell")
             elif abs(value.value) < self.tiny:
                 elt.set("class", "period value total nil cell")
