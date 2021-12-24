@@ -168,6 +168,11 @@ class IxbrlReporter:
         blank.set("class", "label cell")
         row.append(blank)
 
+        if not self.hide_notes:
+            blank = self.create_cell("\u00a0")
+            blank.set("class", "note")
+            row.append(blank)
+
         for col, span in cols:
 
             txt = col.metadata.description
@@ -185,6 +190,11 @@ class IxbrlReporter:
         blank = self.create_cell("\u00a0")
         blank.set("class", "label cell")
         row.append(blank)
+
+        if not self.hide_notes:
+            blank = self.create_cell("note")
+            blank.set("class", "note header")
+            row.append(blank)
 
         for col, span in cols:
 
@@ -232,6 +242,8 @@ class IxbrlReporter:
             elt.append(desc.to_elt(self.par))
 
         row.append(elt)
+
+        self.add_note(x, row)
 
         for cell in x.child.values:
 
@@ -285,6 +297,8 @@ class IxbrlReporter:
 
         row.append(elt)
 
+        self.add_note(x, row)
+
         for cell in x.child.values:
 
             value = cell.value
@@ -306,6 +320,18 @@ class IxbrlReporter:
 
         self.add_row(grid, row)
 
+    def add_note(self, x, row):
+
+        if not self.hide_notes:
+            if x.notes:
+                elt = self.create_cell(x.notes)
+                elt.set("class", "note")
+                row.append(elt)
+            else:
+                elt = self.create_cell()
+                elt.set("class", "note")
+                row.append(elt)
+        
     def add_header_ix(self, grid, x):
 
         row = []
@@ -324,6 +350,8 @@ class IxbrlReporter:
             )
 
         row.append(elt)
+
+        self.add_note(x, row)
 
         self.add_row(grid, row)
 
@@ -351,22 +379,11 @@ class IxbrlReporter:
 
         ds = worksheet.get_table(self.taxonomy)
 
-        self.add_header(ds, grid)
-        self.add_body(ds, grid)
-
-        return grid
-
         # Hide notes if the option is set, or there are no notes.
         self.hide_notes = self.hide_notes or not ds.has_notes()
 
-        periods = ds.periods
-        sections = ds.sections
-
-
-        self.add_header(grid, periods)
-
-        for section in sections:
-            section.emit(self, grid, periods)
+        self.add_header(ds, grid)
+        self.add_body(ds, grid)
 
         return grid
 

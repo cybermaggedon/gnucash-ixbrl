@@ -27,9 +27,10 @@ class Row:
 
 class Index(Notable):
     # child is either a row, or an array of Index
-    def __init__(self, metadata, child):
+    def __init__(self, metadata, child, notes=None):
         self.metadata = metadata
         self.child = child
+        self.notes = notes
 
     def row_count(self):
         if isinstance(self.child, Row):
@@ -51,6 +52,15 @@ class Index(Notable):
             return
         for ix in self.child:
             ix.recurse(fn, level + 1)
+
+    def has_notes(self):
+        if self.notes is not None:
+            return True
+        if isinstance(self.child, list):
+            for ix in self.child:
+                if ix.has_notes():
+                    return True
+        return False
 
 class TotalIndex(Index):
     pass
@@ -111,3 +121,9 @@ class Table:
     def index_recurse(self, fn):
         for ix in self.ixs:
             ix.recurse(fn)
+
+    def has_notes(self):
+        for ix in self.ixs:
+            if ix.has_notes():
+                return True
+        return False
