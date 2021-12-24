@@ -236,9 +236,12 @@ class IxbrlReporter:
             txt = x.metadata.description
             elt = self.create_cell()
             elt.set("class", "label breakdown item cell")
+
+            ctxt = x.child.values[0].value.context
             desc = self.taxonomy.create_description_fact(
-                x.metadata, txt,
+                x.metadata, txt, ctxt
             )
+
             elt.append(desc.to_elt(self.par))
 
         row.append(elt)
@@ -286,10 +289,14 @@ class IxbrlReporter:
         elt.set("class", "label heading total cell")
 
         if x.metadata:
+
+            ctxt = x.child.values[0].value.context
             desc = self.taxonomy.create_description_fact(
-                x.metadata, x.metadata.description
+                x.metadata, x.metadata.description, ctxt
             )
+
             elt.append(desc.to_elt(self.par))
+
         else:
             elt.append(
                 self.par.xhtml_maker.span(x.metadata.description)
@@ -340,8 +347,9 @@ class IxbrlReporter:
         elt.set("class", "label breakdown heading cell")
 
         if x.metadata:
+            ctxt = x.child[0].child.values[0].value.context
             desc = self.taxonomy.create_description_fact(
-                x.metadata, x.metadata.description
+                x.metadata, x.metadata.description, ctxt
             )
             elt.append(desc.to_elt(self.par))
         else:
