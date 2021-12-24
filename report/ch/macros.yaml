@@ -8,7 +8,7 @@ simple-notes:
       tag: div
       content:
       - tag: div
-        attributes: { class: heading }
+        attributes: { class: header }
         content:
         - tag: div
           content: 'expand:~[company-name]'
@@ -88,7 +88,7 @@ revision:
       tag: div
       content:
       - tag: div
-        attributes: { class: heading }
+        attributes: { class: header }
         content:
         - tag: div
           content: 'expand:~[company-name]'
@@ -110,7 +110,7 @@ company-info:
       tag: div
       content:
       - tag: div
-        attributes: { class: heading }
+        attributes: { class: header }
         content:
         - tag: div
           content: 'expand:~[company-name]'
@@ -282,7 +282,7 @@ consent:
       tag: div
       content:
       - tag: div
-        attributes: { class: heading }
+        attributes: { class: header }
         content:
         - tag: div
           content: 'expand:~[company-name]'
@@ -309,7 +309,7 @@ balance-sheet-unaudited-micro:
       tag: div
       content:
       - tag: div
-        attributes: { class: heading }
+        attributes: { class: header }
         content:
         - tag: div
           content: 'expand:~[company-name]'
@@ -359,7 +359,7 @@ balance-sheet-audited-micro:
       tag: div
       content:
       - tag: div
-        attributes: { class: heading }
+        attributes: { class: header }
         content:
         - tag: div
           content: 'expand:~[company-name]'
@@ -399,7 +399,7 @@ profit-and-loss:
       tag: div
       content:
       - tag: div
-        attributes: { class: heading }
+        attributes: { class: header }
         content:
         - tag: div
           content: 'expand:~[company-name]'
@@ -422,7 +422,7 @@ balance-sheet-audited-small:
       tag: div
       content:
       - tag: div
-        attributes: { class: heading }
+        attributes: { class: header }
         content:
         - tag: div
           content: 'expand:~[company-name]'
@@ -463,7 +463,7 @@ balance-sheet-unaudited-small:
       tag: div
       content:
       - tag: div
-        attributes: { class: heading }
+        attributes: { class: header }
         content:
         - tag: div
           content: 'expand:~[company-name]'
@@ -505,7 +505,7 @@ cash-flows:
       tag: div
       content:
       - tag: div
-        attributes: { class: heading }
+        attributes: { class: header }
         content:
         - tag: div
           content: 'expand:~[company-name]'
@@ -526,7 +526,7 @@ comprehensive-income:
       tag: div
       content:
       - tag: div
-        attributes: { class: heading }
+        attributes: { class: header }
         content:
         - tag: div
           content: 'expand:~[company-name]'

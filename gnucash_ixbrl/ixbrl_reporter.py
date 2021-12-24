@@ -177,7 +177,7 @@ class IxbrlReporter:
 
             txt = col.metadata.description
             cell = self.create_cell(txt)
-            cell.set("class", "period periodname cell")
+            cell.set("class", "column header cell")
             cell.set("colspan", str(span))
             row.append(cell)
 
@@ -203,7 +203,7 @@ class IxbrlReporter:
             else:
                 txt = "\u00a0"
             cell = self.create_cell(txt)
-            cell.set("class", "period currency cell")
+            cell.set("class", "column currency cell")
             cell.set("colspan", str(span))
             row.append(cell)
 
@@ -251,23 +251,23 @@ class IxbrlReporter:
             elt = self.create_cell()
             if isinstance(x, TotalIndex):
                 if not isinstance(value, MoneyDatum):
-                    elt.set("class", "period value breakdown total cell")
+                    elt.set("class", "data value breakdown total cell")
                 elif abs(value.value) < self.tiny:
-                    elt.set("class", "period value breakdown total nil cell")
+                    elt.set("class", "data value breakdown total nil cell")
                 elif value.value < 0:
-                    elt.set("class", "period value breakdown total negative cell")
+                    elt.set("class", "data value breakdown total negative cell")
                 else:
-                    elt.set("class", "period value breakdown total cell")
+                    elt.set("class", "data value breakdown total cell")
             else:
                 # FIXME breakdown?
                 if not isinstance(value, MoneyDatum):
-                    elt.set("class", "period value cell " + str(type(value)))
+                    elt.set("class", "data value cell " + str(type(value)))
                 elif abs(value.value) < self.tiny:
-                    elt.set("class", "period value nil cell")
+                    elt.set("class", "data value nil cell")
                 elif value.value < 0:
-                    elt.set("class", "period value negative cell")
+                    elt.set("class", "data value negative cell")
                 else:
-                    elt.set("class", "period value cell")
+                    elt.set("class", "data value cell")
 
             content = self.maybe_tag(value, value)
             elt.append(content)
@@ -283,7 +283,7 @@ class IxbrlReporter:
         txt = x.metadata.description
 
         elt = self.create_cell()
-        elt.set("class", "label header total cell")
+        elt.set("class", "label heading total cell")
 
         if x.metadata:
             desc = self.taxonomy.create_description_fact(
@@ -305,13 +305,13 @@ class IxbrlReporter:
             elt = self.create_cell()
 
             if not isinstance(value, MoneyDatum):
-                elt.set("class", "period value total cell")
+                elt.set("class", "data value total cell")
             elif abs(value.value) < self.tiny:
-                elt.set("class", "period value total nil cell")
+                elt.set("class", "data value total nil cell")
             elif value.value < 0:
-                elt.set("class", "period value total negative cell")
+                elt.set("class", "data value total negative cell")
             else:
-                elt.set("class", "period value total cell")
+                elt.set("class", "data value total cell")
 
             content = self.maybe_tag(value, value)
             elt.append(content)
@@ -332,12 +332,12 @@ class IxbrlReporter:
                 elt.set("class", "note")
                 row.append(elt)
         
-    def add_header_ix(self, grid, x):
+    def add_heading_ix(self, grid, x):
 
         row = []
 
         elt = self.create_cell()
-        elt.set("class", "label breakdown header cell")
+        elt.set("class", "label breakdown heading cell")
 
         if x.metadata:
             desc = self.taxonomy.create_description_fact(
@@ -367,7 +367,7 @@ class IxbrlReporter:
                     self.add_single_line_ix(grid, x.child[0])
                 else:
                     self.add_empty_row(grid)
-                    self.add_header_ix(grid, x)
+                    self.add_heading_ix(grid, x)
                     for ix in x.child:
                         doit(ix, level + 1)
         for ix in t.ixs:
