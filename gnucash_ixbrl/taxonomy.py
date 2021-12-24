@@ -1,14 +1,13 @@
 
 # Mapping taxonomy-free datums to facts so that iXBRL tagging can take place.
-from . datum import (
-    StringDatum, DateDatum, MoneyDatum, BoolDatum, CountDatum, NumberDatum
-)
+from . datum import *
 from . fact import (
     StringFact, DateFact, MoneyFact, BoolFact, CountFact, NumberFact
 )
 
 from . period import Period
 from . config import NoneValue
+from . context import Context
 
 from datetime import datetime
 
@@ -52,11 +51,23 @@ class TypedDimension:
         return mem
 
 class Taxonomy:
-    def __init__(self, cfg):
+    def __init__(self, cfg, data):
         self.cfg = cfg
         self.contexts = {}
         self.next_context_id = 0
         self.contexts_used = set()
+        self.root_context = Context(None)
+
+        for defn in cfg.get("contexts"):
+            ctxt = self.load_context(defn, data, self.contexts)
+            self.contexts[defn.get("id")] = ctxt
+
+        meta = {}
+        for defn in cfg.get("metadata"):
+            fact = self.load_metadata(data, defn, self.contexts)
+            if fact:
+                meta[defn.get("id")] = fact
+        self.metadata = meta
 
     def get_context_id(self, ctxt):
         if ctxt in self.contexts:
@@ -86,6 +97,9 @@ class Taxonomy:
 
         if isinstance(val, NumberDatum):
             return self.create_number_fact(val)
+
+        if isinstance(val, VariableDatum):
+            return self.get_metadata_by_id(val.value)
 
         raise RuntimeError("Not implemented: " + str(type(val)))
 
@@ -232,7 +246,7 @@ class Taxonomy:
         if defn.get("from", mandatory=False):
             ctxt = contexts[defn.get("from")]
         else:
-            ctxt = data.get_root_context()
+            ctxt = self.root_context
 
         if defn.get("entity", mandatory=False):
             scheme_def = defn.get("scheme")
@@ -284,18 +298,23 @@ class Taxonomy:
 
         return meta
 
-    def get_metadata_by_id(self, data, id):
+    def get_metadata_by_id(self, id):
 
-        ctxts = self.get_predefined_contexts(data)
-
-        key = "metadata"
-        for defn in self.cfg.get(key):
-
-            if defn.get("id") == id:
-
-                return self.load_metadata(data, defn, ctxts)
+        if id in self.metadata:
+            return self.metadata[id]
 
         return NoneValue()
+
+#        ctxts = self.get_predefined_contexts(data)
+
+#        key = "metadata"
+#        for defn in self.cfg.get(key):
+
+#            if defn.get("id") == id:
+
+#                return self.load_metadata(data, defn, ctxts)
+
+#        return NoneValue()
 
     def get_all_metadata(self, data, id):
 

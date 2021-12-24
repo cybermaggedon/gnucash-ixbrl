@@ -181,3 +181,9 @@ class DataSource:
 #            value.id = id
 #            value.context = context
 #            return value
+
+        elif defn.get("kind") == "variable":
+            id = None
+            variable = defn.get("variable")
+            datum = VariableDatum(id, variable, context)
+            return datum

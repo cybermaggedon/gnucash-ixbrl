@@ -148,6 +148,7 @@ class IxbrlReporter:
     def maybe_tag(self, datum, section):
 
         fact = self.taxonomy.create_fact(datum)
+
         if fact.name:
             if isinstance(fact, MoneyFact):
                 return self.create_tagged_money_fact(fact, section)

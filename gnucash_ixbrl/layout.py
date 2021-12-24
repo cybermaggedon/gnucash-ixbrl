@@ -134,7 +134,7 @@ class MetadataElt(Elt):
 
         elt = par.xhtml_maker.span()
 
-        fact = taxonomy.get_metadata_by_id(self.data, self.name)
+        fact = taxonomy.get_metadata_by_id(self.name)
         if fact:
             if self.prefix != "":
                 elt.append(par.xhtml_maker.span(self.prefix))
