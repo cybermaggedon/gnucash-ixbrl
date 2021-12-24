@@ -10,6 +10,8 @@ from . config import NoneValue
 from . datum import *
 from . expand import expand_string
 
+import copy
+
 class DataSource:
     def __init__(self, cfg, session):
 
@@ -161,6 +163,21 @@ class DataSource:
             datum = NumberDatum(id, value, context)
             return datum
         elif defn.get("kind") == "computation":
+
+            # OLD
+            id = defn.get("id")
+            comp_id = defn.get("computation")
+            key = defn.get("period-config")
+            period = Period.load(self.get_config(
+                key
+            ))
+            res = self.get_results([comp_id], period)
+            value = res.get(comp_id)
+            value = copy.copy(value)
+            value.id = id
+            value.context = context
+            return value
+            # OLD END
 
             # FIXME: Previously we over-rode ID etc. think it's best not to do
             # that
