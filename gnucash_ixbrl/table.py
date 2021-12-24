@@ -52,17 +52,6 @@ class Index(Notable):
         for ix in self.child:
             ix.recurse(fn, level + 1)
 
-# class VerticalSpacer:
-#     def __init__(self):
-#         pass
-#     def row_count(self):
-#         return 1
-#     def ix_levels(self):
-#         return 0
-
-#     def recurse(self, fn, level=0):
-#         fn(self, level)
-
 class TotalIndex(Index):
     pass
 

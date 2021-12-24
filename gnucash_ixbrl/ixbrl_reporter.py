@@ -5,6 +5,7 @@ from . format import NegativeParenFormatter
 from datetime import datetime, date
 from lxml import objectify
 from . table import Row, TotalIndex
+from . fact import MoneyFact
 
 class IxbrlReporter:
 
@@ -46,65 +47,81 @@ class IxbrlReporter:
             fmt = "{0:,.0f}"
         return fmt.format(v)
 
-    def maybe_tag(self, datum, section):
+    def create_tagged_money_fact(self, fact, section):
 
-        fact = self.taxonomy.create_fact(datum)
         val = fact.value
 
-        if fact.name:
+        name = fact.name
+        context = fact.context
 
-            name = fact.name
-            context = fact.context
+        txt = self.fmt(abs(val))
 
-            txt = self.fmt(abs(val))
+        # Element always contains positive value.  For negative we
+        # add parentheses
+        elt = self.par.ix_maker.nonFraction(txt)
+        elt.set("name", name)
 
-            # Element always contains positive value.  For negative we
-            # add parentheses
-            elt = self.par.ix_maker.nonFraction(txt)
-            elt.set("name", name)
+        elt.set("contextRef", context)
+        elt.set("format", "ixt2:numdotdecimal")
+        elt.set("unitRef", self.currency)
+        elt.set("decimals", str(self.decimals))
+        elt.set("scale", str(self.scale))
 
-            elt.set("contextRef", context)
-            elt.set("format", "ixt2:numdotdecimal")
-            elt.set("unitRef", self.currency)
-            elt.set("decimals", str(self.decimals))
-            elt.set("scale", str(self.scale))
+        if abs(val) < self.tiny: val = 0
 
-            if abs(val) < self.tiny: val = 0
-
-            if abs(val) < self.tiny:
-                sign = False
-            else:
-                if val < 0:
-                    sign = True
-                else:
-                    sign = False
-
-                if fact.reverse:
-                    sign = not sign
-
-            if sign:
-                elt.set("sign", "-")
-
-            # Sign and negativity of value is not the same.
-            # FIXME: Can't remember what the above comment means.
-
+        if abs(val) < self.tiny:
+            sign = False
+        else:
             if val < 0:
-
-                span = self.par.xhtml_maker.span()
-                span.append(self.par.xhtml_maker.span("( "))
-                span.append(elt)
-                span.append(self.par.xhtml_maker.span(" )"))
-                return span
-
+                sign = True
             else:
+                sign = False
 
-                span = self.par.xhtml_maker.span()
-                span.append(self.par.xhtml_maker.span(""))
-                span.append(elt)
-                span.append(self.par.xhtml_maker.span("\u00a0\u00a0"))
-                return span
+            if fact.reverse:
+                sign = not sign
 
-            return elt
+        if sign:
+            elt.set("sign", "-")
+
+        # Sign and negativity of value is not the same.
+        # FIXME: Can't remember what the above comment means.
+
+        if val < 0:
+
+            span = self.par.xhtml_maker.span()
+            span.append(self.par.xhtml_maker.span("( "))
+            span.append(elt)
+            span.append(self.par.xhtml_maker.span(" )"))
+            return span
+
+        else:
+
+            span = self.par.xhtml_maker.span()
+            span.append(self.par.xhtml_maker.span(""))
+            span.append(elt)
+            span.append(self.par.xhtml_maker.span("\u00a0\u00a0"))
+            return span
+
+        return elt
+
+    def create_tagged_fact(self, fact, section):
+
+        val = fact.value
+        name = fact.name
+        context = fact.context
+
+        txt = str(val)
+
+        elt = self.par.ix_maker.nonFraction(txt)
+        elt.set("name", name)
+
+        elt.set("contextRef", context)
+
+        return elt
+
+    def create_untagged_money_fact(self, fact, section):
+            
+        val = fact.value
 
         if abs(val) < self.tiny: val = 0
 
@@ -122,6 +139,25 @@ class IxbrlReporter:
         else:
             txt = self.fmt(val) + "\u00a0\u00a0"
             return self.par.xhtml_maker.span(txt)
+
+    def create_untagged_fact(self, fact, section):
+            
+        val = fact.value
+        return self.par.xhtml_maker.span(str(val))
+
+    def maybe_tag(self, datum, section):
+
+        fact = self.taxonomy.create_fact(datum)
+        if fact.name:
+            if isinstance(fact, MoneyFact):
+                return self.create_tagged_money_fact(fact, section)
+            else:
+                return self.create_tagged_fact(fact, section)
+        else:
+            if isinstance(fact, MoneyFact):
+                return self.create_untagged_money_fact(fact, section)
+            else:
+                return self.create_untagged_fact(fact, section)
 
     def add_column_headers(self, grid, cols):
 
@@ -201,14 +237,19 @@ class IxbrlReporter:
             value = cell.value
             elt = self.create_cell()
             if isinstance(x, TotalIndex):
-                if abs(value.value) < self.tiny:
+                if not isinstance(value, MoneyFact):
+                    elt.set("class", "period value breakdown total cell")
+                elif abs(value.value) < self.tiny:
                     elt.set("class", "period value breakdown total nil cell")
                 elif value.value < 0:
                     elt.set("class", "period value breakdown total negative cell")
                 else:
                     elt.set("class", "period value breakdown total cell")
             else:
-                if abs(value.value) < self.tiny:
+                # FIXME breakdown?
+                if not isinstance(value, MoneyFact):
+                    elt.set("class", "period value cell")
+                elif abs(value.value) < self.tiny:
                     elt.set("class", "period value nil cell")
                 elif value.value < 0:
                     elt.set("class", "period value negative cell")
@@ -248,7 +289,9 @@ class IxbrlReporter:
             value = cell.value
             elt = self.create_cell()
 
-            if abs(value.value) < self.tiny:
+            if not isinstance(value, MoneyFact):
+                elt.set("class", "period value total cell")
+            elif abs(value.value) < self.tiny:
                 elt.set("class", "period value total nil cell")
             elif value.value < 0:
                 elt.set("class", "period value total negative cell")
