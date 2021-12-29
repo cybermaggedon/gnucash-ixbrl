@@ -1,4 +1,6 @@
 
+DEPRECATED: Moved to https://github.com/cybermaggedon/ixbrl-reporter
+
 # `gnucash-ixbrl`
 
 ## Introduction
